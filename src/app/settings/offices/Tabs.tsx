@@ -42,8 +42,6 @@ type department = {
 //main function
 
 function SalaryGradeTabs() {
-
-
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
