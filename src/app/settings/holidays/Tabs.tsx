@@ -147,6 +147,8 @@ function SalaryGradeTabs() {
             device_name: "web",
         };
 
+
+        
         alerts.forEach(element => {
             alerts.pop();
         });
