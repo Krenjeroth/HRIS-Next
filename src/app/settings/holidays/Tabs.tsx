@@ -25,23 +25,16 @@ type alert = {
 // interfaces
 
 interface IValues {
-    office_code?: string;
-    office_name?: string;
-    department_id?: string;
-}
-
-type department = {
-    id: string;
-    attributes: {
-        department_name: string;
-        department_code: string;
-    }
+    title?: string;
+    date?: string;
 }
 
 
 //main function
 
 function SalaryGradeTabs() {
+
+
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
@@ -52,23 +45,20 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [departments, setDepartments] = useState<department[]>([]);
     const [headers, setHeaders] = useState<string[]>([
         "id",
-        "office_code",
-        "office_name",
-        "department"
+        "title",
+        "date"
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Office");
+    const [title, setTitle] = useState<string>("Holidays");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            office_code: "",
-            office_name: "",
-            department_id: ""
+            title: "",
+            date: ""
         }
     );
 
@@ -83,7 +73,7 @@ function SalaryGradeTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-office", postData);
+            const resp = await HttpService.post("search-holidays", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -95,24 +85,10 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
-        async function getDepartments() {
-            const resp = await HttpService.get("department");
-            if (resp != null) {
-                setDepartments(resp.data.data);
-            }
-        }
-
-
-        getDepartments();
-    }, []);
-
-    useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                office_code: '',
-                office_name: '',
-                department_id: ''
+                title: '',
+                date: ''
             });
         }
 
@@ -131,18 +107,18 @@ function SalaryGradeTabs() {
 
     //    get data by id
     const getDataById = async (id: number) => {
+        console.log("test");
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("holidays/" + id);
+            const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    office_code: resp.data.office_code,
-                    office_name: resp.data.office_name,
-                    department_id: resp.data.department_id
-                });
+                    title:data.title,
+                    date: data.date
+                })
                 setShowDrawer(true);
-                console.log(resp.data);
 
             }
         }
@@ -166,9 +142,8 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            office_code: values.office_code,
-            office_name: values.office_name,
-            department_id: values.department_id,
+            title: values.title,
+            date: values.date,
             device_name: "web",
         };
 
@@ -180,7 +155,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("office", postData);
+                const resp = await HttpService.post("holidays", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -190,14 +165,14 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
+                            alerts.push({ "type": "failure", "message":  resp.data.message });
                         }
                     }
                 }
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("office/" + id, postData)
+                const resp = await HttpService.patch("holidays/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -207,14 +182,14 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
+                            alerts.push({ "type": "failure", "message":  resp.data.message });
                         }
                     }
                 }
             }
             // delete
             else {
-                const resp = await HttpService.delete("office/" + id);
+                const resp = await HttpService.delete("holidays/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -226,7 +201,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
+                            alerts.push({ "type": "failure", "message":  resp.data.message });
                         }
                     }
                 }
@@ -265,64 +240,37 @@ function SalaryGradeTabs() {
                             </div>
 
 
-                            {/* Code */}
+                            {/* number */}
                             <FormElement
-                                name="office_code"
-                                label="Office Code"
+                                name="title"
+                                label="Title"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="office_code"
-                                    name="office_code"
-                                    placeholder="Enter Office Code"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter Title"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
 
-                            {/* Office Name */}
+                            {/* Amount */}
                             <FormElement
-                                name="office_name"
-                                label="Office Name"
+                                name="date"
+                                label="Date"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
-                                    id="office_name"
-                                    name="office_name"
-                                    placeholder="Enter Office Name"
+                                    id="date"
+                                    name="date"
+                                    placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
-
-                            </FormElement>
-
-                            {/* Department */}
-                            <FormElement
-                                name="department_id"
-                                label="Department"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field as="select"
-                                    id="department_id"
-                                    name="department_id"
-                                    placeholder="Enter Office Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Department"
-                                >
-                                    <option value=""></option>
-                                    {departments.map((item: department, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.department_name}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
 
                             </FormElement>
 
@@ -351,7 +299,7 @@ function SalaryGradeTabs() {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
-                        }} onDoubleClick={() => {setShowDrawer(false); }}>Add {title}
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
 

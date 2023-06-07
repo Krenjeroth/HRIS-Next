@@ -42,6 +42,8 @@ type department = {
 //main function
 
 function SalaryGradeTabs() {
+
+
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
@@ -54,14 +56,19 @@ function SalaryGradeTabs() {
     const [process, setProcess] = useState<string>("Add");
     const [departments, setDepartments] = useState<department[]>([]);
     const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "office_code",
-        "office_name",
-        "department"
+        "title",
+        "salary_grade",
+        "monthly_salary",
+        "education",
+        "training",
+        "experience",
+        "eligibility",
+        "competency",
+
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Office");
+    const [title, setTitle] = useState<string>("Position");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -83,8 +90,9 @@ function SalaryGradeTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-office", postData);
+            const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
+                console.log (resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -267,52 +275,35 @@ function SalaryGradeTabs() {
 
                             {/* Code */}
                             <FormElement
-                                name="office_code"
-                                label="Office Code"
+                                name="title"
+                                label="Position Title"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="office_code"
-                                    name="office_code"
-                                    placeholder="Enter Office Code"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter Title"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
 
-                            {/* Office Name */}
+                            {/* Salary Grade*/}
                             <FormElement
-                                name="office_name"
-                                label="Office Name"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    id="office_name"
-                                    name="office_name"
-                                    placeholder="Enter Office Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-                            {/* Department */}
-                            <FormElement
-                                name="department_id"
-                                label="Department"
+                                name="salary_grade"
+                                label="Salary Grade"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field as="select"
-                                    id="department_id"
-                                    name="department_id"
-                                    placeholder="Enter Office Name"
+                                    id="salary_grade"
+                                    name="salary_grade"
+                                    placeholder="Enter salary"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Department"
+                                    title="Select Salary Grade"
                                 >
                                     <option value=""></option>
                                     {departments.map((item: department, index) => {
@@ -323,6 +314,96 @@ function SalaryGradeTabs() {
 
 
                                 </Field>
+
+                            </FormElement>
+
+
+                             {/* Education */}
+                             <FormElement
+                                name="education"
+                                label="Education"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="education"
+                                    name="education"
+                                    placeholder="Enter Education"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                            {/* Training */}
+                            <FormElement
+                                name="training"
+                                label="Training"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="training"
+                                    name="training"
+                                    placeholder="Enter Training"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                             {/* Experience*/}
+                             <FormElement
+                                name="experience"
+                                label="Experience"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="experience"
+                                    name="experience"
+                                    placeholder="Enter Experience"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                             {/* Eligibility*/}
+                             <FormElement
+                                name="eligibility"
+                                label="Eligibility"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="eligibility"
+                                    name="eligibility"
+                                    placeholder="Enter Eligibility"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                             {/*Competency*/}
+                             <FormElement
+                                name="competency"
+                                label="Competency"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="competency"
+                                    name="competency"
+                                    placeholder="Enter Competency"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
 
                             </FormElement>
 
