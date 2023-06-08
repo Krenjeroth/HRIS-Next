@@ -1,25 +1,16 @@
+import React from 'react'
+import Tabs from './tabs';
 export const metadata = {
-  title: 'HRIS - User Management',
+  title: 'HRIS - Users',
 };
 
-type Todo = {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
+
+function page() {
+  return (
+    <div>
+      <Tabs />
+    </div>
+  )
 }
 
-const fetchTodos = async () => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/todos/')
-  const todos: any = await res.json()
-  return todos
-}
-
-async function TodoList() {
-  const todos = await fetchTodos();
-  return <>
-  </>
-}
-
-
-export default TodoList;
+export default page
