@@ -26,28 +26,13 @@ type alert = {
 
 interface IValues {
     title?: string;
-    salary_grade_id?: string;
-    education?: string;
-    training?: string;
-    experience?: string;
-    eligibility?: string;
-    competency?: string;
+    date?: string;
 }
-
-type salaryGrade = {
-    id: string;
-    attributes: {
-        number: string;
-        amount: number;
-    }
-}
-
 
 
 //main function
 
 function SalaryGradeTabs() {
-
 
 
     // variables
@@ -60,32 +45,20 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
     const [headers, setHeaders] = useState<string[]>([
+        "id",
         "title",
-        "number",
-        "amount",
-        "education",
-        "training",
-        "experience",
-        "eligibility",
-        "competency",
-
+        "date"
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Position");
+    const [title, setTitle] = useState<string>("Users");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
             title: "",
-            salary_grade_id: "",
-            education: "",
-            training: "",
-            experience: "",
-            eligibility: "",
-            competency: ""
+            date: ""
         }
     );
 
@@ -100,9 +73,8 @@ function SalaryGradeTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-position", postData);
+            const resp = await HttpService.post("search-users", postData);
             if (resp != null) {
-                console.log(resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -113,29 +85,10 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
-        async function getsalaryGrades() {
-            const resp = await HttpService.get("salary-grade");
-            if (resp != null) {
-                setsalaryGrades(resp.data);
-            }
-        }
-
-
-        getsalaryGrades();
-    }, []);
-
-    useEffect(() => {
         if (id == 0) {
             setInitialValues({
                 title: '',
-                salary_grade_id: '',
-                education: '',
-                training: '',
-                experience: '',
-                eligibility: '',
-                competency: ''
-
+                date: ''
             });
         }
 
@@ -154,23 +107,18 @@ function SalaryGradeTabs() {
 
     //    get data by id
     const getDataById = async (id: number) => {
+        console.log("test");
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("users/" + id);
+            const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    title: resp.data.title,
-                    salary_grade_id: resp.data.salary_grade_id,
-                    education: resp.data.education,
-                    training: resp.data.training,
-                    experience: resp.data.experience,
-                    eligibility: resp.data.eligibiility,
-                    competency: resp.data.competency
-
-                });
+                    title: data.title,
+                    date: data.date
+                })
                 setShowDrawer(true);
-                console.log(resp.data);
 
             }
         }
@@ -195,15 +143,11 @@ function SalaryGradeTabs() {
     ) => {
         const postData = {
             title: values.title,
-            salary_grade_id: values.salary_grade_id,
-            education: values.education,
-            training: values.training,
-            experience: values.experience,
-            eligibility: values.eligibility,
-            competency: values.competency,
+            date: values.date,
             device_name: "web",
-
         };
+
+
 
         alerts.forEach(element => {
             alerts.pop();
@@ -213,7 +157,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("position", postData);
+                const resp = await HttpService.post("users", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -230,7 +174,7 @@ function SalaryGradeTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("position/" + id, postData)
+                const resp = await HttpService.patch("users/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -247,7 +191,7 @@ function SalaryGradeTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("position/" + id);
+                const resp = await HttpService.delete("users/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -298,10 +242,10 @@ function SalaryGradeTabs() {
                             </div>
 
 
-                            {/* Code */}
+                            {/* number */}
                             <FormElement
                                 name="title"
-                                label="Position Title"
+                                label="Title"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -315,119 +259,18 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Salary Grade*/}
+                            {/* Amount */}
                             <FormElement
-                                name="salary_grade_id"
-                                label="Salary Grade"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field as="select"
-                                    id="salary_grade_id"
-                                    name="salary_grade_id"
-                                    placeholder="Enter salary"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
-                                >
-                                    <option value=""></option>
-                                    {salaryGrades.map((item: salaryGrade, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.number}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
-
-                            </FormElement>
-
-
-                            {/* Education */}
-                            <FormElement
-                                name="education"
-                                label="Education"
+                                name="date"
+                                label="Date"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
-                                    id="education"
-                                    name="education"
-                                    placeholder="Enter Education"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/* Training */}
-                            <FormElement
-                                name="training"
-                                label="Training"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    id="training"
-                                    name="training"
-                                    placeholder="Enter Training"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/* Experience*/}
-                            <FormElement
-                                name="experience"
-                                label="Experience"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    id="experience"
-                                    name="experience"
-                                    placeholder="Enter Experience"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/* Eligibility*/}
-                            <FormElement
-                                name="eligibility"
-                                label="Eligibility"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    id="eligibility"
-                                    name="eligibility"
-                                    placeholder="Enter Eligibility"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/*Competency*/}
-                            <FormElement
-                                name="competency"
-                                label="Competency"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="textarea"
-                                    id="competency"
-                                    name="competency"
-                                    placeholder="Enter Competency"
+                                    id="date"
+                                    name="date"
+                                    placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
