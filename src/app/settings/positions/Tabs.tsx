@@ -46,8 +46,8 @@ type salaryGrade = {
 
 //main function
 
-function SalaryGradeTabs() { 
-    
+function SalaryGradeTabs() {
+
 
 
     // variables
@@ -102,7 +102,7 @@ function SalaryGradeTabs() {
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
-                console.log (resp);
+                console.log(resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -117,7 +117,7 @@ function SalaryGradeTabs() {
         async function getsalaryGrades() {
             const resp = await HttpService.get("salary-grade");
             if (resp != null) {
-                setsalaryGrades(resp.data.data);
+                setsalaryGrades(resp.data);
             }
         }
 
@@ -156,7 +156,7 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("position/" + id);
+            const resp = await HttpService.get("office/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
@@ -332,9 +332,9 @@ function SalaryGradeTabs() {
                                 >
                                     <option value=""></option>
                                     {salaryGrades.map((item: salaryGrade, index) => {
-                                        // return (
-                                        //     <option key={index} value={item.id}>{item.attributes.number}</option>
-                                        // );
+                                        return (
+                                            <option key={index} value={item.id}>{item.attributes.number}</option>
+                                        );
                                     })}
 
 
@@ -343,8 +343,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Education */}
-                             <FormElement
+                            {/* Education */}
+                            <FormElement
                                 name="education"
                                 label="Education"
                                 errors={errors}
@@ -379,8 +379,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Experience*/}
-                             <FormElement
+                            {/* Experience*/}
+                            <FormElement
                                 name="experience"
                                 label="Experience"
                                 errors={errors}
@@ -397,8 +397,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Eligibility*/}
-                             <FormElement
+                            {/* Eligibility*/}
+                            <FormElement
                                 name="eligibility"
                                 label="Eligibility"
                                 errors={errors}
@@ -415,8 +415,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/*Competency*/}
-                             <FormElement
+                            {/*Competency*/}
+                            <FormElement
                                 name="competency"
                                 label="Competency"
                                 errors={errors}
@@ -424,6 +424,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="competency"
                                     name="competency"
                                     placeholder="Enter Competency"
@@ -457,7 +458,7 @@ function SalaryGradeTabs() {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
-                        }} onDoubleClick={() => {setShowDrawer(false); }}>Add {title}
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
 
