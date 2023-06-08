@@ -156,7 +156,7 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
@@ -332,9 +332,9 @@ function SalaryGradeTabs() {
                                 >
                                     <option value=""></option>
                                     {salaryGrades.map((item: salaryGrade, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.number}</option>
-                                        );
+                                        // return (
+                                        //     <option key={index} value={item.id}>{item.attributes.number}</option>
+                                        // );
                                     })}
 
 
