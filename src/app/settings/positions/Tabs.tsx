@@ -113,7 +113,7 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
+        // get salary grade
         async function getsalaryGrades() {
             const resp = await HttpService.get("salary-grade");
             if (resp != null) {
@@ -165,12 +165,11 @@ function SalaryGradeTabs() {
                     education: resp.data.education,
                     training: resp.data.training,
                     experience: resp.data.experience,
-                    eligibility: resp.data.eligibiility,
+                    eligibility: resp.data.eligibility,
                     competency: resp.data.competency
-
                 });
                 setShowDrawer(true);
-                console.log(resp.data);
+                console.log(resp.data.data);
 
             }
         }
@@ -323,10 +322,11 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
 
-                                <Field as="select"
+                                <Field 
+                                    as="select"
                                     id="salary_grade_id"
                                     name="salary_grade_id"
-                                    placeholder="Enter salary"
+                                    placeholder="Enter alary"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Salary Grade"
                                 >
