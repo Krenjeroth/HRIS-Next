@@ -46,8 +46,8 @@ type salaryGrade = {
 
 //main function
 
-function SalaryGradeTabs() {
-
+function SalaryGradeTabs() { 
+    
 
 
     // variables
@@ -102,7 +102,7 @@ function SalaryGradeTabs() {
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
-                console.log(resp);
+                console.log (resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -113,7 +113,7 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
+        // get salary grade
         async function getsalaryGrades() {
             const resp = await HttpService.get("salary-grade");
             if (resp != null) {
@@ -156,7 +156,7 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
@@ -165,12 +165,11 @@ function SalaryGradeTabs() {
                     education: resp.data.education,
                     training: resp.data.training,
                     experience: resp.data.experience,
-                    eligibility: resp.data.eligibiility,
+                    eligibility: resp.data.eligibility,
                     competency: resp.data.competency
-
                 });
                 setShowDrawer(true);
-                console.log(resp.data);
+                console.log(resp.data.data);
 
             }
         }
@@ -323,10 +322,11 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
 
-                                <Field as="select"
+                                <Field 
+                                    as="select"
                                     id="salary_grade_id"
                                     name="salary_grade_id"
-                                    placeholder="Enter salary"
+                                    placeholder="Enter alary"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Salary Grade"
                                 >
@@ -343,8 +343,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Education */}
-                            <FormElement
+                             {/* Education */}
+                             <FormElement
                                 name="education"
                                 label="Education"
                                 errors={errors}
@@ -379,8 +379,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Experience*/}
-                            <FormElement
+                             {/* Experience*/}
+                             <FormElement
                                 name="experience"
                                 label="Experience"
                                 errors={errors}
@@ -397,8 +397,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Eligibility*/}
-                            <FormElement
+                             {/* Eligibility*/}
+                             <FormElement
                                 name="eligibility"
                                 label="Eligibility"
                                 errors={errors}
@@ -415,8 +415,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/*Competency*/}
-                            <FormElement
+                             {/*Competency*/}
+                             <FormElement
                                 name="competency"
                                 label="Competency"
                                 errors={errors}
@@ -424,7 +424,6 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
-                                    as="textarea"
                                     id="competency"
                                     name="competency"
                                     placeholder="Enter Competency"
@@ -458,7 +457,7 @@ function SalaryGradeTabs() {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
-                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
+                        }} onDoubleClick={() => {setShowDrawer(false); }}>Add {title}
                         </Button>
 
 
