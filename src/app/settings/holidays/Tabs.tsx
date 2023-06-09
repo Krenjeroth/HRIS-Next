@@ -52,7 +52,7 @@ function SalaryGradeTabs() {
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Holidays");
+    const [title, setTitle] = useState<string>("Holiday");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -107,8 +107,6 @@ function SalaryGradeTabs() {
 
     //    get data by id
     const getDataById = async (id: number) => {
-        console.log("test");
-
         try {
             const resp = await HttpService.get("holidays/" + id);
             const data = resp.data.data.attributes;

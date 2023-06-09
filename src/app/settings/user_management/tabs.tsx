@@ -28,6 +28,7 @@ interface IValues {
     name?: string;
     email?: string;
     password?: string;
+    password_confirmation?: string;
 }
 
 
@@ -48,19 +49,19 @@ function SalaryGradeTabs() {
     const [process, setProcess] = useState<string>("Add");
     const [headers, setHeaders] = useState<string[]>([
         "name",
-        "email",
-        "password"
+        "email"
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Users");
+    const [title, setTitle] = useState<string>("User");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
             name: "",
             email: "",
-            password: ""
+            password: "",
+            password_confirmation: ""
         }
     );
 
@@ -76,6 +77,7 @@ function SalaryGradeTabs() {
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-users", postData);
+            console.log(resp.data.data);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -91,7 +93,8 @@ function SalaryGradeTabs() {
             setInitialValues({
                 name: '',
                 email: '',
-                password: ''
+                password: '',
+                password_confirmation: ''
             });
         }
 
@@ -113,14 +116,14 @@ function SalaryGradeTabs() {
 
         try {
             const resp = await HttpService.get("users/" + id);
-            console.log(resp);
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
                     name: resp.data.name,
                     email: resp.data.email,
-                    password: resp.data.password
+                    password: resp.data.password,
+                    password_confirmation: ""
                 })
                 setShowDrawer(true);
 
@@ -149,6 +152,7 @@ function SalaryGradeTabs() {
             name: values.name,
             email: values.email,
             password: values.password,
+            password_confirmation: values.password_confirmation,
             device_name: "web",
         };
 
@@ -293,6 +297,24 @@ function SalaryGradeTabs() {
                                 <Field
                                     id="password"
                                     name="password"
+                                    placeholder="Enter Password"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                            {/* Password */}
+                            <FormElement
+                                name="password_confirmation"
+                                label="Password Confirmation"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="password_confirmation"
+                                    name="password_confirmation"
                                     placeholder="Enter Password"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />

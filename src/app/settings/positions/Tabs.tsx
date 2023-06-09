@@ -102,7 +102,6 @@ function SalaryGradeTabs() {
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
-                console.log(resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -156,7 +155,7 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
@@ -169,7 +168,6 @@ function SalaryGradeTabs() {
                     competency: resp.data.competency
                 });
                 setShowDrawer(true);
-                console.log(resp.data);
 
             }
         }
@@ -228,7 +226,7 @@ function SalaryGradeTabs() {
                 }
             }
             // update
-            else if (process == "Edit") { console.log(postData);
+            else if (process == "Edit") { 
                 const resp = await HttpService.patch("position/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
