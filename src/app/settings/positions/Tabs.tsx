@@ -25,23 +25,29 @@ type alert = {
 // interfaces
 
 interface IValues {
-    office_code?: string;
-    office_name?: string;
-    department_id?: string;
+    title?: string;
+    salary_grade_id?: string;
+    education?: string;
+    training?: string;
+    experience?: string;
+    eligibility?: string;
+    competency?: string;
 }
 
-type department = {
+type salaryGrade = {
     id: string;
     attributes: {
-        department_name: string;
-        department_code: string;
+        number: string;
+        amount: number;
     }
 }
+
 
 
 //main function
 
 function SalaryGradeTabs() {
+
 
 
     // variables
@@ -54,11 +60,11 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [departments, setDepartments] = useState<department[]>([]);
+    const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
     const [headers, setHeaders] = useState<string[]>([
         "title",
-        "salary_grade",
-        "monthly_salary",
+        "number",
+        "amount",
         "education",
         "training",
         "experience",
@@ -73,9 +79,13 @@ function SalaryGradeTabs() {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            office_code: "",
-            office_name: "",
-            department_id: ""
+            title: "",
+            salary_grade_id: "",
+            education: "",
+            training: "",
+            experience: "",
+            eligibility: "",
+            competency: ""
         }
     );
 
@@ -92,7 +102,6 @@ function SalaryGradeTabs() {
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
-                console.log (resp);
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
@@ -103,24 +112,29 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
-        async function getDepartments() {
-            const resp = await HttpService.get("department");
+        // get salary grade
+        async function getsalaryGrades() {
+            const resp = await HttpService.get("salary-grade");
             if (resp != null) {
-                setDepartments(resp.data.data);
+                setsalaryGrades(resp.data);
             }
         }
 
 
-        getDepartments();
+        getsalaryGrades();
     }, []);
 
     useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                office_code: '',
-                office_name: '',
-                department_id: ''
+                title: '',
+                salary_grade_id: '',
+                education: '',
+                training: '',
+                experience: '',
+                eligibility: '',
+                competency: ''
+
             });
         }
 
@@ -141,16 +155,19 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("office/" + id);
+            const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    office_code: resp.data.office_code,
-                    office_name: resp.data.office_name,
-                    department_id: resp.data.department_id
+                    title: resp.data.title,
+                    salary_grade_id: resp.data.salary_grade_id,
+                    education: resp.data.education,
+                    training: resp.data.training,
+                    experience: resp.data.experience,
+                    eligibility: resp.data.eligibility,
+                    competency: resp.data.competency
                 });
                 setShowDrawer(true);
-                console.log(resp.data);
 
             }
         }
@@ -174,10 +191,15 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            office_code: values.office_code,
-            office_name: values.office_name,
-            department_id: values.department_id,
+            title: values.title,
+            salary_grade_id: values.salary_grade_id,
+            education: values.education,
+            training: values.training,
+            experience: values.experience,
+            eligibility: values.eligibility,
+            competency: values.competency,
             device_name: "web",
+
         };
 
         alerts.forEach(element => {
@@ -188,7 +210,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("office", postData);
+                const resp = await HttpService.post("position", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -204,8 +226,8 @@ function SalaryGradeTabs() {
                 }
             }
             // update
-            else if (process == "Edit") {
-                const resp = await HttpService.patch("office/" + id, postData)
+            else if (process == "Edit") { 
+                const resp = await HttpService.patch("position/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -222,7 +244,7 @@ function SalaryGradeTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("office/" + id);
+                const resp = await HttpService.delete("position/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -292,23 +314,24 @@ function SalaryGradeTabs() {
 
                             {/* Salary Grade*/}
                             <FormElement
-                                name="salary_grade"
+                                name="salary_grade_id"
                                 label="Salary Grade"
                                 errors={errors}
                                 touched={touched}
                             >
 
-                                <Field as="select"
-                                    id="salary_grade"
-                                    name="salary_grade"
-                                    placeholder="Enter salary"
+                                <Field 
+                                    as="select"
+                                    id="salary_grade_id"
+                                    name="salary_grade_id"
+                                    placeholder="Enter alary"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Salary Grade"
                                 >
                                     <option value=""></option>
-                                    {departments.map((item: department, index) => {
+                                    {salaryGrades.map((item: salaryGrade, index) => {
                                         return (
-                                            <option key={index} value={item.id}>{item.attributes.department_name}</option>
+                                            <option key={index} value={item.id}>{item.attributes.number}</option>
                                         );
                                     })}
 
@@ -318,8 +341,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Education */}
-                             <FormElement
+                            {/* Education */}
+                            <FormElement
                                 name="education"
                                 label="Education"
                                 errors={errors}
@@ -354,8 +377,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Experience*/}
-                             <FormElement
+                            {/* Experience*/}
+                            <FormElement
                                 name="experience"
                                 label="Experience"
                                 errors={errors}
@@ -372,8 +395,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/* Eligibility*/}
-                             <FormElement
+                            {/* Eligibility*/}
+                            <FormElement
                                 name="eligibility"
                                 label="Eligibility"
                                 errors={errors}
@@ -390,8 +413,8 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                             {/*Competency*/}
-                             <FormElement
+                            {/*Competency*/}
+                            <FormElement
                                 name="competency"
                                 label="Competency"
                                 errors={errors}
@@ -399,6 +422,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="competency"
                                     name="competency"
                                     placeholder="Enter Competency"
@@ -432,7 +456,7 @@ function SalaryGradeTabs() {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
-                        }} onDoubleClick={() => {setShowDrawer(false); }}>Add {title}
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
 
