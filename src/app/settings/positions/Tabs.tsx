@@ -169,7 +169,7 @@ function SalaryGradeTabs() {
                     competency: resp.data.competency
                 });
                 setShowDrawer(true);
-                console.log(resp.data.data);
+                console.log(resp.data);
 
             }
         }
@@ -228,7 +228,7 @@ function SalaryGradeTabs() {
                 }
             }
             // update
-            else if (process == "Edit") {
+            else if (process == "Edit") { console.log(postData);
                 const resp = await HttpService.patch("position/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
