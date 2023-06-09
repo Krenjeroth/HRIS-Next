@@ -388,6 +388,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="experience"
                                     name="experience"
                                     placeholder="Enter Experience"
