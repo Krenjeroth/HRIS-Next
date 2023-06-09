@@ -350,6 +350,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="education"
                                     name="education"
                                     placeholder="Enter Education"
@@ -368,6 +369,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="training"
                                     name="training"
                                     placeholder="Enter Training"
@@ -404,6 +406,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    as="textarea"
                                     id="eligibility"
                                     name="eligibility"
                                     placeholder="Enter Eligibility"
