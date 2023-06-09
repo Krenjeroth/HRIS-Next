@@ -25,8 +25,10 @@ type alert = {
 // interfaces
 
 interface IValues {
-    title?: string;
-    date?: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    password_confirmation?: string;
 }
 
 
@@ -46,19 +48,20 @@ function SalaryGradeTabs() {
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
     const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "title",
-        "date"
+        "name",
+        "email"
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Users");
+    const [title, setTitle] = useState<string>("User");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            title: "",
-            date: ""
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: ""
         }
     );
 
@@ -74,6 +77,7 @@ function SalaryGradeTabs() {
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-users", postData);
+            console.log(resp.data.data);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -87,8 +91,10 @@ function SalaryGradeTabs() {
     useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                title: '',
-                date: ''
+                name: '',
+                email: '',
+                password: '',
+                password_confirmation: ''
             });
         }
 
@@ -107,7 +113,6 @@ function SalaryGradeTabs() {
 
     //    get data by id
     const getDataById = async (id: number) => {
-        console.log("test");
 
         try {
             const resp = await HttpService.get("users/" + id);
@@ -115,8 +120,10 @@ function SalaryGradeTabs() {
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    title: data.title,
-                    date: data.date
+                    name: resp.data.name,
+                    email: resp.data.email,
+                    password: resp.data.password,
+                    password_confirmation: ""
                 })
                 setShowDrawer(true);
 
@@ -142,8 +149,10 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            title: values.title,
-            date: values.date,
+            name: values.name,
+            email: values.email,
+            password: values.password,
+            password_confirmation: values.password_confirmation,
             device_name: "web",
         };
 
@@ -242,35 +251,71 @@ function SalaryGradeTabs() {
                             </div>
 
 
-                            {/* number */}
+                            {/* name */}
                             <FormElement
-                                name="title"
-                                label="Title"
+                                name="name"
+                                label="Name"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="title"
-                                    name="title"
-                                    placeholder="Enter Title"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Enter Name"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
 
-                            {/* Amount */}
+                            {/* Email */}
                             <FormElement
-                                name="date"
-                                label="Date"
+                                name="email"
+                                label="Email"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
-                                    id="date"
-                                    name="date"
-                                    placeholder="Enter Date"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Enter Email"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                            {/* Password */}
+                            <FormElement
+                                name="password"
+                                label="Password"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter Password"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                            {/* Password */}
+                            <FormElement
+                                name="password_confirmation"
+                                label="Password Confirmation"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    id="password_confirmation"
+                                    name="password_confirmation"
+                                    placeholder="Enter Password"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
