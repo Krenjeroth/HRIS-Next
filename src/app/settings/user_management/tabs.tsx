@@ -120,9 +120,9 @@ function SalaryGradeTabs() {
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    name: resp.data.name,
-                    email: resp.data.email,
-                    password: resp.data.password,
+                    name: data.name,
+                    email: data.email,
+                    password: "",
                     password_confirmation: ""
                 })
                 setShowDrawer(true);
