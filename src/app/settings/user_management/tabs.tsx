@@ -22,6 +22,12 @@ type alert = {
     message: string
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 // interfaces
 
 interface IValues {
@@ -47,10 +53,13 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [headers, setHeaders] = useState<string[]>([
-        "name",
-        "email"
+
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "id", "display": "id" },
+        { "column": "name", "display": "Name" },
+        { "column": "email", "display": "Email" }
     ]);
+ 
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("User");

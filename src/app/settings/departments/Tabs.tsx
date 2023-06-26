@@ -17,6 +17,11 @@ type row = {
     attributes: object[]
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
 type alert = {
     type: string,
     message: string
@@ -45,10 +50,10 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "department_code",
-        "department_name"
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "id", "display": "id" },
+        { "column": "department_code", "display": "Department Code" },
+        { "column": "department_name", "display": "Department Name" }
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
@@ -164,7 +169,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -181,7 +186,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -200,7 +205,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }

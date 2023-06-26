@@ -10,9 +10,16 @@ type row = {
     attributes: any
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 
 
 type Props = {
+    withYear?: boolean,
     searchKeyword: string,
     setSearchKeyword: Function,
     orderBy: string,
@@ -25,7 +32,7 @@ type Props = {
     pages: number,
     activePage: number,
     setActivePage: Function,
-    headers: string[]
+    headers: header[]
     getDataById: Function
     setProcess: Function,
 }
@@ -46,6 +53,10 @@ function index(parameter: Props) {
 
     return (
         <div className="relative overflow-x-auto">
+            <div className="flex flex-row m-3">
+
+
+            </div>
             <div className="flex flex-row justify-end m-3">
                 <div className="">
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
@@ -53,11 +64,11 @@ function index(parameter: Props) {
             </div>
             <Table className="shadow-md rounded-md w-64">
                 <Table.Head>
-                    {parameter.headers.map((item, index) => {
+                    {parameter.headers.map((item:header, index) => {
                         return (
-                            <Table.HeadCell key={item} onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item) }}>
-                                {item.replaceAll("_", " ")}
-                                {(item == parameter.orderBy) ?
+                            <Table.HeadCell key={item.column} onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
+                                {item.display.replaceAll("_", " ")}
+                                {(item.column == parameter.orderBy) ?
                                     ((parameter.orderAscending) ?
                                         <BarsArrowUpIcon className="h-4 float-right" />
                                         :
@@ -84,7 +95,7 @@ function index(parameter: Props) {
                                     {parameter.headers.map((td, td_index) => {
                                         return (
                                             <Table.Cell key={td_index}>
-                                                {td == "id" ? <>{item.id}</> : <>{item.attributes[td]}</>}
+                                                {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
                                             </Table.Cell>
                                         );
                                     })}

@@ -9,6 +9,8 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import DatePicker from '../../components/DatePicker';
+import dayjs from 'dayjs';
 
 // types
 
@@ -21,6 +23,12 @@ type alert = {
     type: string,
     message: string
 }
+
+type header = {
+    column: string,
+    display: string
+}
+
 
 // interfaces
 
@@ -45,17 +53,17 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "title",
-        "date"
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "id", "display": "id" },
+        { "column": "title", "display": "Title" },
+        { "column": "date", "display": "Date" }
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Holiday");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    const [initialValues, setInitialValues] = useState<IValues>(
         {
             title: "",
             date: ""
@@ -113,8 +121,8 @@ function SalaryGradeTabs() {
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    title:data.title,
-                    date: data.date
+                    title: data.title,
+                    date: dayjs(data.date).format('MM/DD/YYYY')
                 })
                 setShowDrawer(true);
 
@@ -163,7 +171,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -180,7 +188,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -199,7 +207,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -263,12 +271,15 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
 
-                                <Field
+                                <DatePicker
+                                    initialValues={initialValues}
+                                    setInitialValues={setInitialValues}
                                     id="date"
                                     name="date"
                                     placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
+
 
                             </FormElement>
 

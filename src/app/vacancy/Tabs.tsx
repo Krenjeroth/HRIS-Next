@@ -2,13 +2,14 @@
 import { Button, Tabs } from 'flowbite-react';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import Drawer from '../components/Drawer';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
-import { setFormikErrors } from '../../../../lib/utils.service';
+import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { redirect } from 'next/navigation'
 
 // types
 
@@ -22,6 +23,12 @@ type alert = {
     message: string
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 // interfaces
 
 interface IValues {
@@ -32,7 +39,7 @@ interface IValues {
 
 //main function
 
-function SalaryGradeTabs() {
+function AllRequestsTabs() {
 
 
     // variables
@@ -45,14 +52,14 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "number",
-        "amount"
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "id", "display": "id" },
+        { "column": "number", "display": "Number" },
+        { "column": "amount", "display": "Amount" }
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Salary Grade");
+    const [title, setTitle] = useState<string>("Vacancy Request");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -163,7 +170,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -180,7 +187,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -199,7 +206,7 @@ function SalaryGradeTabs() {
                     }
                     else {
                         if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message":  resp.data.message });
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
                 }
@@ -320,10 +327,14 @@ function SalaryGradeTabs() {
                             setProcess={setProcess}
                         />
                     </Tabs.Item>
+                    <Tabs.Item title={"Approved Request"}>
+                    </Tabs.Item>
                 </Tabs.Group >
+
+                
             </div>
         </>
     );
 }
 
-export default SalaryGradeTabs
+export default AllRequestsTabs

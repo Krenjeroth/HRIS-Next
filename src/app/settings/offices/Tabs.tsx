@@ -22,6 +22,12 @@ type alert = {
     message: string
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 // interfaces
 
 interface IValues {
@@ -53,11 +59,13 @@ function SalaryGradeTabs() {
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
     const [departments, setDepartments] = useState<department[]>([]);
-    const [headers, setHeaders] = useState<string[]>([
-        "id",
-        "office_code",
-        "office_name",
-        "department"
+
+
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "id", "display": "id" },
+        { "column": "office_code", "display": "Office Code" },
+        { "column": "office_name", "display": "Office Name" },
+        { "column": "department", "display": "Department Name" }
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
@@ -351,7 +359,7 @@ function SalaryGradeTabs() {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
-                        }} onDoubleClick={() => {setShowDrawer(false); }}>Add {title}
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
 
