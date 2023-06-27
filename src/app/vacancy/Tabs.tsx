@@ -2,13 +2,14 @@
 import { Button, Tabs } from 'flowbite-react';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import Drawer from '../components/Drawer';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
-import { setFormikErrors } from '../../../../lib/utils.service';
+import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { redirect } from 'next/navigation'
 
 // types
 
@@ -17,27 +18,28 @@ type row = {
     attributes: object[]
 }
 
-type header = {
-    column: string,
-    display: string
-}
-
 type alert = {
     type: string,
     message: string
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 // interfaces
 
 interface IValues {
-    department_code?: string;
-    department_name?: string;
+    number?: number;
+    amount?: number;
 }
 
 
 //main function
 
-function SalaryGradeTabs() {
+function AllRequestsTabs() {
 
 
     // variables
@@ -52,18 +54,18 @@ function SalaryGradeTabs() {
     const [process, setProcess] = useState<string>("Add");
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "department_code", "display": "Department Code" },
-        { "column": "department_name", "display": "Department Name" }
+        { "column": "number", "display": "Number" },
+        { "column": "amount", "display": "Amount" }
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Department");
+    const [title, setTitle] = useState<string>("Vacancy Request");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            department_code: "",
-            department_name: ""
+            number: 0,
+            amount: 0
         }
     );
 
@@ -78,7 +80,7 @@ function SalaryGradeTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-department", postData);
+            const resp = await HttpService.post("search-salary-grade", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -92,8 +94,8 @@ function SalaryGradeTabs() {
     useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                department_code: '',
-                department_name: ''
+                number: 0,
+                amount: 0
             });
         }
 
@@ -114,13 +116,12 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("department/" + id);
-            console.log(resp);
+            const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    department_code: resp.data.department_code,
-                    department_name: resp.data.department_name
+                    number: resp.data.number,
+                    amount: resp.data.amount
                 })
                 setShowDrawer(true);
 
@@ -146,8 +147,8 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            department_code: values.department_code,
-            department_name: values.department_name,
+            number: values.number,
+            amount: values.amount,
             device_name: "web",
         };
 
@@ -159,7 +160,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("department", postData);
+                const resp = await HttpService.post("salary-grade", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -176,7 +177,7 @@ function SalaryGradeTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("department/" + id, postData)
+                const resp = await HttpService.patch("salary-grade/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -193,7 +194,7 @@ function SalaryGradeTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("department/" + id);
+                const resp = await HttpService.delete("salary-grade/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -246,15 +247,15 @@ function SalaryGradeTabs() {
 
                             {/* number */}
                             <FormElement
-                                name="department_code"
-                                label="Department Code"
+                                name="number"
+                                label="Salary Grade Number"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="department_code"
-                                    name="department_code"
-                                    placeholder="Enter Department Code"
+                                    id="number"
+                                    name="number"
+                                    placeholder="Enter Number"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -263,16 +264,16 @@ function SalaryGradeTabs() {
 
                             {/* Amount */}
                             <FormElement
-                                name="department_name"
-                                label="Department Name"
+                                name="amount"
+                                label="Salary Amount"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
-                                    id="department_name"
-                                    name="department_name"
-                                    placeholder="Enter Department Name"
+                                    id="amount"
+                                    name="amount"
+                                    placeholder="Enter Amount"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
@@ -297,7 +298,7 @@ function SalaryGradeTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                 >
-                    <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
+                    <Tabs.Item title={title + "s"}>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
                             setShowDrawer(true);
@@ -326,10 +327,14 @@ function SalaryGradeTabs() {
                             setProcess={setProcess}
                         />
                     </Tabs.Item>
+                    <Tabs.Item title={"Approved Request"}>
+                    </Tabs.Item>
                 </Tabs.Group >
+
+                
             </div>
         </>
     );
 }
 
-export default SalaryGradeTabs
+export default AllRequestsTabs

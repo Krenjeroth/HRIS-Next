@@ -29,7 +29,7 @@ function index(parameter: Props) {
 
                     {/* Sidebar Dropdown */}
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Vacancy" icon={<BriefcaseIcon className='w-6 h-6' />}>
-                        <SidebarDropdownItem href={"/"} label="All Request" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/vacancy/all"} label="All Request" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Approved" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Queued" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                     </SidebarDropdown>
