@@ -3,6 +3,7 @@ import Pagination from "../Pagination";
 import { useRef, useState } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon } from "@heroicons/react/24/solid";
 import { TableCell } from "@nextui-org/react/types/table/base";
+import DatePicker from "react-datepicker";
 
 
 type row = {
@@ -19,7 +20,8 @@ type header = {
 
 
 type Props = {
-    withYear?: boolean,
+    year?: number,
+    setYear?: Function,
     searchKeyword: string,
     setSearchKeyword: Function,
     orderBy: string,
@@ -40,6 +42,7 @@ type Props = {
 
 
 function index(parameter: Props) {
+    const [startDate, setStartDate] = useState(new Date());
     function search() {
         let search_input = document.getElementById("table_search") as HTMLElement;
         // const delayDebounceFn = setTimeout(() => {
@@ -51,20 +54,30 @@ function index(parameter: Props) {
     }
 
 
+    console.log(typeof (parameter.year));
     return (
         <div className="relative overflow-x-auto">
-            <div className="flex flex-row m-3">
+            <div className="flex flex-row my-3 justify-between">
+                {typeof (parameter.year) != undefined ?
+                    <div className="">
+                        <DatePicker id="year" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            selected={startDate}
+                            onChange={(date: Date) => {
+                                setStartDate(date)
+                            }}
+                            showYearPicker
+                            dateFormat="yyyy"
+                        />
+                    </div>
+                    : ""}
 
-
-            </div>
-            <div className="flex flex-row justify-end m-3">
-                <div className="">
+                <div className=" ">
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-64">
                 <Table.Head>
-                    {parameter.headers.map((item:header, index) => {
+                    {parameter.headers.map((item: header, index) => {
                         return (
                             <Table.HeadCell key={item.column} onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
                                 {item.display.replaceAll("_", " ")}

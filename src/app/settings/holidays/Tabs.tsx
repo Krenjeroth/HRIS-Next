@@ -10,6 +10,7 @@ import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import DatePicker from '../../components/DatePicker';
+import YearPicker from '../../components/YearPicker';
 import dayjs from 'dayjs';
 
 // types
@@ -63,6 +64,7 @@ function SalaryGradeTabs() {
     const [title, setTitle] = useState<string>("Holiday");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [startDate, setStartDate] = useState(new Date());
     const [initialValues, setInitialValues] = useState<IValues>(
         {
             title: "",
@@ -246,7 +248,7 @@ function SalaryGradeTabs() {
                             </div>
 
 
-                            {/* number */}
+                            {/*  */}
                             <FormElement
                                 name="title"
                                 label="Title"
@@ -263,7 +265,7 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Amount */}
+                            {/*  */}
                             <FormElement
                                 name="date"
                                 label="Date"
@@ -272,6 +274,26 @@ function SalaryGradeTabs() {
                             >
 
                                 <DatePicker
+                                    initialValues={initialValues}
+                                    setInitialValues={setInitialValues}
+                                    id="date"
+                                    name="date"
+                                    placeholder="Enter Date"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+
+                            </FormElement>
+
+                            {/*  */}
+                            <FormElement
+                                name="date"
+                                label="Date"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <YearPicker
                                     initialValues={initialValues}
                                     setInitialValues={setInitialValues}
                                     id="date"
