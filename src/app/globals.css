@@ -76,6 +76,10 @@
   }
 }
 
+.react-datepicker-wrapper {
+  width: 100% !important;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -87,7 +91,7 @@
   margin-right: auto;
   table-layout: fixed;
   border-collapse: collapse;
-  z-index:1000 !important;
+  z-index: 1000 !important;
   position: relative;
   overflow: visible;
 }

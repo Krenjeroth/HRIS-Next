@@ -22,6 +22,12 @@ type alert = {
     message: string
 }
 
+type header = {
+    column: string,
+    display: string
+}
+
+
 // interfaces
 
 interface IValues {
@@ -61,16 +67,16 @@ function SalaryGradeTabs() {
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
     const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
-    const [headers, setHeaders] = useState<string[]>([
-        "title",
-        "number",
-        "amount",
-        "education",
-        "training",
-        "experience",
-        "eligibility",
-        "competency",
 
+    const [headers, setHeaders] = useState<header[]>([
+        { "column": "title", "display": "title" },
+        { "column": "number", "display": "Salary Grade" },
+        { "column": "amount", "display": "Salary" },
+        { "column": "education", "display": "education" },
+        { "column": "training", "display": "training" },
+        { "column": "experience", "display": "experience" },
+        { "column": "eligibility", "display": "eligibility" },
+        { "column": "competency", "display": "competency" },
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
@@ -226,7 +232,7 @@ function SalaryGradeTabs() {
                 }
             }
             // update
-            else if (process == "Edit") { 
+            else if (process == "Edit") {
                 const resp = await HttpService.patch("position/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
@@ -320,7 +326,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
 
-                                <Field 
+                                <Field
                                     as="select"
                                     id="salary_grade_id"
                                     name="salary_grade_id"
