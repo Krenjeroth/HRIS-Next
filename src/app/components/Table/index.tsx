@@ -2,8 +2,8 @@ import { Button, Label, Table, Tabs, TabsRef, TextInput } from "flowbite-react";
 import Pagination from "../Pagination";
 import { useRef, useState } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon } from "@heroicons/react/24/solid";
-import { TableCell } from "@nextui-org/react/types/table/base";
 import DatePicker from "react-datepicker";
+import dayjs from 'dayjs';
 
 
 type row = {
@@ -53,30 +53,37 @@ function index(parameter: Props) {
         // }, 2000)
     }
 
-
-    console.log(typeof (parameter.year));
     return (
         <div className="relative overflow-x-auto">
-            <div className="flex flex-row my-3 justify-between">
-                {typeof (parameter.year) != undefined ?
+            <div className={`flex flex-row my-3 ${(parameter.year === undefined) ? "justify-end" : "justify-between"}`}>
+                {(parameter.year === undefined) ?
+                    "" :
                     <div className="">
                         <DatePicker id="year" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             selected={startDate}
                             onChange={(date: Date) => {
-                                setStartDate(date)
+                                if (parameter.setYear != undefined) {
+                                    parameter.setYear(dayjs(date).format('YYYY'));
+                                    setStartDate(date);
+                                }
                             }}
                             showYearPicker
                             dateFormat="yyyy"
                         />
                     </div>
-                    : ""}
-
+                }
                 <div className=" ">
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-64">
                 <Table.Head>
+
+                    <Table.HeadCell>
+                        <span className="sr-only">
+                            Edit
+                        </span>
+                    </Table.HeadCell>
                     {parameter.headers.map((item: header, index) => {
                         return (
                             <Table.HeadCell key={item.column} onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
@@ -93,11 +100,6 @@ function index(parameter: Props) {
                             </Table.HeadCell>
                         );
                     })}
-                    <Table.HeadCell>
-                        <span className="sr-only">
-                            Edit
-                        </span>
-                    </Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
                     {parameter.data.length > 0 ?
@@ -105,13 +107,7 @@ function index(parameter: Props) {
                         parameter.data.map((item: row, index: number) => {
                             return (
                                 <Table.Row className="bg-white " key={item.id}>
-                                    {parameter.headers.map((td, td_index) => {
-                                        return (
-                                            <Table.Cell key={td_index}>
-                                                {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
-                                            </Table.Cell>
-                                        );
-                                    })}
+
                                     <Table.Cell className="">
                                         <button
                                             className="font-medium text-blue-600 hover:underline dark:text-blue-500 m-1" onClick={() => {
@@ -130,6 +126,13 @@ function index(parameter: Props) {
                                             Delete
                                         </button>
                                     </Table.Cell>
+                                    {parameter.headers.map((td, td_index) => {
+                                        return (
+                                            <Table.Cell key={td_index}>
+                                                {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
+                                            </Table.Cell>
+                                        );
+                                    })}
                                 </Table.Row>
                             );
                         })

@@ -23,6 +23,7 @@ function index(parameter: Props) {
     return (
         <DatePicker
             {...field}
+            id={parameter.id}
             name={parameter.name}
             className={parameter.className}
             selected={(field.value && new Date(field.value)) || null}

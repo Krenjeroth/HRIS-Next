@@ -54,8 +54,14 @@ function AllRequestsTabs() {
     const [process, setProcess] = useState<string>("Add");
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "number", "display": "Number" },
-        { "column": "amount", "display": "Amount" }
+        { "column": "title", "display": "Position Title" },
+        { "column": "item_number", "display": "Plantilla" },
+        { "column": "number", "display": "Salary Grade" },
+        { "column": "amount", "display": "Monthly Salary" },
+        { "column": "education", "display": "education" },
+        { "column": "training", "display": "training" },
+        { "column": "experience", "display": "experience" },
+        { "column": "eligibility", "display": "eligibility" },
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
@@ -80,7 +86,7 @@ function AllRequestsTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-salary-grade", postData);
+            const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -331,7 +337,7 @@ function AllRequestsTabs() {
                     </Tabs.Item>
                 </Tabs.Group >
 
-                
+
             </div>
         </>
     );
