@@ -52,7 +52,7 @@ type salaryGrade = {
 
 //main function
 
-function SalaryGradeTabs() {
+function positionTabs() {
 
 
 
@@ -495,4 +495,4 @@ function SalaryGradeTabs() {
     );
 }
 
-export default SalaryGradeTabs
+export default positionTabs
