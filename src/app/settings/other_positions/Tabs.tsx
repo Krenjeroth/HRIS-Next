@@ -89,6 +89,7 @@ function SalaryGradeTabs() {
     const [positions, setPositions] = useState<position[]>([]);
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
+        { "column": "position_status", "display": "Position Status" },
         { "column": "title", "display": "Position" },
         { "column": "department_name", "display": "Department" },
         { "column": "office_name", "display": "Office" },
@@ -106,8 +107,8 @@ function SalaryGradeTabs() {
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Plantilla");
-    const [positionStatus, setPositionStatus] = useState<string[]>(['Permanent']);
+    const [title, setTitle] = useState<string>("Position");
+    const [positionStatus, setPositionStatus] = useState<string[]>(['Casual', 'Elective', 'Coterminous', 'Contractual', 'Contract of Service', 'Job Order']);
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -119,7 +120,7 @@ function SalaryGradeTabs() {
             description: "",
             place_of_assignment: "",
             status: "",
-            position_status: "Permanent",
+            position_status: "",
         }
     );
 
@@ -179,7 +180,7 @@ function SalaryGradeTabs() {
                 description: "",
                 place_of_assignment: "",
                 status: "",
-                position_status: "Permanent",
+                position_status: "",
             });
         }
 
@@ -213,7 +214,7 @@ function SalaryGradeTabs() {
                     description: data.description,
                     place_of_assignment: data.place_of_assignment,
                     status: data.status,
-                    position_status: "Permanent",
+                    position_status: data.position_status,
                 });
                 setShowDrawer(true);
 
@@ -246,7 +247,7 @@ function SalaryGradeTabs() {
             description: values.description,
             place_of_assignment: values.place_of_assignment,
             status: values.status,
-            position_status: "Permanent",
+            position_status: values.position_status,
             device_name: "web",
         };
 
@@ -341,21 +342,67 @@ function SalaryGradeTabs() {
                                 })}
                             </div>
 
+                            <div className='grid grid-cols-2 gap-2'>
+                                {/* Item Number */}
+                                <FormElement
+                                    name="item_number"
+                                    label="Item Number *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        id="item_number"
+                                        name="item_number"
+                                        placeholder="Enter Item Number"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
 
-                            {/* Item Number */}
+                                {/* Year */}
+
+                                <FormElement
+                                    name="year"
+                                    label="Year *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+
+                                    <YearPicker
+                                        initialValues={initialValues}
+                                        setInitialValues={setInitialValues}
+                                        id="year"
+                                        name="year"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+
+
+                                </FormElement>
+                            </div>
+
+
+                            {/* Position Status */}
                             <FormElement
-                                name="item_number"
-                                label="Item Number"
+                                name="position_status"
+                                label="Position Status *"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="item_number"
-                                    name="item_number"
-                                    placeholder="Enter Item Number"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
+                                    as="select"
+                                    id="position_status"
+                                    name="position_status"
+                                    placeholder=""
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    <option value="">Select Position Status</option>
+                                    <option value='Casual'>Casual</option>
+                                    <option value='Coterminous'>Coterminous</option>
+                                    <option value='Contractual'>Contractual</option>
+                                    <option value='Contract of Service'>Contract of Service</option>
+                                    <option value='Elective'>Elective</option>
+                                    <option value='Job Order'>Job Order</option>
+                                </Field>
                             </FormElement>
 
                             {/*Office*/}
@@ -417,26 +464,6 @@ function SalaryGradeTabs() {
 
 
 
-                            {/* Year */}
-
-                            <FormElement
-                                name="year"
-                                label="Year *"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <YearPicker
-                                    initialValues={initialValues}
-                                    setInitialValues={setInitialValues}
-                                    id="year"
-                                    name="year"
-                                    placeholder="Enter Date"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-
-                            </FormElement>
 
                             {/* Position Description */}
                             <FormElement
