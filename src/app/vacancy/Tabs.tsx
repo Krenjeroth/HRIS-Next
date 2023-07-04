@@ -10,6 +10,8 @@ import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import { redirect } from 'next/navigation'
+import dayjs from 'dayjs';
+import DatePicker from '../components/DatePicker'
 
 // types
 
@@ -52,9 +54,14 @@ function AllRequestsTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
+    const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "title", "display": "Position Title" },
+        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "title", "display": "Position" },
+        { "column": "department_name", "display": "Department" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
@@ -62,10 +69,11 @@ function AllRequestsTabs() {
         { "column": "training", "display": "training" },
         { "column": "experience", "display": "experience" },
         { "column": "eligibility", "display": "eligibility" },
+        { "column": "competency", "display": "competency" },
     ]);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Vacancy Request");
+    const [title, setTitle] = useState<string>("Request");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -84,6 +92,7 @@ function AllRequestsTabs() {
                 activePage: activePage,
                 searchKeyword: searchKeyword,
                 orderBy: orderBy,
+                year: year,
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-vacancy", postData);
@@ -92,10 +101,34 @@ function AllRequestsTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+
+
+    // Get LGU Positions
+    useEffect(() => {
+        // query
+
+        async function getLGUPositions() {
+            const postData = {
+                activePage: activePage,
+                searchKeyword: searchKeyword,
+                orderBy: orderBy,
+                year: year,
+                orderAscending: orderAscending,
+                positionStatus: ['Permanent'],
+                status: ['Active', 'Abolished'],
+                viewAll: true
+            };
+            const resp = await HttpService.post("search-lgu-position", postData);
+            if (resp != null) {
+                setData(resp.data.data);
+                setPages(resp.data.pages);
+            }
+        }
+        getLGUPositions();
+    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+
 
     useEffect(() => {
         if (id == 0) {
@@ -251,38 +284,53 @@ function AllRequestsTabs() {
                             </div>
 
 
-                            {/* number */}
+
+                            {/* Date Submitted */}
                             <FormElement
-                                name="number"
-                                label="Salary Grade Number"
+                                name="date"
+                                label="Date Submitted"
                                 errors={errors}
                                 touched={touched}
                             >
-                                <Field
-                                    id="number"
-                                    name="number"
-                                    placeholder="Enter Number"
+
+                                <DatePicker
+                                    initialValues={initialValues}
+                                    setInitialValues={setInitialValues}
+                                    id="date"
+                                    name="date"
+                                    placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
-
-                            {/* Amount */}
+                            {/* Positions*/}
                             <FormElement
-                                name="amount"
-                                label="Salary Amount"
+                                name="lgu_position"
+                                label="Position"
                                 errors={errors}
                                 touched={touched}
                             >
-
                                 <Field
-                                    id="amount"
-                                    name="amount"
-                                    placeholder="Enter Amount"
+                                    id="lgu_position"
+                                    name="lgu_position"
+                                    placeholder="Enter Position"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    type="text"
+                                    list="positions"
                                 />
 
+                                <datalist id="positions">
+                                    {/* {props.designations.map((designation) => {
+                                    return (
+                                        <option
+                                            value={`${designation.id}`}
+                                            key={`${designation.id}`}
+                                        >
+                                            {`${designation.designation_title}`}
+                                        </option>
+                                    );
+                                })} */}
+                                </datalist>
                             </FormElement>
 
 
@@ -331,6 +379,8 @@ function AllRequestsTabs() {
                             headers={headers}
                             getDataById={getDataById}
                             setProcess={setProcess}
+                            year={year}
+                            setYear={setYear}
                         />
                     </Tabs.Item>
                     <Tabs.Item title={"Approved Request"}>

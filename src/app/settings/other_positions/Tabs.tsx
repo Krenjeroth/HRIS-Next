@@ -94,7 +94,7 @@ function SalaryGradeTabs() {
         { "column": "department_name", "display": "Department" },
         { "column": "office_name", "display": "Office" },
         { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
+        { "column": "item_number", "display": "Number" },
         { "column": "status", "display": "Status" },
         { "column": "year", "display": "Year" },
         { "column": "number", "display": "Salary Grade" },
@@ -111,6 +111,7 @@ function SalaryGradeTabs() {
     const [positionStatus, setPositionStatus] = useState<string[]>(['Casual', 'Elective', 'Coterminous', 'Contractual', 'Contract of Service', 'Job Order']);
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     var [initialValues, setInitialValues] = useState<IValues>(
         {
             item_number: "",
@@ -132,9 +133,12 @@ function SalaryGradeTabs() {
             const postData = {
                 activePage: activePage,
                 searchKeyword: searchKeyword,
+                year: year,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
-                positionStatus: positionStatus
+                positionStatus: positionStatus,
+                status: ['Active', 'Abolished'],
+                viewAll: false
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -145,7 +149,7 @@ function SalaryGradeTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
 
     useEffect(() => {
         async function getOffices() {
@@ -569,6 +573,8 @@ function SalaryGradeTabs() {
                             headers={headers}
                             getDataById={getDataById}
                             setProcess={setProcess}
+                            year={year}
+                            setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >

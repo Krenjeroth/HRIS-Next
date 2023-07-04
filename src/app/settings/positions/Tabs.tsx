@@ -71,7 +71,7 @@ function positionTabs() {
     const [headers, setHeaders] = useState<header[]>([
         { "column": "title", "display": "title" },
         { "column": "number", "display": "Salary Grade" },
-        { "column": "amount", "display": "Salary" },
+        { "column": "amount", "display": "Monthly Salary" },
         { "column": "education", "display": "education" },
         { "column": "training", "display": "training" },
         { "column": "experience", "display": "experience" },
@@ -104,7 +104,7 @@ function positionTabs() {
                 activePage: activePage,
                 searchKeyword: searchKeyword,
                 orderBy: orderBy,
-                orderAscending: orderAscending
+                orderAscending: orderAscending,
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {

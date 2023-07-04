@@ -29,7 +29,7 @@ function index(parameter: Props) {
 
                     {/* Sidebar Dropdown */}
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Vacancy" icon={<BriefcaseIcon className='w-6 h-6' />}>
-                        <SidebarDropdownItem href={"/vacancy/all"} label="All Request" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/vacancy/requests"} label="Requests" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Approved" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Queued" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                     </SidebarDropdown>
@@ -67,6 +67,7 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/"} label="PSB" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/positions"} label="Positions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/plantillas"} label="Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/settings/other_positions"} label="Other LGU Positions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/user_management"} label="User Management" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/holidays"} label="Holidays/Suspensions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/salary_grades"} label="Salary Grade" activeLink={activeLink} SetActiveLink={SetActiveLink} />

@@ -97,7 +97,7 @@ function SalaryGradeTabs() {
         { "column": "status", "display": "Status" },
         { "column": "year", "display": "Year" },
         { "column": "number", "display": "Salary Grade" },
-        { "column": "amount", "display": "Salary" },
+        { "column": "amount", "display": "Monthly Salary" },
         { "column": "education", "display": "education" },
         { "column": "training", "display": "training" },
         { "column": "experience", "display": "experience" },
@@ -110,6 +110,7 @@ function SalaryGradeTabs() {
     const [positionStatus, setPositionStatus] = useState<string[]>(['Permanent']);
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     var [initialValues, setInitialValues] = useState<IValues>(
         {
             item_number: "",
@@ -132,8 +133,11 @@ function SalaryGradeTabs() {
                 activePage: activePage,
                 searchKeyword: searchKeyword,
                 orderBy: orderBy,
+                year: year,
                 orderAscending: orderAscending,
-                positionStatus: positionStatus
+                positionStatus: positionStatus,
+                status: ['Active', 'Abolished'],
+                viewAll: false
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -141,10 +145,8 @@ function SalaryGradeTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
 
     useEffect(() => {
         async function getOffices() {
@@ -542,6 +544,8 @@ function SalaryGradeTabs() {
                             headers={headers}
                             getDataById={getDataById}
                             setProcess={setProcess}
+                            year={year}
+                            setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >
