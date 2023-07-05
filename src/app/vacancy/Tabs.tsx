@@ -12,6 +12,7 @@ import { Alert } from 'flowbite-react';
 import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
 import DatePicker from '../components/DatePicker'
+import DataList from '@/app/components/DataList';
 
 // types
 
@@ -29,6 +30,14 @@ type header = {
     column: string,
     display: string
 }
+
+type datalist = {
+    id: string,
+    attributes: any
+}
+
+
+
 
 
 // interfaces
@@ -74,6 +83,8 @@ function AllRequestsTabs() {
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Request");
+    const [positionKeyword, setPositionKeyword] = useState<string>("");
+    const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
@@ -111,19 +122,19 @@ function AllRequestsTabs() {
 
         async function getLGUPositions() {
             const postData = {
-                activePage: activePage,
-                searchKeyword: searchKeyword,
-                orderBy: orderBy,
-                year: year,
-                orderAscending: orderAscending,
+                activePage: 1,
+                searchKeyword: positionKeyword,
+                orderBy: 'title',
+                year: '',
+                orderAscending: "asc",
                 positionStatus: ['Permanent'],
-                status: ['Active', 'Abolished'],
-                viewAll: true
+                status: ['Active'],
+                viewAll: false
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
-                setData(resp.data.data);
-                setPages(resp.data.pages);
+                console.log(resp.data.data);
+                // setData(resp.data.data);
             }
         }
         getLGUPositions();
@@ -310,29 +321,10 @@ function AllRequestsTabs() {
                                 errors={errors}
                                 touched={touched}
                             >
-                                <Field
-                                    id="lgu_position"
-                                    name="lgu_position"
-                                    placeholder="Enter Position"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    type="text"
-                                    list="positions"
-                                />
 
-                                <datalist id="positions">
-                                    {/* {props.designations.map((designation) => {
-                                    return (
-                                        <option
-                                            value={`${designation.id}`}
-                                            key={`${designation.id}`}
-                                        >
-                                            {`${designation.designation_title}`}
-                                        </option>
-                                    );
-                                })} */}
-                                </datalist>
+                                <DataList setKeyword={setPositionKeyword} title="Position" name="position" data={positionData} />
+
                             </FormElement>
-
 
                             {/* submit button */}
 
