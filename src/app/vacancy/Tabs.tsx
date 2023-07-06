@@ -43,8 +43,9 @@ type datalist = {
 // interfaces
 
 interface IValues {
-    number?: number;
-    amount?: number;
+    date_submitted: string;
+    lgu_position_id: number;
+    position: string;
 }
 
 
@@ -85,12 +86,14 @@ function AllRequestsTabs() {
     const [title, setTitle] = useState<string>("Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
+    const [positionId, setPositionId] = useState<string>("");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            number: 0,
-            amount: 0
+            date_submitted: '',
+            lgu_position_id: 0,
+            position: ''
         }
     );
 
@@ -133,19 +136,19 @@ function AllRequestsTabs() {
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
-                console.log(resp.data.data);
-                // setData(resp.data.data);
+                setPositionData(resp.data.data);
             }
         }
         getLGUPositions();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [positionKeyword]);
 
 
     useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                number: 0,
-                amount: 0
+                date_submitted: '',
+                lgu_position_id: 0,
+                position: ''
             });
         }
 
@@ -170,8 +173,9 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 setId(id);
                 setInitialValues({
-                    number: resp.data.number,
-                    amount: resp.data.amount
+                    date_submitted: resp.data.date_submited,
+                    lgu_position_id: resp.data.lgu_position_id,
+                    position: resp.data.label
                 })
                 setShowDrawer(true);
 
@@ -197,8 +201,9 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            number: values.number,
-            amount: values.amount,
+            date_submitted: values.date_submitted,
+            lgu_position_id: values.lgu_position_id,
+            position: values.position,
             device_name: "web",
         };
 
@@ -314,15 +319,33 @@ function AllRequestsTabs() {
                                 />
                             </FormElement>
 
+                            {/*LGU - Position ID*/}
+                            <FormElement
+                                name="lgu_position_id"
+                                label="Position ID"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    value={positionId}
+                                    id="lgu_position_id"
+                                    name="lgu_position_id"
+                                    placeholder="Position ID"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
                             {/* Positions*/}
                             <FormElement
-                                name="lgu_position"
+                                name="position"
                                 label="Position"
                                 errors={errors}
                                 touched={touched}
                             >
 
-                                <DataList setKeyword={setPositionKeyword} title="Position" name="position" data={positionData} />
+                                <DataList setId={setPositionId} setKeyword={setPositionKeyword} title="Position" name="lgu_position" data={positionData} />
 
                             </FormElement>
 

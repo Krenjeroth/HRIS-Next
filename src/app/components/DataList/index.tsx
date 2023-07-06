@@ -23,39 +23,46 @@ type Props = {
     setKeyword: Function,
     title: string,
     data: datalist[],
-    name: string
+    name: string,
+    setId: Function
 }
 
 function index(parameter: Props) {
+
+    // const [fieldValue, setFieldValue] = useState<string>('');
+
     return (
         <>
-          
             <Field
-                id="lgu_position"
-                name="lgu_position"
+                id="position"
+                name="position"
                 placeholder="Enter Position"
                 className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 type="text"
-                list="positions"
+                list="lists"
+                onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.value = "";
+                }}
+                onKeyUp={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.value != "") {
+                        parameter.setKeyword(e.target.value);
+                    }
+                }}
             />
-{/* 
-            <datalist id="positions">
-                {parameter.data.map((designation) => {
+
+            <datalist id="lists">
+                {parameter.data.map((row: datalist) => {
                     return (
-                        <option value={`${designation.id}`}
-                        //     key={`${designation.id}`}>
-
+                        <option key={row.id}
+                            onClick={() => {
+                                parameter.setId(row.attributes);
+                            }}
+                            value={row.attributes.label}>
+                            {row.attributes.label}
                         </option>
-                        //     value={`${designation.id}`}
-                        //     key={`${designation.id}`}
-                        // >
-                        //     {`${designation.designation_title}`}
-                        // </option>
-                    );
-
-
+                    )
                 })}
-            </datalist > */}
+            </datalist >
         </>
     )
 }
