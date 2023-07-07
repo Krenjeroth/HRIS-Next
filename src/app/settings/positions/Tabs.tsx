@@ -83,7 +83,7 @@ function positionTabs() {
     const [title, setTitle] = useState<string>("Position");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             title: "",
             salary_grade_id: "",
@@ -132,7 +132,7 @@ function positionTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 title: '',
                 salary_grade_id: '',
                 education: '',
@@ -164,7 +164,7 @@ function positionTabs() {
             const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     title: resp.data.title,
                     salary_grade_id: resp.data.salary_grade_id,
                     education: resp.data.education,
@@ -430,7 +430,6 @@ function positionTabs() {
                                 errors={errors}
                                 touched={touched}
                             >
-
                                 <Field
                                     as="textarea"
                                     id="competency"

@@ -112,7 +112,7 @@ function SalaryGradeTabs() {
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             item_number: "",
             office_id: "",
@@ -176,7 +176,7 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 item_number: "",
                 office_id: "",
                 position_id: "",
@@ -210,7 +210,7 @@ function SalaryGradeTabs() {
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     item_number: data.item_number,
                     office_id: data.office_id,
                     position_id: data.position_id,
@@ -374,7 +374,7 @@ function SalaryGradeTabs() {
 
                                     <YearPicker
                                         initialValues={initialValues}
-                                        setInitialValues={setInitialValues}
+                                        setValues={setValues}
                                         id="year"
                                         name="year"
                                         placeholder="Enter Date"

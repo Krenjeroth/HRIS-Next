@@ -45,7 +45,7 @@ type datalist = {
 interface IValues {
     date_submitted: string;
     lgu_position_id: number;
-    position: string;
+    lgu_position: string;
 }
 
 
@@ -89,11 +89,11 @@ function AllRequestsTabs() {
     const [positionId, setPositionId] = useState<string>("");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
             lgu_position_id: 0,
-            position: ''
+            lgu_position: ''
         }
     );
 
@@ -145,10 +145,10 @@ function AllRequestsTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 date_submitted: '',
                 lgu_position_id: 0,
-                position: ''
+                lgu_position: ''
             });
         }
 
@@ -172,10 +172,10 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     date_submitted: resp.data.date_submited,
                     lgu_position_id: resp.data.lgu_position_id,
-                    position: resp.data.label
+                    lgu_position: resp.data.label
                 })
                 setShowDrawer(true);
 
@@ -203,7 +203,7 @@ function AllRequestsTabs() {
         const postData = {
             date_submitted: values.date_submitted,
             lgu_position_id: values.lgu_position_id,
-            position: values.position,
+            lgu_position: values.lgu_position,
             device_name: "web",
         };
 
@@ -286,7 +286,6 @@ function AllRequestsTabs() {
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
-
                     {({ errors, touched }) => (
 
                         // forms
@@ -299,8 +298,6 @@ function AllRequestsTabs() {
                                 })}
                             </div>
 
-
-
                             {/* Date Submitted */}
                             <FormElement
                                 name="date"
@@ -311,7 +308,7 @@ function AllRequestsTabs() {
 
                                 <DatePicker
                                     initialValues={initialValues}
-                                    setInitialValues={setInitialValues}
+                                    setValues={setValues}
                                     id="date"
                                     name="date"
                                     placeholder="Enter Date"
@@ -319,35 +316,15 @@ function AllRequestsTabs() {
                                 />
                             </FormElement>
 
-                            {/*LGU - Position ID*/}
-                            <FormElement
-                                name="lgu_position_id"
-                                label="Position ID"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    value={positionId}
-                                    id="lgu_position_id"
-                                    name="lgu_position_id"
-                                    placeholder="Position ID"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-                            {/* Positions*/}
-                            <FormElement
-                                name="position"
-                                label="Position"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <DataList setId={setPositionId} setKeyword={setPositionKeyword} title="Position" name="lgu_position" data={positionData} />
-
-                            </FormElement>
+                            {/* positions */}
+                            <DataList errors={errors} touched={touched}
+                                id="lgu_position_id"
+                                setKeyword={setPositionKeyword}
+                                title="Position"
+                                name="lgu_position"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={positionData} />
 
                             {/* submit button */}
 

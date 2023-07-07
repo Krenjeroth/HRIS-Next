@@ -61,7 +61,7 @@ function SalaryGradeTabs() {
     const [title, setTitle] = useState<string>("Salary Grade");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             number: 0,
             amount: 0
@@ -92,7 +92,7 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 number: 0,
                 amount: 0
             });
@@ -118,7 +118,7 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     number: resp.data.number,
                     amount: resp.data.amount
                 })

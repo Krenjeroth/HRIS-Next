@@ -13,7 +13,7 @@ type Props = {
     placeholder: string,
     className: string,
     initialValues: any,
-    setInitialValues: Function
+    setValues: Function
 }
 
 
