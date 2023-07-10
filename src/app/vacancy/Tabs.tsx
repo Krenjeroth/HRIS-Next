@@ -122,7 +122,6 @@ function AllRequestsTabs() {
     // Get LGU Positions
     useEffect(() => {
         // query
-
         async function getLGUPositions() {
             const postData = {
                 activePage: 1,
@@ -192,6 +191,12 @@ function AllRequestsTabs() {
         const temp_alerts = [...alerts];
         temp_alerts.splice(key, 1);
         setAlerts(temp_alerts);
+    }
+
+
+    // reset data
+    const clearFormField = function (values: IValues, { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>) {
+        console.log(values);
     }
 
 

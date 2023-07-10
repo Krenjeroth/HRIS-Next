@@ -13,10 +13,17 @@ import { Alert } from 'flowbite-react';
 import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
 import DatePicker from '@/app/components/DatePicker'
+import { string } from 'yup';
 
 type datalist = {
     id: string,
     attributes: any
+}
+
+interface IValues {
+    date_submitted: string;
+    lgu_position_id: number;
+    lgu_position: string;
 }
 
 type Props = {
@@ -30,6 +37,17 @@ type Props = {
     setValues: Function,
     id: string
 }
+
+
+function debounce(fn: Function, delay: number) {
+    let timer;
+    return (() => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(), delay);
+    })();
+
+};
+
 
 function index(parameter: Props) {
 
@@ -49,6 +67,9 @@ function index(parameter: Props) {
                     name={parameter.id}
                     placeholder={`${parameter.title} ID`}
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    onClick={() => {
+                        console.log(parameter.initialValues);
+                    }}
                 />
 
             </FormElement>
@@ -66,31 +87,47 @@ function index(parameter: Props) {
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     type="text"
                     list="lists"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        parameter.initialValues[parameter.name] = e.target.value;
-                        // parameter.setValues({
-                        //     lgu_position_id: 5,
-                        //     lgu_position: e.target.value
-                        // });
-                        console.log(parameter.initialValues);
+                    onClick={() => {
+                        parameter.setKeyword('');
+                        // parameter.data[']
                     }}
-                // onKeyUp={(e: React.ChangeEvent<HTMLInputElement>) => {
-                //     if (e.target.value != "") {
-                //         parameter.setKeyword(e.target.value);
-                //     }
-                // }}
+                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    //     //     //     parameter.setKeyword(e.target.value);
+                    //     //     //     if (parameter.data.length === 0) {
+                    //     //     //         console.log("clear");
+                    //     //     //         let value = parameter.initialValues;
+                    //     //     //         value[parameter.name] = "";
+                    //     //     //         parameter.setValues(value);
+                    //     //     //     }
+                    // }}
+                    onKeyUp={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        debounce(function () {
+                            parameter.setKeyword(e.target.value);
+                            // console.log(parameter.data.length);
+                            // if (parameter.data.length === 0) {
+                            //     let value = parameter.initialValues;
+                            //     value[parameter.name] = "";
+                            //     console.log(value);
+                            //     parameter.setValues(
+                            //         { date_submitted: '', lgu_position_id: 3, lgu_position: e.target.value }
+                            //     );
+                            // }
+                            // else {
+
+                            // }
+                        }, 1500);
+                    }}
                 />
 
                 <datalist id="lists">
+                    <option value="" >No Data</option>
                     {parameter.data.map((row: datalist) => {
                         return (
                             <option key={row.id}
-                                onInput={() => {
+                                value={row.attributes.label}
+                                onClick={() => {
+                                    console.log("duriel");
                                 }}
-                            // onClick={() => {
-                            //     // parameter.setId(row.attributes);
-                            // }}
-                            // value={row.attributes.label}
                             >
                                 {row.attributes.label}
                             </option>
