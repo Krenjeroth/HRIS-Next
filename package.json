@@ -27,6 +27,7 @@
     "js-cookie": "^3.0.1",
     "next": "^13.4.2",
     "react": "^18.2.0",
+    "react-autosuggest": "^10.1.0",
     "react-currency-input-field": "^3.6.10",
     "react-datepicker": "^4.14.1",
     "react-dom": "^18.2.0",

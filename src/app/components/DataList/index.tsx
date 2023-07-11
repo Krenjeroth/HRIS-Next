@@ -13,7 +13,7 @@ import { Alert } from 'flowbite-react';
 import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
 import DatePicker from '@/app/components/DatePicker'
-import { string } from 'yup';
+import { object, string } from 'yup';
 
 type datalist = {
     id: string,
@@ -24,6 +24,12 @@ interface IValues {
     date_submitted: string;
     lgu_position_id: number;
     lgu_position: string;
+}
+
+
+interface update {
+    attribute: string,
+    value: any
 }
 
 type Props = {
@@ -49,9 +55,26 @@ function debounce(fn: Function, delay: number) {
 };
 
 
+function updateData(data: any, update: any) {
+    const newObject: any = {};
+    for (const property in data) {
+        newObject[property] = data[property];
+        // console.log(`${property}: ${data[property]}`);
+    }
+
+    update.forEach((item: update, index: number) => {
+        newObject[item.attribute] = item.value;
+    });
+
+    // update.forEach(element:update => {
+
+    // });
+    console.log(newObject);
+}
+
+
 function index(parameter: Props) {
 
-    // const [fieldValue, setFieldValue] = useState<string>('');
     return (
         <>
 
@@ -67,9 +90,9 @@ function index(parameter: Props) {
                     name={parameter.id}
                     placeholder={`${parameter.title} ID`}
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    onClick={() => {
-                        console.log(parameter.initialValues);
-                    }}
+                // onClick={() => {
+                //     console.log(parameter.initialValues);
+                // }}
                 />
 
             </FormElement>
@@ -88,8 +111,13 @@ function index(parameter: Props) {
                     type="text"
                     list="lists"
                     onClick={() => {
-                        parameter.setKeyword('');
-                        // parameter.data[']
+                        // updateData(parameter.initialValues,]);
+                        // let testsss = { date_submitted: '', lgu_position_id: 2, lgu_position: '' };
+                        // parameter.setKeyword("");
+                        // const ff = parameter.initialValues;
+                        // console.log(ff);
+                        // parameter.setValues(testsss);
+                        // console.log(parameter.initialValues, testsss);
                     }}
                     // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     //     //     //     parameter.setKeyword(e.target.value);
