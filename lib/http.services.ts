@@ -48,6 +48,16 @@ class HttpService {
     const api = this.api();
     return await api.delete(url);
   };
+
+  public static get_sync = (url: string) => {
+    const api = this.api();
+    return api.get(url);
+  };
+
+  public static post_sync = (url: string, data: any) => {
+    const api = this.api();
+    return api.post(url, data);
+  };
 }
 
 export default HttpService;

@@ -14,10 +14,11 @@ import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
 import DatePicker from '@/app/components/DatePicker'
 import { object, string } from 'yup';
-
+import Autosuggest from 'react-autosuggest';
+import useTimer from '../Timer/timer';
 type datalist = {
     id: string,
-    attributes: any
+    label: string
 }
 
 interface IValues {
@@ -51,29 +52,33 @@ function debounce(fn: Function, delay: number) {
         clearTimeout(timer);
         timer = setTimeout(() => fn(), delay);
     })();
-
 };
 
 
-function updateData(data: any, update: any) {
-    const newObject: any = {};
-    for (const property in data) {
-        newObject[property] = data[property];
-        // console.log(`${property}: ${data[property]}`);
-    }
-
-    update.forEach((item: update, index: number) => {
-        newObject[item.attribute] = item.value;
-    });
-
-    // update.forEach(element:update => {
-
-    // });
-    console.log(newObject);
-}
 
 
 function index(parameter: Props) {
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + 600);
+    const [value, setValue] = useState<string>("");
+    const [id, setID] = useState<string>("");
+    const { count, startTimer, endTimer } = useTimer();
+
+    useEffect(() => {
+        if (parameter.data.length === 0) {
+            setValue("");
+            setID("");
+        }
+    }, [parameter.data]);
+
+
+    useEffect(() => {
+        console.log(count);
+        // if (count === 2) {
+        //     parameter.setKeyword(value);
+        //     endTimer();
+        // }
+    }, [count]);
 
     return (
         <>
@@ -86,13 +91,11 @@ function index(parameter: Props) {
             >
 
                 <Field
+                    value={id}
                     id={parameter.id}
                     name={parameter.id}
                     placeholder={`${parameter.title} ID`}
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                // onClick={() => {
-                //     console.log(parameter.initialValues);
-                // }}
                 />
 
             </FormElement>
@@ -103,66 +106,66 @@ function index(parameter: Props) {
                 errors={parameter.errors}
                 touched={parameter.touched}
             >
-                <Field
-                    id={parameter.name}
-                    name={parameter.name}
-                    placeholder={`Enter ${parameter.title}`}
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    type="text"
-                    list="lists"
-                    onClick={() => {
-                        // updateData(parameter.initialValues,]);
-                        // let testsss = { date_submitted: '', lgu_position_id: 2, lgu_position: '' };
-                        // parameter.setKeyword("");
-                        // const ff = parameter.initialValues;
-                        // console.log(ff);
-                        // parameter.setValues(testsss);
-                        // console.log(parameter.initialValues, testsss);
-                    }}
-                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    //     //     //     parameter.setKeyword(e.target.value);
-                    //     //     //     if (parameter.data.length === 0) {
-                    //     //     //         console.log("clear");
-                    //     //     //         let value = parameter.initialValues;
-                    //     //     //         value[parameter.name] = "";
-                    //     //     //         parameter.setValues(value);
-                    //     //     //     }
-                    // }}
-                    onKeyUp={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        debounce(function () {
-                            parameter.setKeyword(e.target.value);
-                            // console.log(parameter.data.length);
-                            // if (parameter.data.length === 0) {
-                            //     let value = parameter.initialValues;
-                            //     value[parameter.name] = "";
-                            //     console.log(value);
-                            //     parameter.setValues(
-                            //         { date_submitted: '', lgu_position_id: 3, lgu_position: e.target.value }
-                            //     );
-                            // }
-                            // else {
+                <Autosuggest
+                    suggestions={parameter.data}
+                    onSuggestionsFetchRequested={({ value }) => {
+                        // if (count === 0) {
+                        // endTimer();
+                        startTimer();
+                        // }
+                        // else {
+                        //     if (count === 2) {
+                        //         endTimer();
+                        //         endTimer();
+                        //     }
+                        //     else {
 
-                            // }
-                        }, 1500);
+                        //     }
+                        // }
+                        // if (value.length > 3) {
+                        // debounce(function () {
+                        //     // parameter.setKeyword(value);
+                        // }, 1000);
+                        // }
+                    }}
+                    onSuggestionsClearRequested={() => {
+
+                    }}
+                    getSuggestionValue={(suggestion: datalist) => suggestion.label}
+                    renderSuggestion={suggestion => (
+                        <option>
+                            {suggestion.label}
+                        </option>
+                    )}
+                    onSuggestionSelected={(event, { suggestion, method }) => {
+
+                        if (method === "enter") {
+                            event.preventDefault();
+                        }
+                        setValue(suggestion.label);
+                        setID(suggestion.id);
+                    }}
+                    inputProps={{
+                        placeholder: `Enter ${parameter.title}`,
+                        value: value,
+                        id: parameter.name,
+                        name: parameter.name,
+                        className: "w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
+                        type: "text",
+                        onChange: (_event, { newValue }) => {
+                            if (parameter.data.length === 0) {
+                                parameter.setKeyword("");
+                                setValue("");
+                                setID("");
+                            }
+                            else {
+                                setValue(newValue);
+                            }
+                        }
                     }}
                 />
-
-                <datalist id="lists">
-                    <option value="" >No Data</option>
-                    {parameter.data.map((row: datalist) => {
-                        return (
-                            <option key={row.id}
-                                value={row.attributes.label}
-                                onClick={() => {
-                                    console.log("duriel");
-                                }}
-                            >
-                                {row.attributes.label}
-                            </option>
-                        )
-                    })}
-                </datalist >
             </FormElement>
+
 
         </>
     )

@@ -33,11 +33,8 @@ type header = {
 
 type datalist = {
     id: string,
-    attributes: any
+    label: any
 }
-
-
-
 
 
 // interfaces
@@ -135,11 +132,40 @@ function AllRequestsTabs() {
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
-                setPositionData(resp.data.data);
+                setPositionData(
+                    resp.data.data.map((data: any) => {
+                        return {
+                            "id": data.id,
+                            "label": data.attributes.label
+                        }
+                    })
+                );
             }
         }
         getLGUPositions();
     }, [positionKeyword]);
+
+    // useEffect(() => {
+    //     // query
+    //     function getLGUPositions() {
+    //         const postData = {
+    //             activePage: 1,
+    //             searchKeyword: positionKeyword,
+    //             orderBy: 'title',
+    //             year: '',
+    //             orderAscending: "asc",
+    //             positionStatus: ['Permanent'],
+    //             status: ['Active'],
+    //             viewAll: false
+    //         };
+    //         const resp = HttpService.post_sync("search-lgu-position", postData);
+    //         resp.then((response) => {
+    //             setPositionData(response.data.data);
+    //         })
+    //     }
+    //     getLGUPositions();
+    // }, [positionKeyword]);
+
 
 
     useEffect(() => {
