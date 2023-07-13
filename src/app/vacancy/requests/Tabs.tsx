@@ -2,16 +2,15 @@
 import { Button, Tabs } from 'flowbite-react';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import Table from "../components/Table";
-import HttpService from '../../../lib/http.services';
-import Drawer from '../components/Drawer';
+import Table from "../../components/Table";
+import HttpService from '../../../../lib/http.services';
+import Drawer from '../../components/Drawer';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
-import { setFormikErrors } from '../../../lib/utils.service';
+import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
-import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
-import DatePicker from '../components/DatePicker'
+import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
 
 // types
@@ -41,8 +40,9 @@ type datalist = {
 
 interface IValues {
     date_submitted: string;
-    lgu_position_id: number;
+    lgu_position_id: string;
     lgu_position: string;
+    status: string;
 }
 
 
@@ -83,18 +83,19 @@ function AllRequestsTabs() {
     const [title, setTitle] = useState<string>("Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
-    const [positionId, setPositionId] = useState<string>("");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
-            lgu_position_id: 0,
-            lgu_position: ''
+            lgu_position_id: '',
+            lgu_position: '',
+            status: ''
         }
     );
 
     // Use Effect Hook
+
 
     useEffect(() => {
         // query
@@ -145,35 +146,14 @@ function AllRequestsTabs() {
         getLGUPositions();
     }, [positionKeyword]);
 
-    // useEffect(() => {
-    //     // query
-    //     function getLGUPositions() {
-    //         const postData = {
-    //             activePage: 1,
-    //             searchKeyword: positionKeyword,
-    //             orderBy: 'title',
-    //             year: '',
-    //             orderAscending: "asc",
-    //             positionStatus: ['Permanent'],
-    //             status: ['Active'],
-    //             viewAll: false
-    //         };
-    //         const resp = HttpService.post_sync("search-lgu-position", postData);
-    //         resp.then((response) => {
-    //             setPositionData(response.data.data);
-    //         })
-    //     }
-    //     getLGUPositions();
-    // }, [positionKeyword]);
-
-
 
     useEffect(() => {
         if (id == 0) {
             setValues({
                 date_submitted: '',
-                lgu_position_id: 0,
-                lgu_position: ''
+                lgu_position_id: '',
+                lgu_position: '',
+                status: ''
             });
         }
 
@@ -186,7 +166,7 @@ function AllRequestsTabs() {
         else {
             // setAlerts([]);
         }
-    }, [process]);
+    }, [process, refresh]);
 
 
 
@@ -194,16 +174,16 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("salary-grade/" + id);
+            const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 setId(id);
                 setValues({
                     date_submitted: resp.data.date_submited,
                     lgu_position_id: resp.data.lgu_position_id,
-                    lgu_position: resp.data.label
+                    lgu_position: resp.data.label,
+                    status: 'Active'
                 })
                 setShowDrawer(true);
-
             }
         }
         catch (error: any) {
@@ -220,21 +200,17 @@ function AllRequestsTabs() {
     }
 
 
-    // reset data
-    const clearFormField = function (values: IValues, { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>) {
-        console.log(values);
-    }
-
 
     // Submit form
     const onFormSubmit = async (
-        values: IValues,
+        values: any,
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
             date_submitted: values.date_submitted,
             lgu_position_id: values.lgu_position_id,
             lgu_position: values.lgu_position,
+            status: "Active",
             device_name: "web",
         };
 
@@ -245,12 +221,12 @@ function AllRequestsTabs() {
         try {
             // add
             if (process == "Add") {
-
-                const resp = await HttpService.post("salary-grade", postData);
+                const resp = await HttpService.post("vacancy", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        resetForm();
                         setActivePage(1);
                         setRefresh(!refresh);
                     }
@@ -263,11 +239,12 @@ function AllRequestsTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("salary-grade/" + id, postData)
+                const resp = await HttpService.patch("vacancy/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        resetForm();
                         setActivePage(1);
                         setRefresh(!refresh);
                     }
@@ -280,7 +257,7 @@ function AllRequestsTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("salary-grade/" + id);
+                const resp = await HttpService.delete("vacancy/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -331,7 +308,7 @@ function AllRequestsTabs() {
 
                             {/* Date Submitted */}
                             <FormElement
-                                name="date"
+                                name="date_submitted"
                                 label="Date Submitted"
                                 errors={errors}
                                 touched={touched}
@@ -340,12 +317,12 @@ function AllRequestsTabs() {
                                 <DatePicker
                                     initialValues={initialValues}
                                     setValues={setValues}
-                                    id="date"
-                                    name="date"
+                                    name="date_submitted"
                                     placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
                             </FormElement>
+
 
                             {/* positions */}
                             <DataList errors={errors} touched={touched}

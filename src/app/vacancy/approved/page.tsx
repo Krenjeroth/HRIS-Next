@@ -1,5 +1,5 @@
 import React from 'react'
-import Tabs from '../Tabs';
+import Tabs from '../requests/Tabs';
 export const metadata = {
   title: 'HRIS - Approved Requests',
 };

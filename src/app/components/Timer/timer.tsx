@@ -14,10 +14,10 @@ export default function useTimer(): UseTimerReturnDef {
     const startTimer = useCallback(() => {
         clearInterval(timerRef.current);
         setCount(0);
-        const timer = setInterval(() => {
+        const timer = window.setInterval(() => {
             setCount((prevCount) => prevCount + 1);
         }, 1000);
-        // timerRef.current = timer;
+        timerRef.current = timer;
     }, []);
 
     const endTimer = useCallback(() => {

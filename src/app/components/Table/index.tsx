@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, Label, Table, Tabs, TabsRef, TextInput } from "flowbite-react";
 import Pagination from "../Pagination";
 import { useRef, useState } from "react";
@@ -65,6 +67,7 @@ function index(parameter: Props) {
                                 if (parameter.setYear != undefined) {
                                     parameter.setYear(dayjs(date).format('YYYY'));
                                     setStartDate(date);
+                                    parameter.setActivePage(1);
                                 }
                             }}
                             showYearPicker
@@ -76,7 +79,7 @@ function index(parameter: Props) {
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
                 </div>
             </div>
-            <Table className="shadow-md rounded-md w-64">
+            <Table className="shadow-md rounded-md w-full text-sm">
                 <Table.Head>
 
                     <Table.HeadCell>
@@ -106,9 +109,9 @@ function index(parameter: Props) {
 
                         parameter.data.map((item: row, index: number) => {
                             return (
-                                <Table.Row className="bg-white " key={item.id}>
+                                <Table.Row className="bg-white" key={item.id}>
 
-                                    <Table.Cell className="">
+                                    <Table.Cell className="whitespace-nowrap font-medium">
                                         <button
                                             className="font-medium text-blue-600 hover:underline dark:text-blue-500 m-1" onClick={() => {
                                                 parameter.getDataById(item.id);
@@ -128,7 +131,7 @@ function index(parameter: Props) {
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
                                         return (
-                                            <Table.Cell key={td_index}>
+                                            <Table.Cell  key={td_index}>
                                                 {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
                                             </Table.Cell>
                                         );
@@ -147,6 +150,10 @@ function index(parameter: Props) {
                     }
                 </Table.Body>
             </Table >
+
+
+
+            
             <div className="flex items-center justify-center text-center">
                 <Pagination
                     currentPage={parameter.activePage}
