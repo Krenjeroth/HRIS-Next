@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -12,6 +12,7 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
+import { values } from 'lodash';
 
 // types
 
@@ -40,8 +41,9 @@ type datalist = {
 
 interface IValues {
     date_submitted: string;
-    lgu_position_id: string;
-    lgu_position: string;
+    position_id: string;
+    position: string;
+    position_autosuggest: string;
     status: string;
 }
 
@@ -59,6 +61,7 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
+    const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
@@ -88,11 +91,23 @@ function AllRequestsTabs() {
     var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
-            lgu_position_id: '',
-            lgu_position: '',
+            position_id: '',
+            position: '',
+            position_autosuggest: '',
             status: ''
         }
     );
+
+
+    function resetFormik() {
+        setValues({
+            date_submitted: '',
+            position_id: '',
+            position: '',
+            position_autosuggest: '',
+            status: ''
+        });
+    }
 
     // Use Effect Hook
 
@@ -151,12 +166,12 @@ function AllRequestsTabs() {
         if (id == 0) {
             setValues({
                 date_submitted: '',
-                lgu_position_id: '',
-                lgu_position: '',
+                position_id: '',
+                position: '',
+                position_autosuggest: '',
                 status: ''
             });
         }
-
     }, [id]);
 
     useEffect(() => {
@@ -164,10 +179,9 @@ function AllRequestsTabs() {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
         }
         else {
-            // setAlerts([]);
+            setAlerts([]);
         }
-    }, [process, refresh]);
-
+    }, [process]);
 
 
     //    get data by id
@@ -176,12 +190,14 @@ function AllRequestsTabs() {
         try {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
+                let data = resp.data;
                 setId(id);
                 setValues({
-                    date_submitted: resp.data.date_submited,
-                    lgu_position_id: resp.data.lgu_position_id,
-                    lgu_position: resp.data.label,
-                    status: 'Active'
+                    date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                    position_id: data.lgu_position_id,
+                    position: `${data.title} - ${data.item_number}`,
+                    position_autosuggest: `${data.title} - ${data.item_number}`,
+                    status: data.status
                 })
                 setShowDrawer(true);
             }
@@ -206,10 +222,11 @@ function AllRequestsTabs() {
         values: any,
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
+        setLoading(true);
         const postData = {
             date_submitted: values.date_submitted,
-            lgu_position_id: values.lgu_position_id,
-            lgu_position: values.lgu_position,
+            position_id: values.position_id,
+            position: values.position,
             status: "Active",
             device_name: "web",
         };
@@ -226,9 +243,13 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        resetForm();
+                        resetForm({});
+                        resetFormik();
                         setActivePage(1);
                         setRefresh(!refresh);
+                        setId(0);
+                        setProcess("Add");
+
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -244,7 +265,8 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        resetForm();
+                        // resetForm({});
+                        // resetFormik();
                         setActivePage(1);
                         setRefresh(!refresh);
                     }
@@ -280,6 +302,8 @@ function AllRequestsTabs() {
                 setFormikErrors(error.response.data.errors, setFieldError);
             }
         }
+
+        setLoading(false);
 
     };
 
@@ -326,10 +350,10 @@ function AllRequestsTabs() {
 
                             {/* positions */}
                             <DataList errors={errors} touched={touched}
-                                id="lgu_position_id"
+                                id="position_id"
                                 setKeyword={setPositionKeyword}
                                 title="Position"
-                                name="lgu_position"
+                                name="position"
                                 initialValues={initialValues}
                                 setValues={setValues}
                                 data={positionData} />
@@ -337,7 +361,7 @@ function AllRequestsTabs() {
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>

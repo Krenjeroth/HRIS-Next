@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useCallback } from 'react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Field, Form, Formik, FormikHelpers, useField, useFormikContext } from 'formik';
-import _debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce';
 import { FormElement } from '@/app/components/commons/FormElement';
 import Autosuggest from 'react-autosuggest';
 type datalist = {
@@ -36,21 +36,38 @@ type Props = {
 }
 
 
-
 function index(parameter: Props) {
     const { setFieldValue } = useFormikContext();
     const [field] = useField(parameter);
     const [value, setValue] = useState<string>("");
-    const debouncedLoadSuggestions = _debounce(loadSuggestions,1000);
-    function loadSuggestions(value: string) {
-        if (parameter.data.length === 0 && value != "") {
+
+    // call once after render
+    const loadSuggestions = useCallback(({ value }: any) => {
+        parameter.setKeyword(value);
+    }, []);
+
+    const debouncedLoadSuggestions = useMemo(() => {
+        return debounce(loadSuggestions, 500);
+    }, [loadSuggestions]);
+
+
+    useEffect(() => {
+        if (parameter.initialValues[parameter.id] != "") {
+            setValue(parameter.initialValues[`${parameter.name}_autosuggest`]);
+        }
+        else {
+            setValue('');
+        }
+    }, [parameter.initialValues])
+
+    useEffect(() => {
+        if (parameter.data.length === 0) {
+            parameter.setKeyword("");
+            setValue("");
             setFieldValue(parameter.id, '');
             setFieldValue(parameter.name, '');
-            setValue("");
-        } else {
-            parameter.setKeyword(value);
         }
-    }
+    }, [parameter.data])
 
     return (
         <>
@@ -98,13 +115,12 @@ function index(parameter: Props) {
 
                 <Autosuggest
                     suggestions={parameter.data}
-                    onSuggestionsFetchRequested={({ value }) => {
-                        debouncedLoadSuggestions(value);
-                    }}
+                    onSuggestionsFetchRequested={debouncedLoadSuggestions}
                     onSuggestionsClearRequested={() => {
-
                     }}
-                    getSuggestionValue={(suggestion: datalist) => suggestion.label}
+                    getSuggestionValue={(suggestion: datalist) =>
+                        suggestion.label
+                    }
                     renderSuggestion={suggestion => (
                         <option>
                             {suggestion.label}
@@ -126,15 +142,7 @@ function index(parameter: Props) {
                         className: "w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
                         type: "text",
                         onChange: (_event, { newValue }) => {
-                            if (parameter.data.length === 0 && newValue != "") {
-                                parameter.setKeyword("");
-                                setValue("");
-                                setFieldValue(parameter.id, '');
-                                setFieldValue(parameter.name, '');
-                            }
-                            else {
-                                setValue(newValue);
-                            }
+                            setValue(newValue);
                         }
                     }}
                 />
