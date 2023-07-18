@@ -1,9 +1,9 @@
 "use client"
 
-import { Button, Label, Table, Tabs, TabsRef, TextInput } from "flowbite-react";
+import { Tooltip, Button, Table } from "flowbite-react";
 import Pagination from "../Pagination";
-import { useRef, useState } from "react";
-import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon } from "@heroicons/react/24/solid";
+import { useRef, useState, ReactNode } from "react";
+import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
 
@@ -18,10 +18,17 @@ type header = {
     display: string
 }
 
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
 
+}
 
 
 type Props = {
+    buttons?: button[],
     year?: number,
     setYear?: Function,
     searchKeyword: string,
@@ -39,20 +46,20 @@ type Props = {
     headers: header[]
     getDataById: Function
     setProcess: Function,
+    children?: ReactNode,
 }
 
 
 
 function index(parameter: Props) {
+
     const [startDate, setStartDate] = useState(new Date());
     function search() {
         let search_input = document.getElementById("table_search") as HTMLElement;
-        // const delayDebounceFn = setTimeout(() => {
         if (search_input != null) {
             parameter.setActivePage(1);
             parameter.setSearchKeyword((document.getElementById("table_search") as HTMLInputElement).value);
         }
-        // }, 2000)
     }
 
     return (
@@ -75,13 +82,12 @@ function index(parameter: Props) {
                         />
                     </div>
                 }
-                <div className=" ">
+                <div className="">
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-full text-sm">
                 <Table.Head>
-
                     <Table.HeadCell>
                         <span className="sr-only">
                             Edit
@@ -106,32 +112,52 @@ function index(parameter: Props) {
                 </Table.Head>
                 <Table.Body className="divide-y">
                     {parameter.data.length > 0 ?
-
                         parameter.data.map((item: row, index: number) => {
                             return (
                                 <Table.Row className="bg-white" key={item.id}>
 
-                                    <Table.Cell className="whitespace-nowrap font-medium">
-                                        <button
-                                            className="font-medium text-blue-600 hover:underline dark:text-blue-500 m-1" onClick={() => {
-                                                parameter.getDataById(item.id);
-                                                parameter.setProcess("Edit");
-                                            }}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="font-medium text-red-600 hover:underline m-1" onClick={() => {
-                                                parameter.getDataById(item.id);
-                                                parameter.setProcess("Delete");
-                                            }}
-                                        >
-                                            Delete
-                                        </button>
+                                    <Table.Cell className="whitespace-nowrap font-medium flex flex-row">
+
+                                        <Tooltip content="Edit">
+                                            <button title="Edit"
+                                                className="font-medium text-blue-600 hover:scale-90 p-1 border rounded-md  m-1 shadow-sm" onClick={() => {
+                                                    parameter.getDataById(item.id);
+                                                    parameter.setProcess("Edit");
+                                                }}
+                                            >
+                                                <PencilIcon className=' w-5 h-5' />
+                                            </button>
+                                        </Tooltip>
+                                        {parameter.buttons != undefined ?
+                                            parameter.buttons.map((button: button, i: number) => {
+                                                return (
+                                                    <Tooltip content={button.title}>
+                                                        <button title="Edit"
+                                                            className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
+                                                                parameter.getDataById(item.id);
+                                                                parameter.setProcess(button.process);
+                                                            }}
+                                                        >
+                                                            {button.icon} </button>
+                                                    </Tooltip>
+                                                );
+                                            })
+                                            : ""
+                                        }
+                                        <Tooltip content="Delete">
+                                            <button title="Delete"
+                                                className="font-medium text-red-600 hover:scale-90 p-1 border rounded-md m-1 shadow-sm" onClick={() => {
+                                                    parameter.getDataById(item.id);
+                                                    parameter.setProcess("Delete");
+                                                }}
+                                            >
+                                                <TrashIcon className=' w-5 h-5' />
+                                            </button>
+                                        </Tooltip>
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
                                         return (
-                                            <Table.Cell  key={td_index}>
+                                            <Table.Cell key={td_index}>
                                                 {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
                                             </Table.Cell>
                                         );
@@ -151,9 +177,6 @@ function index(parameter: Props) {
                 </Table.Body>
             </Table >
 
-
-
-            
             <div className="flex items-center justify-center text-center">
                 <Pagination
                     currentPage={parameter.activePage}
@@ -161,7 +184,6 @@ function index(parameter: Props) {
                     totalPages={parameter.pages}
                 />
             </div>
-
         </div >
     );
 }

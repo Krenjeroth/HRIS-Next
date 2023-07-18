@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
 import { values } from 'lodash';
+import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -36,11 +37,20 @@ type datalist = {
     label: any
 }
 
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string
+}
+
 
 // interfaces
 
 interface IValues {
     date_submitted: string;
+    date_approved: string,
+    date_queued: string,
     position_id: string;
     position: string;
     position_autosuggest: string;
@@ -59,6 +69,10 @@ function AllRequestsTabs() {
     var [searchKeyword, setSearchKeyword] = useState<string>('');
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
+        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" }
+    ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -81,6 +95,7 @@ function AllRequestsTabs() {
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
+    const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Request");
@@ -94,7 +109,9 @@ function AllRequestsTabs() {
             position_id: '',
             position: '',
             position_autosuggest: '',
-            status: ''
+            status: '',
+            date_approved: '',
+            date_queued: '',
         }
     );
 
@@ -105,7 +122,9 @@ function AllRequestsTabs() {
             position_id: '',
             position: '',
             position_autosuggest: '',
-            status: ''
+            status: '',
+            date_approved: '',
+            date_queued: '',
         });
     }
 
@@ -169,17 +188,30 @@ function AllRequestsTabs() {
                 position_id: '',
                 position: '',
                 position_autosuggest: '',
-                status: ''
+                status: '',
+                date_approved: '',
+                date_queued: '',
+
             });
         }
     }, [id]);
 
     useEffect(() => {
         if (process === "Delete") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
+            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
+            setReadOnly(true);
+        }
+        else if (process === "Approve") {
+            setAlerts([{ "type": "info", "message": "Approve Request?" }])
+            setReadOnly(true);
+        }
+        else if (process === "Queue") {
+            setAlerts([{ "type": "warning", "message": "Queue Request?" }])
+            setReadOnly(true);
         }
         else {
             setAlerts([]);
+            setReadOnly(false);
         }
     }, [process]);
 
@@ -197,7 +229,9 @@ function AllRequestsTabs() {
                     position_id: data.lgu_position_id,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
-                    status: data.status
+                    status: data.status,
+                    date_approved: data.approved,
+                    date_queued: data.queued,
                 })
                 setShowDrawer(true);
             }
@@ -214,8 +248,6 @@ function AllRequestsTabs() {
         temp_alerts.splice(key, 1);
         setAlerts(temp_alerts);
     }
-
-
 
     // Submit form
     const onFormSubmit = async (
@@ -331,25 +363,65 @@ function AllRequestsTabs() {
                             </div>
 
                             {/* Date Submitted */}
-                            <FormElement
-                                name="date_submitted"
-                                label="Date Submitted"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <DatePicker
-                                    initialValues={initialValues}
-                                    setValues={setValues}
+                            <div className={`${process === "Add" || process === "Edit" ? "" : "hidden"}`}>
+                                <FormElement
                                     name="date_submitted"
-                                    placeholder="Enter Date"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-                            </FormElement>
+                                    label="Date Submitted"
+                                    errors={errors}
+                                    touched={touched}
+                                >
 
+                                    <DatePicker
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        name="date_submitted"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+                                </FormElement>
+                            </div>
+
+
+                            {/* Date Approved */}
+                            <div className={`${process === "Approve" ? "" : "hidden"}`}>
+                                <FormElement
+                                    name="date_approved"
+                                    label="Date Approved"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <DatePicker
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        name="date_approved"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+                                </FormElement>
+                            </div>
+
+
+                            {/* Date Queued */}
+                            <div className={`${process === "Queue" ? "" : "hidden"}`}>
+                                <FormElement
+                                    name="date_queued"
+                                    label="Date Queued"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <DatePicker
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        name="date_queued"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+                                </FormElement>
+                            </div>
 
                             {/* positions */}
                             <DataList errors={errors} touched={touched}
+                                readonly={readOnly}
                                 id="position_id"
                                 setKeyword={setPositionKeyword}
                                 title="Position"
@@ -388,6 +460,7 @@ function AllRequestsTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}
@@ -405,14 +478,17 @@ function AllRequestsTabs() {
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}
-                        />
+                        >
+                            <button> Hello </button>
+                        </Table>
+
                     </Tabs.Item>
                     <Tabs.Item title={"Approved Request"}>
                     </Tabs.Item>
                 </Tabs.Group >
 
 
-            </div>
+            </div >
         </>
     );
 }
