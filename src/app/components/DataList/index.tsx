@@ -28,6 +28,7 @@ type Props = {
     errors: any,
     touched: any,
     setKeyword: Function,
+    label: string,
     title: string,
     data: datalist[],
     name: string,
@@ -109,7 +110,7 @@ function index(parameter: Props) {
             <div className={`${parameter.readonly === true ? "hidden" : ""}`}>
                 <FormElement
                     name={`${parameter.name}_autosuggest`}
-                    label={parameter.title}
+                    label={parameter.label}
                     errors={parameter.errors}
                     touched={parameter.touched}
                 >

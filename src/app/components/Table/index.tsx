@@ -131,7 +131,7 @@ function index(parameter: Props) {
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
                                                 return (
-                                                    <Tooltip content={button.title}>
+                                                    <Tooltip content={button.title} key={i}>
                                                         <button title="Edit"
                                                             className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
                                                                 parameter.getDataById(item.id);

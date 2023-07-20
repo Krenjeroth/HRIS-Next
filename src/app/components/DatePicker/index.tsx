@@ -13,6 +13,7 @@ type Props = {
     placeholder: string,
     className: string,
     initialValues: any,
+    readOnly?: string,
     setValues: Function
 }
 
@@ -28,7 +29,11 @@ function index(parameter: Props) {
             className={parameter.className}
             selected={(field.value && new Date(field.value)) || null}
             onChange={val => {
-                setFieldValue(field.name, val);
+                if (parameter.readOnly == "true") {
+                }
+                else {
+                    setFieldValue(field.name, val);
+                }
             }}
         />
     );

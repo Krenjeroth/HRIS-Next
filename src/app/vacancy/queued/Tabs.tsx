@@ -1,5 +1,5 @@
 "use client";
-import { Button, Tabs, TabsRef } from 'flowbite-react';
+import { Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
@@ -57,8 +57,6 @@ interface IValues {
     position: string;
     position_autosuggest: string;
     status: string;
-    scheduled_opening: string,
-    scheduled_closing: string,
 }
 
 
@@ -106,7 +104,7 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Request");
+    const [title, setTitle] = useState<string>("Queued Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
@@ -120,8 +118,6 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
         }
     );
 
@@ -135,8 +131,6 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
         });
     }
 
@@ -152,7 +146,7 @@ function AllRequestsTabs() {
                 orderBy: orderBy,
                 year: year,
                 orderAscending: orderAscending,
-                filter: ['vacancies.status', "Active"]
+                filter: ['vacancies.status', "Queued"]
             };
             const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
@@ -204,8 +198,6 @@ function AllRequestsTabs() {
                 status: '',
                 date_approved: '',
                 date_queued: '',
-                scheduled_opening: '',
-                scheduled_closing: '',
 
             });
         }
@@ -247,8 +239,6 @@ function AllRequestsTabs() {
                     status: data.status,
                     date_approved: data.approved,
                     date_queued: data.queued,
-                    scheduled_opening: '',
-                    scheduled_closing: '',
                 })
                 setShowDrawer(true);
             }
@@ -274,10 +264,6 @@ function AllRequestsTabs() {
         setLoading(true);
         const postData = {
             date_submitted: values.date_submitted,
-            date_approved: values.date_approved,
-            date_queued: values.date_queued,
-            scheduled_opening: values.scheduled_opening,
-            scheduled_closing: values.scheduled_closing,
             position_id: values.position_id,
             position: values.position,
             device_name: "web",
@@ -288,7 +274,6 @@ function AllRequestsTabs() {
         alerts.forEach(element => {
             alerts.pop();
         });
-
 
         try {
             // add
@@ -459,36 +444,6 @@ function AllRequestsTabs() {
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
-
-                                <FormElement
-                                    name="scheduled_opening"
-                                    label="Scheduled Opening*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="scheduled_opening"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                <FormElement
-                                    name="scheduled_closing"
-                                    label="Scheduled Closing*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="scheduled_closing"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
                             </div>
 
 
@@ -542,25 +497,24 @@ function AllRequestsTabs() {
                     style="underline"
                     ref={props.tabsRef}
                     onActiveTabChange={(tab) => {
-                        if (tab == 1) {
-                            router.push('/vacancy/approved');
+                        if (tab == 0) {
+                            router.push('/vacancy/requests');
                         }
-                        else if (2) {
-                            router.push('/vacancy/queued');
+                        else if (tab == 1) {
+                            router.push('/vacancy/approved');
                         }
 
                     }}
 
                 >
 
-                    <Tabs.Item title={title + "s"} active>
+                    <Tabs.Item title={"Requests"}>
+                    </Tabs.Item>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                            setShowDrawer(true);
-                            setId(0);
-                            setProcess("Add");
-                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
-                        </Button>
+                    <Tabs.Item title={"Approved Requests"}>
+                    </Tabs.Item>
+
+                    <Tabs.Item title={title + "s"} active>
 
                         {/*Table*/}
                         <Table
@@ -585,14 +539,6 @@ function AllRequestsTabs() {
                         >
                         </Table>
 
-                    </Tabs.Item>
-
-                    <Tabs.Item title={"Approved Requests"}>
-                    </Tabs.Item>
-
-
-
-                    <Tabs.Item title={"Queued Requests"}>
                     </Tabs.Item>
                 </Tabs.Group >
 
