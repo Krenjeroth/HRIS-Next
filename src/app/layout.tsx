@@ -17,7 +17,6 @@ export default function RootLayout({
 
   const [isMinimized, setMinimized] = useState<boolean>(false);
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
-
   return (
     <html lang="en">
       <head />

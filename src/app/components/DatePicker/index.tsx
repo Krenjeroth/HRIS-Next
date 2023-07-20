@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import DatePicker from "react-datepicker";
@@ -8,12 +9,12 @@ import "react-datepicker/dist/react-datepicker.css";
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 type Props = {
-    id: string,
     name: string,
     placeholder: string,
     className: string,
     initialValues: any,
-    setInitialValues: Function
+    readOnly?: string,
+    setValues: Function
 }
 
 
@@ -23,12 +24,16 @@ function index(parameter: Props) {
     return (
         <DatePicker
             {...field}
-            id={parameter.id}
+            id={parameter.name}
             name={parameter.name}
             className={parameter.className}
             selected={(field.value && new Date(field.value)) || null}
             onChange={val => {
-                setFieldValue(field.name, val);;
+                if (parameter.readOnly == "true") {
+                }
+                else {
+                    setFieldValue(field.name, val);
+                }
             }}
         />
     );

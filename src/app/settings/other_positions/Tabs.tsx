@@ -9,6 +9,8 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import YearPicker from '../../components/YearPicker';
+import dayjs from 'dayjs';
 
 // types
 
@@ -31,28 +33,45 @@ type header = {
 // interfaces
 
 interface IValues {
-    title?: string;
-    salary_grade_id?: string;
-    education?: string;
-    training?: string;
-    experience?: string;
-    eligibility?: string;
-    competency?: string;
+    item_number: string;
+    office_id: string;
+    position_id: string;
+    year: number;
+    description: string;
+    place_of_assignment: string;
+    status: string;
+    position_status: string;
 }
 
-type salaryGrade = {
-    id: string;
+type office = {
+    id: number;
     attributes: {
-        number: string;
-        amount: number;
+        office_code: string
+        office_name: string
+        department: string
+    }
+}
+
+type position = {
+    id: number;
+    attributes: {
+        amount: number,
+        competency: string,
+        education: string,
+        eligibility: string,
+        experience: string,
+        training: string,
+        number: number,
+        title: string,
     }
 }
 
 
 
+
 //main function
 
-function positionTabs() {
+function SalaryGradeTabs() {
 
 
 
@@ -66,12 +85,20 @@ function positionTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
-
+    const [offices, setOffices] = useState<office[]>([]);
+    const [positions, setPositions] = useState<position[]>([]);
     const [headers, setHeaders] = useState<header[]>([
-        { "column": "title", "display": "title" },
+        { "column": "id", "display": "id" },
+        { "column": "position_status", "display": "Position Status" },
+        { "column": "title", "display": "Position" },
+        { "column": "department_name", "display": "Department" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "description", "display": "Description" },
+        { "column": "item_number", "display": "Number" },
+        { "column": "status", "display": "Status" },
+        { "column": "year", "display": "Year" },
         { "column": "number", "display": "Salary Grade" },
-        { "column": "amount", "display": "Monthly Salary" },
+        { "column": "amount", "display": "Salary" },
         { "column": "education", "display": "education" },
         { "column": "training", "display": "training" },
         { "column": "experience", "display": "experience" },
@@ -81,32 +108,39 @@ function positionTabs() {
     const [pages, setPages] = useState<number>(1);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Position");
+    const [positionStatus, setPositionStatus] = useState<string[]>(['Casual', 'Elective', 'Coterminous', 'Contractual', 'Contract of Service', 'Job Order']);
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     var [initialValues, setValues] = useState<IValues>(
         {
-            title: "",
-            salary_grade_id: "",
-            education: "",
-            training: "",
-            experience: "",
-            eligibility: "",
-            competency: ""
+            item_number: "",
+            office_id: "",
+            position_id: "",
+            year: parseInt(dayjs().format('YYYY')),
+            description: "",
+            place_of_assignment: "",
+            status: "",
+            position_status: "",
         }
     );
 
     // Use Effect Hook
-
     useEffect(() => {
         // query
+
         async function getData() {
             const postData = {
                 activePage: activePage,
                 searchKeyword: searchKeyword,
+                year: year,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
+                positionStatus: positionStatus,
+                status: ['Active', 'Abolished'],
+                viewAll: false
             };
-            const resp = await HttpService.post("search-position", postData);
+            const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -115,32 +149,42 @@ function positionTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
 
     useEffect(() => {
-        // get salary grade
-        async function getsalaryGrades() {
-            const resp = await HttpService.get("salary-grade");
+        async function getOffices() {
+            const resp = await HttpService.get("office");
             if (resp != null) {
-                setsalaryGrades(resp.data);
+                setOffices(resp.data);
             }
         }
 
+        getOffices();
+    }, []);
 
-        getsalaryGrades();
+
+    useEffect(() => {
+        async function getPositions() {
+            const resp = await HttpService.get("position");
+            if (resp != null) {
+                setPositions(resp.data);
+            }
+        }
+
+        getPositions();
     }, []);
 
     useEffect(() => {
         if (id == 0) {
             setValues({
-                title: '',
-                salary_grade_id: '',
-                education: '',
-                training: '',
-                experience: '',
-                eligibility: '',
-                competency: ''
-
+                item_number: "",
+                office_id: "",
+                position_id: "",
+                year: parseInt(dayjs().format('YYYY')),
+                description: "",
+                place_of_assignment: "",
+                status: "",
+                position_status: "",
             });
         }
 
@@ -161,17 +205,20 @@ function positionTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("position/" + id);
+            setAlerts([]);
+            const resp = await HttpService.get("lgu-position/" + id);
+            const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
                 setValues({
-                    title: resp.data.title,
-                    salary_grade_id: resp.data.salary_grade_id,
-                    education: resp.data.education,
-                    training: resp.data.training,
-                    experience: resp.data.experience,
-                    eligibility: resp.data.eligibility,
-                    competency: resp.data.competency
+                    item_number: data.item_number,
+                    office_id: data.office_id,
+                    position_id: data.position_id,
+                    year: parseInt(data.year),
+                    description: data.description,
+                    place_of_assignment: data.place_of_assignment,
+                    status: data.status,
+                    position_status: data.position_status,
                 });
                 setShowDrawer(true);
 
@@ -197,15 +244,15 @@ function positionTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            title: values.title,
-            salary_grade_id: values.salary_grade_id,
-            education: values.education,
-            training: values.training,
-            experience: values.experience,
-            eligibility: values.eligibility,
-            competency: values.competency,
+            item_number: values.item_number,
+            office_id: values.office_id,
+            position_id: values.position_id,
+            year: values.year,
+            description: values.description,
+            place_of_assignment: values.place_of_assignment,
+            status: values.status,
+            position_status: values.position_status,
             device_name: "web",
-
         };
 
         alerts.forEach(element => {
@@ -215,8 +262,7 @@ function positionTabs() {
         try {
             // add
             if (process == "Add") {
-
-                const resp = await HttpService.post("position", postData);
+                const resp = await HttpService.post("lgu-position", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -233,7 +279,7 @@ function positionTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("position/" + id, postData)
+                const resp = await HttpService.patch("lgu-position/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -250,7 +296,7 @@ function positionTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("position/" + id);
+                const resp = await HttpService.delete("lgu-position/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -282,7 +328,7 @@ function positionTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-4/12' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
@@ -300,44 +346,89 @@ function positionTabs() {
                                 })}
                             </div>
 
+                            <div className='grid grid-cols-2 gap-2'>
+                                {/* Item Number */}
+                                <FormElement
+                                    name="item_number"
+                                    label="Item Number *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        id="item_number"
+                                        name="item_number"
+                                        placeholder="Enter Item Number"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
 
-                            {/* Code */}
+                                {/* Year */}
+
+                                <FormElement
+                                    name="year"
+                                    label="Year *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+
+                                    <YearPicker
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        id="year"
+                                        name="year"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+
+
+                                </FormElement>
+                            </div>
+
+
+                            {/* Position Status */}
                             <FormElement
-                                name="title"
-                                label="Position Title"
+                                name="position_status"
+                                label="Position Status *"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
-                                    id="title"
-                                    name="title"
-                                    placeholder="Enter Title"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
+                                    as="select"
+                                    id="position_status"
+                                    name="position_status"
+                                    placeholder=""
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    <option value="">Select Position Status</option>
+                                    <option value='Casual'>Casual</option>
+                                    <option value='Coterminous'>Coterminous</option>
+                                    <option value='Contractual'>Contractual</option>
+                                    <option value='Contract of Service'>Contract of Service</option>
+                                    <option value='Elective'>Elective</option>
+                                    <option value='Job Order'>Job Order</option>
+                                </Field>
                             </FormElement>
 
-
-                            {/* Salary Grade*/}
+                            {/*Office*/}
                             <FormElement
-                                name="salary_grade_id"
-                                label="Salary Grade"
+                                name="office_id"
+                                label="Office *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
                                     as="select"
-                                    id="salary_grade_id"
-                                    name="salary_grade_id"
-                                    placeholder="Enter alary"
+                                    id="office_id"
+                                    name="office_id"
+                                    placeholder=""
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Salary Grade"
                                 >
-                                    <option value=""></option>
-                                    {salaryGrades.map((item: salaryGrade, index) => {
+                                    <option value="">Select Office</option>
+                                    {offices.map((item: office, index) => {
                                         return (
-                                            <option key={index} value={item.id}>{item.attributes.number}</option>
+                                            <option key={index} value={item.id}>{item.attributes.department}-{item.attributes.office_name}</option>
                                         );
                                     })}
 
@@ -347,102 +438,98 @@ function positionTabs() {
                             </FormElement>
 
 
-                            {/* Education */}
+                            {/*Position*/}
                             <FormElement
-                                name="education"
-                                label="Education"
+                                name="position_id"
+                                label={`Position *`}
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field
+                                    as="select"
+                                    id="position_id"
+                                    name="position_id"
+                                    placeholder=""
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    title="Select Salary Grade"
+                                >
+                                    <option value="">Select Position</option>
+                                    {positions.map((item: position, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.attributes.title}</option>
+                                        );
+                                    })}
+
+
+                                </Field>
+
+                            </FormElement>
+
+
+
+
+                            {/* Position Description */}
+                            <FormElement
+                                name="description"
+                                label="Description"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
                                     as="textarea"
-                                    id="education"
-                                    name="education"
-                                    placeholder="Enter Education"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Enter Description "
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
 
 
-                            {/* Training */}
+                            {/* Place of Assignment */}
                             <FormElement
-                                name="training"
-                                label="Training"
+                                name="place_of_assignment"
+                                label="Place of Assignment"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
                                     as="textarea"
-                                    id="training"
-                                    name="training"
-                                    placeholder="Enter Training"
+                                    id="place_of_assignment"
+                                    name="place_of_assignment"
+                                    placeholder="Enter Place of Assignment"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
 
 
-                            {/* Experience*/}
+                            {/* Status */}
                             <FormElement
-                                name="experience"
-                                label="Experience"
+                                name="status"
+                                label="Status *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
-                                    as="textarea"
-                                    id="experience"
-                                    name="experience"
-                                    placeholder="Enter Experience"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/* Eligibility*/}
-                            <FormElement
-                                name="eligibility"
-                                label="Eligibility"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="textarea"
-                                    id="eligibility"
-                                    name="eligibility"
-                                    placeholder="Enter Eligibility"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-
-                            {/*Competency*/}
-                            <FormElement
-                                name="competency"
-                                label="Competency"
-                                errors={errors}
-                                touched={touched}
-                            >
-                                <Field
-                                    as="textarea"
-                                    id="competency"
-                                    name="competency"
-                                    placeholder="Enter Competency"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
+                                    as="select"
+                                    id="status"
+                                    name="status"
+                                    placeholder=""
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    <option value="">Select Status</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Abolished">Abolished</option>
+                                </Field>
 
                             </FormElement>
 
 
                             {/* submit button */}
-
                             <div className="grid grid-flow-row auto-rows-max mt-5">
                                 <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
@@ -486,6 +573,8 @@ function positionTabs() {
                             headers={headers}
                             getDataById={getDataById}
                             setProcess={setProcess}
+                            year={year}
+                            setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >
@@ -494,4 +583,4 @@ function positionTabs() {
     );
 }
 
-export default positionTabs
+export default SalaryGradeTabs

@@ -60,7 +60,7 @@ function SalaryGradeTabs() {
     const [title, setTitle] = useState<string>("Department");
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             department_code: "",
             department_name: ""
@@ -91,7 +91,7 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 department_code: '',
                 department_name: ''
             });
@@ -118,7 +118,7 @@ function SalaryGradeTabs() {
             console.log(resp);
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     department_code: resp.data.department_code,
                     department_name: resp.data.department_name
                 })

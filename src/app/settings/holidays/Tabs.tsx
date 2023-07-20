@@ -64,7 +64,7 @@ function SalaryGradeTabs() {
     const [id, setId] = useState<number>(0);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
-    const [initialValues, setInitialValues] = useState<IValues>(
+    const [initialValues, setValues] = useState<IValues>(
         {
             title: "",
             date: ""
@@ -96,7 +96,7 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 title: '',
                 date: ''
             });
@@ -122,7 +122,7 @@ function SalaryGradeTabs() {
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
                 setId(id);
-                setInitialValues({
+                setValues({
                     title: data.title,
                     date: dayjs(data.date).format('MM/DD/YYYY')
                 })
@@ -275,7 +275,7 @@ function SalaryGradeTabs() {
 
                                 <DatePicker
                                     initialValues={initialValues}
-                                    setInitialValues={setInitialValues}
+                                    setValues={setValues}
                                     id="date"
                                     name="date"
                                     placeholder="Enter Date"

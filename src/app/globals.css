@@ -80,6 +80,16 @@
   width: 100% !important;
 }
 
+.react-autosuggest__suggestions-list {
+  margin: 10px 10px 20px 20px !important;
+}
+
+.react-autosuggest__suggestions-container {
+  border: 2px solid;
+  border-color: rgb(243 244 246);
+  border-radius: 5px;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;

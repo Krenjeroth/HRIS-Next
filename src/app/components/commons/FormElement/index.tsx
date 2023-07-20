@@ -1,3 +1,4 @@
+"use client";
 import { FormFieldError } from "../FormFieldError";
 
 interface Props {
@@ -21,7 +22,12 @@ export const FormElement: React.FC<Props> = ({
         {label}
       </label>
       <div className="relative mt-1">{children}</div>
-      <FormFieldError name={name} errors={errors} touched={touched} />
+      {name.indexOf('_autosuggest') > 0 ?
+        <FormFieldError name={name.replace('_autosuggest', '')} errors={errors} touched={touched} />
+        :
+        <FormFieldError name={name} errors={errors} touched={touched} />
+      }
+
     </div>
   );
 };
