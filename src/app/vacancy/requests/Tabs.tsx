@@ -57,8 +57,8 @@ interface IValues {
     position: string;
     position_autosuggest: string;
     status: string;
-    scheduled_opening: string,
-    scheduled_closing: string,
+    posting_date: string,
+    closing_date: string,
 }
 
 
@@ -120,8 +120,8 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
+            posting_date: '',
+            closing_date: '',
         }
     );
 
@@ -135,8 +135,8 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
+            posting_date: '',
+            closing_date: '',
         });
     }
 
@@ -204,8 +204,8 @@ function AllRequestsTabs() {
                 status: '',
                 date_approved: '',
                 date_queued: '',
-                scheduled_opening: '',
-                scheduled_closing: '',
+                posting_date: '',
+                closing_date: '',
 
             });
         }
@@ -238,6 +238,7 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+                console.log(data);
                 setId(id);
                 setValues({
                     date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
@@ -247,8 +248,8 @@ function AllRequestsTabs() {
                     status: data.status,
                     date_approved: data.approved,
                     date_queued: data.queued,
-                    scheduled_opening: '',
-                    scheduled_closing: '',
+                    posting_date: '',
+                    closing_date: '',
                 })
                 setShowDrawer(true);
             }
@@ -276,14 +277,16 @@ function AllRequestsTabs() {
             date_submitted: values.date_submitted,
             date_approved: values.date_approved,
             date_queued: values.date_queued,
-            scheduled_opening: values.scheduled_opening,
-            scheduled_closing: values.scheduled_closing,
+            posting_date: values.posting_date,
+            closing_date: values.closing_date,
             position_id: values.position_id,
             position: values.position,
             device_name: "web",
             process: process,
             status: "Active"
         };
+
+        console.log(postData);
 
         alerts.forEach(element => {
             alerts.pop();
@@ -461,7 +464,7 @@ function AllRequestsTabs() {
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_opening"
+                                    name="posting_date"
                                     label="Scheduled Opening*"
                                     errors={errors}
                                     touched={touched}
@@ -469,14 +472,14 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         initialValues={initialValues}
                                         setValues={setValues}
-                                        name="scheduled_opening"
+                                        name="posting_date"
                                         placeholder="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_closing"
+                                    name="closing_date"
                                     label="Scheduled Closing*"
                                     errors={errors}
                                     touched={touched}
@@ -484,7 +487,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         initialValues={initialValues}
                                         setValues={setValues}
-                                        name="scheduled_closing"
+                                        name="closing_date"
                                         placeholder="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
