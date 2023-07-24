@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -26,6 +27,16 @@ type header = {
     column: string,
     display: string
 }
+
+
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
+}
+
 
 
 // interfaces
@@ -78,7 +89,7 @@ function positionTabs() {
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Position");
     const [id, setId] = useState<number>(0);
@@ -94,6 +105,11 @@ function positionTabs() {
             competency: ""
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
 
@@ -282,7 +298,7 @@ function positionTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
@@ -300,51 +316,57 @@ function positionTabs() {
                                 })}
                             </div>
 
+                            <div className='grid grid-cols-2'>
 
-                            {/* Code */}
-                            <FormElement
-                                name="title"
-                                label="Position Title"
-                                errors={errors}
-                                touched={touched}
-                            >
-                                <Field
-                                    id="title"
+                                {/* title */}
+                                <FormElement
                                     name="title"
-                                    placeholder="Enter Title"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
-                            </FormElement>
-
-
-                            {/* Salary Grade*/}
-                            <FormElement
-                                name="salary_grade_id"
-                                label="Salary Grade"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="select"
-                                    id="salary_grade_id"
-                                    name="salary_grade_id"
-                                    placeholder="Enter alary"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
+                                    label="Position Title"
+                                    errors={errors}
+                                    touched={touched}
                                 >
-                                    <option value=""></option>
-                                    {salaryGrades.map((item: salaryGrade, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.number}</option>
-                                        );
-                                    })}
+                                    <Field
+
+                                        readOnly={(process === "Delete") ? true : false}
+                                        id="title"
+                                        name="title"
+                                        placeholder="Enter Title"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
 
 
-                                </Field>
+                                {/* Salary Grade*/}
+                                <FormElement
+                                    name="salary_grade_id"
+                                    label="Salary Grade"
+                                    errors={errors}
+                                    touched={touched}
+                                >
 
-                            </FormElement>
+                                    <Field
+
+                                        disabled={(process === "Delete") ? true : false}
+                                        as="select"
+                                        id="salary_grade_id"
+                                        name="salary_grade_id"
+                                        placeholder="Enter alary"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    >
+                                        <option value=""></option>
+                                        {salaryGrades.map((item: salaryGrade, index) => {
+                                            return (
+                                                <option key={index} value={item.id}>{item.attributes.number}</option>
+                                            );
+                                        })}
+
+
+                                    </Field>
+
+                                </FormElement>
+                            </div>
 
 
                             {/* Education */}
@@ -356,6 +378,8 @@ function positionTabs() {
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="education"
                                     name="education"
@@ -375,6 +399,8 @@ function positionTabs() {
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="training"
                                     name="training"
@@ -394,6 +420,8 @@ function positionTabs() {
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="experience"
                                     name="experience"
@@ -413,6 +441,8 @@ function positionTabs() {
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="eligibility"
                                     name="eligibility"
@@ -431,6 +461,8 @@ function positionTabs() {
                                 touched={touched}
                             >
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="competency"
                                     name="competency"
@@ -471,6 +503,7 @@ function positionTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

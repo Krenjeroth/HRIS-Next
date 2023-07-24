@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -25,6 +26,14 @@ type alert = {
 type header = {
     column: string,
     display: string
+}
+
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
 }
 
 
@@ -59,8 +68,8 @@ function SalaryGradeTabs() {
         { "column": "name", "display": "Name" },
         { "column": "email", "display": "Email" }
     ]);
- 
-    const [pages, setPages] = useState<number>(1);
+
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("User");
     const [id, setId] = useState<number>(0);
@@ -73,6 +82,11 @@ function SalaryGradeTabs() {
             password_confirmation: ""
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
 
@@ -268,6 +282,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="name"
                                     name="name"
                                     placeholder="Enter Name"
@@ -286,6 +301,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="email"
                                     name="email"
                                     placeholder="Enter Email"
@@ -304,6 +320,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="password"
                                     name="password"
                                     placeholder="Enter Password"
@@ -322,6 +339,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="password_confirmation"
                                     name="password_confirmation"
                                     placeholder="Enter Password"
@@ -361,6 +379,7 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

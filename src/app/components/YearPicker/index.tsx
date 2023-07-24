@@ -13,7 +13,8 @@ type Props = {
     placeholder: string,
     className: string,
     initialValues: any,
-    setValues: Function
+    setValues: Function,
+    readOnly?: boolean
 }
 
 
@@ -37,6 +38,7 @@ function index(parameter: Props) {
             onChange={val => {
                 setFieldValue(field.name, val);
             }}
+            readOnly={parameter.readOnly}
             showYearPicker
             dateFormat="yyyy"
         />

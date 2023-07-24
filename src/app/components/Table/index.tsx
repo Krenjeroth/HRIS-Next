@@ -6,6 +6,7 @@ import { useRef, useState, ReactNode } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
+import CustomRow from "./CustomRow";
 
 
 type row = {
@@ -64,10 +65,11 @@ function index(parameter: Props) {
 
     return (
         <div className="relative overflow-x-auto">
-            <div className={`flex flex-row my-3 ${(parameter.year === undefined) ? "justify-end" : "justify-between"}`}>
-                {(parameter.year === undefined) ?
-                    "" :
-                    <div className="">
+            <div className="flex flex-row my-3  justify-between">
+                <div className="">
+                    {(parameter.year === undefined) ?
+                        "" :
+
                         <DatePicker id="year" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             selected={startDate}
                             onChange={(date: Date) => {
@@ -80,13 +82,17 @@ function index(parameter: Props) {
                             showYearPicker
                             dateFormat="yyyy"
                         />
-                    </div>
-                }
+
+                    }
+                </div>
+                <div className="flex items-center justify-center text-center my-2">
+                    <label className=" font-medium">Total Records:{parameter.pages}</label>
+                </div>
                 <div className="">
                     <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
                 </div>
             </div>
-            <Table className="shadow-md rounded-md w-full text-sm">
+            <Table className="shadow-md rounded-md w-full text-sm min-h-min">
                 <Table.Head>
                     <Table.HeadCell>
                         <span className="sr-only">
@@ -114,20 +120,9 @@ function index(parameter: Props) {
                     {parameter.data.length > 0 ?
                         parameter.data.map((item: row, index: number) => {
                             return (
-                                <Table.Row className="bg-white" key={item.id}>
+                                <CustomRow key={item.id} >
 
                                     <Table.Cell className="whitespace-nowrap font-medium flex flex-row">
-
-                                        <Tooltip content="Edit">
-                                            <button title="Edit"
-                                                className="font-medium text-blue-600 hover:scale-90 p-1 border rounded-md  m-1 shadow-sm" onClick={() => {
-                                                    parameter.getDataById(item.id);
-                                                    parameter.setProcess("Edit");
-                                                }}
-                                            >
-                                                <PencilIcon className=' w-5 h-5' />
-                                            </button>
-                                        </Tooltip>
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
                                                 return (
@@ -144,16 +139,6 @@ function index(parameter: Props) {
                                             })
                                             : ""
                                         }
-                                        <Tooltip content="Delete">
-                                            <button title="Delete"
-                                                className="font-medium text-red-600 hover:scale-90 p-1 border rounded-md m-1 shadow-sm" onClick={() => {
-                                                    parameter.getDataById(item.id);
-                                                    parameter.setProcess("Delete");
-                                                }}
-                                            >
-                                                <TrashIcon className=' w-5 h-5' />
-                                            </button>
-                                        </Tooltip>
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
                                         return (
@@ -162,7 +147,7 @@ function index(parameter: Props) {
                                             </Table.Cell>
                                         );
                                     })}
-                                </Table.Row>
+                                </CustomRow>
                             );
                         })
                         :

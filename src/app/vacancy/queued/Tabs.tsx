@@ -102,7 +102,7 @@ function AllRequestsTabs() {
         { "column": "competency", "display": "competency" },
     ]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Queued Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");

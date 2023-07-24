@@ -12,8 +12,9 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
+import { createContext } from 'vm';
 
 
 
@@ -78,8 +79,10 @@ function AllRequestsTabs() {
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
-        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" }
+        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -104,7 +107,7 @@ function AllRequestsTabs() {
         { "column": "competency", "display": "competency" },
     ]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
@@ -124,7 +127,7 @@ function AllRequestsTabs() {
             closing_date: '',
         }
     );
-
+    const initialValueContext = createContext();
 
     function resetFormik() {
         setValues({
@@ -206,10 +209,16 @@ function AllRequestsTabs() {
                 date_queued: '',
                 posting_date: '',
                 closing_date: '',
-
             });
         }
     }, [id]);
+
+
+    useEffect(() => {
+        if (!showDrawer) {
+            setId(0);
+        }
+    }, [showDrawer]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -238,7 +247,6 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                console.log(data);
                 setId(id);
                 setValues({
                     date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
@@ -246,11 +254,11 @@ function AllRequestsTabs() {
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
                     status: data.status,
-                    date_approved: data.approved,
-                    date_queued: data.queued,
+                    date_approved: '',
+                    date_queued: '',
                     posting_date: '',
                     closing_date: '',
-                })
+                });
                 setShowDrawer(true);
             }
         }
@@ -286,7 +294,6 @@ function AllRequestsTabs() {
             status: "Active"
         };
 
-        console.log(postData);
 
         alerts.forEach(element => {
             alerts.pop();
@@ -409,7 +416,6 @@ function AllRequestsTabs() {
         <>
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
@@ -436,7 +442,7 @@ function AllRequestsTabs() {
 
                                     <DatePicker
                                         initialValues={initialValues}
-                                        readOnly={`${process === "Add" || process === "Edit" ? false : true}`}
+                                        readOnly={process === "Add" || process === "Edit" ? false : true}
                                         setValues={setValues}
                                         name="date_submitted"
                                         placeholder="Enter Date"
@@ -465,7 +471,7 @@ function AllRequestsTabs() {
 
                                 <FormElement
                                     name="posting_date"
-                                    label="Scheduled Opening*"
+                                    label="Posting Date*"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -480,7 +486,7 @@ function AllRequestsTabs() {
 
                                 <FormElement
                                     name="closing_date"
-                                    label="Scheduled Closing*"
+                                    label="Closing Date*"
                                     errors={errors}
                                     touched={touched}
                                 >

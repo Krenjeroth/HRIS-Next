@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -11,6 +11,7 @@ import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import DatePicker from '../../components/DatePicker';
 import dayjs from 'dayjs';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -27,6 +28,14 @@ type alert = {
 type header = {
     column: string,
     display: string
+}
+
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
 }
 
 
@@ -58,7 +67,7 @@ function SalaryGradeTabs() {
         { "column": "title", "display": "Title" },
         { "column": "date", "display": "Date" }
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Holiday");
     const [id, setId] = useState<number>(0);
@@ -70,6 +79,11 @@ function SalaryGradeTabs() {
             date: ""
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
 
@@ -256,6 +270,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="title"
                                     name="title"
                                     placeholder="Enter Title"
@@ -274,9 +289,9 @@ function SalaryGradeTabs() {
                             >
 
                                 <DatePicker
+                                    readOnly={(process === "Delete") ? true : false}
                                     initialValues={initialValues}
                                     setValues={setValues}
-                                    id="date"
                                     name="date"
                                     placeholder="Enter Date"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -317,6 +332,7 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

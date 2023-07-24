@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -11,6 +11,7 @@ import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import YearPicker from '../../components/YearPicker';
 import dayjs from 'dayjs';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -66,6 +67,15 @@ type position = {
     }
 }
 
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
+}
+
+
 
 
 
@@ -105,7 +115,7 @@ function SalaryGradeTabs() {
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Position");
     const [positionStatus, setPositionStatus] = useState<string[]>(['Casual', 'Elective', 'Coterminous', 'Contractual', 'Contract of Service', 'Job Order']);
@@ -124,6 +134,11 @@ function SalaryGradeTabs() {
             position_status: "",
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
     useEffect(() => {
@@ -355,6 +370,7 @@ function SalaryGradeTabs() {
                                     touched={touched}
                                 >
                                     <Field
+                                        readOnly={(process === "Delete") ? true : false}
                                         id="item_number"
                                         name="item_number"
                                         placeholder="Enter Item Number"
@@ -373,6 +389,7 @@ function SalaryGradeTabs() {
                                 >
 
                                     <YearPicker
+                                        readOnly={(process === "Delete") ? true : false}
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         id="year"
@@ -394,6 +411,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    disabled={(process === "Delete") ? true : false}
                                     as="select"
                                     id="position_status"
                                     name="position_status"
@@ -418,6 +436,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    disabled={(process === "Delete") ? true : false}
                                     as="select"
                                     id="office_id"
                                     name="office_id"
@@ -447,6 +466,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    disabled={(process === "Delete") ? true : false}
                                     as="select"
                                     id="position_id"
                                     name="position_id"
@@ -478,6 +498,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="description"
                                     name="description"
@@ -497,6 +518,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="place_of_assignment"
                                     name="place_of_assignment"
@@ -516,6 +538,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    disabled={(process === "Delete") ? true : false}
                                     as="select"
                                     id="status"
                                     name="status"
@@ -558,6 +581,7 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

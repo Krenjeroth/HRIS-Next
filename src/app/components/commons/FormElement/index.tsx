@@ -17,7 +17,7 @@ export const FormElement: React.FC<Props> = ({
   touched,
 }) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4 mx-2">
       <label htmlFor={name} className="text-sm font-medium">
         {label}
       </label>

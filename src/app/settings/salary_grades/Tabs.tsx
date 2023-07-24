@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -26,6 +27,15 @@ type header = {
     column: string,
     display: string
 }
+
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
+}
+
 
 
 // interfaces
@@ -56,7 +66,7 @@ function SalaryGradeTabs() {
         { "column": "number", "display": "Number" },
         { "column": "amount", "display": "Amount" }
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Salary Grade");
     const [id, setId] = useState<number>(0);
@@ -67,6 +77,11 @@ function SalaryGradeTabs() {
             amount: 0
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
 
@@ -252,6 +267,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="number"
                                     name="number"
                                     placeholder="Enter Number"
@@ -270,6 +286,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="amount"
                                     name="amount"
                                     placeholder="Enter Amount"
@@ -309,6 +326,7 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

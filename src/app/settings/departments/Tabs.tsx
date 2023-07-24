@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -25,6 +26,14 @@ type header = {
 type alert = {
     type: string,
     message: string
+}
+
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
 }
 
 // interfaces
@@ -55,7 +64,7 @@ function SalaryGradeTabs() {
         { "column": "department_code", "display": "Department Code" },
         { "column": "department_name", "display": "Department Name" }
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Department");
     const [id, setId] = useState<number>(0);
@@ -66,6 +75,11 @@ function SalaryGradeTabs() {
             department_name: ""
         }
     );
+
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
     // Use Effect Hook
 
@@ -115,7 +129,6 @@ function SalaryGradeTabs() {
 
         try {
             const resp = await HttpService.get("department/" + id);
-            console.log(resp);
             if (resp.status === 200) {
                 setId(id);
                 setValues({
@@ -244,7 +257,7 @@ function SalaryGradeTabs() {
                             </div>
 
 
-                            {/* number */}
+                            {/* Code */}
                             <FormElement
                                 name="department_code"
                                 label="Department Code"
@@ -252,6 +265,7 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="department_code"
                                     name="department_code"
                                     placeholder="Enter Department Code"
@@ -261,7 +275,7 @@ function SalaryGradeTabs() {
                             </FormElement>
 
 
-                            {/* Amount */}
+                            {/* Department Name */}
                             <FormElement
                                 name="department_name"
                                 label="Department Name"
@@ -270,6 +284,7 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="department_name"
                                     name="department_name"
                                     placeholder="Enter Department Name"
@@ -309,6 +324,7 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
+                            buttons={buttons}
                             searchKeyword={searchKeyword}
                             setSearchKeyword={setSearchKeyword}
                             orderBy={orderBy}

@@ -1,5 +1,5 @@
 "use client";
-import { Tabs, TabsRef } from 'flowbite-react';
+import { Button, Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
@@ -12,8 +12,9 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
+import { createContext } from 'vm';
 
 
 
@@ -57,6 +58,8 @@ interface IValues {
     position: string;
     position_autosuggest: string;
     status: string;
+    posting_date: string,
+    closing_date: string,
 }
 
 
@@ -76,14 +79,14 @@ function AllRequestsTabs() {
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
-        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
-        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" }
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <BackspaceIcon className=' w-5 h-5' />, "title": "Reactivate", "process": "Return", "class": "text-indigo-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
-    const [process, setProcess] = useState<string>("Add");
+    const [process, setProcess] = useState<string>("Edit");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
@@ -95,14 +98,17 @@ function AllRequestsTabs() {
         { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
+        { "column": "date_approved", "display": "Date Approved" },
+        { "column": "posting_date", "display": "Posting Date" },
+        { "column": "closing_date", "display": "Closing Date" },
         { "column": "education", "display": "education" },
         { "column": "training", "display": "training" },
         { "column": "experience", "display": "experience" },
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
-    const [readOnly, setReadOnly] = useState<boolean>(false);
-    const [pages, setPages] = useState<number>(1);
+
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Approved Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
@@ -118,9 +124,11 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
+            posting_date: '',
+            closing_date: '',
         }
     );
-
+    const initialValueContext = createContext();
 
     function resetFormik() {
         setValues({
@@ -131,6 +139,8 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
+            posting_date: '',
+            closing_date: '',
         });
     }
 
@@ -198,27 +208,25 @@ function AllRequestsTabs() {
                 status: '',
                 date_approved: '',
                 date_queued: '',
-
+                posting_date: '',
+                closing_date: '',
             });
         }
     }, [id]);
 
+
     useEffect(() => {
-        if (process === "Delete") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
-            setReadOnly(true);
+        if (!showDrawer) {
+            setId(0);
         }
-        else if (process === "Approve") {
+    }, [showDrawer]);
+
+    useEffect(() => {
+        if (process === "Edit") {
             setAlerts([{ "type": "info", "message": "Approve Request?" }])
-            setReadOnly(true);
-        }
-        else if (process === "Queue") {
-            setAlerts([{ "type": "warning", "message": "Queue Request?" }])
-            setReadOnly(true);
         }
         else {
             setAlerts([]);
-            setReadOnly(false);
         }
     }, [process]);
 
@@ -237,9 +245,11 @@ function AllRequestsTabs() {
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
                     status: data.status,
-                    date_approved: data.approved,
-                    date_queued: data.queued,
-                })
+                    date_approved: (dayjs(data.date_approved).format('MM/DD/YYYY')),
+                    date_queued: '',
+                    posting_date: (dayjs(data.posting_date).format('MM/DD/YYYY')),
+                    closing_date: (dayjs(data.closing_date).format('MM/DD/YYYY')),
+                });
                 setShowDrawer(true);
             }
         }
@@ -266,8 +276,8 @@ function AllRequestsTabs() {
             date_submitted: values.date_submitted,
             date_approved: values.date_approved,
             date_queued: values.date_queued,
-            scheduled_opening: values.scheduled_opening,
-            scheduled_closing: values.scheduled_closing,
+            posting_date: values.posting_date,
+            closing_date: values.closing_date,
             position_id: values.position_id,
             position: values.position,
             device_name: "web",
@@ -275,35 +285,14 @@ function AllRequestsTabs() {
             status: "Active"
         };
 
+
         alerts.forEach(element => {
             alerts.pop();
         });
 
 
         try {
-            // add
-            if (process === "Add") {
-                const resp = await HttpService.post("vacancy", postData);
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        resetForm({});
-                        resetFormik();
-                        setActivePage(1);
-                        setRefresh(!refresh);
-                        setId(0);
-                        setProcess("Add");
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
-            }
-            // update
-            else if (process === "Edit") {
+            if (process === "Edit") {
 
                 const resp = await HttpService.patch("vacancy/" + id, postData)
                 if (resp.status === 200) {
@@ -318,64 +307,6 @@ function AllRequestsTabs() {
                             alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
-                }
-            }
-
-            // approve and queue
-            else if (process === "Approve" || process === "Queue") {
-                if (id != 0) {
-                    if (process === "Approve") {
-                        postData.status = "Approved";
-                    }
-                    if (process == "Queue") {
-                        postData.status = "Queued";
-                    }
-                    const resp = await HttpService.patch("vacancy/" + id, postData)
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                            alerts.push({ "type": "success", "message": `Data has been  successfully ${postData.status} !` });
-                            resetForm({});
-                            resetFormik();
-                            setActivePage(1);
-                            setRefresh(!refresh);
-                            setId(0);
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
-                        }
-                    }
-                }
-                else {
-                    setProcess("Add");
-                }
-            }
-
-            // delete
-            else {
-                if (id != 0) {
-                    const resp = await HttpService.delete("vacancy/" + id);
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": resp.data.message });
-                            setActivePage(1);
-                            setRefresh(!refresh);
-                            setId(0);
-
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
-                        }
-                    }
-                }
-                else {
-                    setProcess("Add");
-                    // setShowDrawer(false);
                 }
             }
         }
@@ -396,7 +327,6 @@ function AllRequestsTabs() {
         <>
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
@@ -423,7 +353,6 @@ function AllRequestsTabs() {
 
                                     <DatePicker
                                         initialValues={initialValues}
-                                        readOnly={`${process === "Add" || process === "Edit" ? false : true}`}
                                         setValues={setValues}
                                         name="date_submitted"
                                         placeholder="Enter Date"
@@ -434,7 +363,7 @@ function AllRequestsTabs() {
 
 
                             {/* Date Approved */}
-                            <div className={`${process === "Approve" ? "" : "hidden"}`}>
+                            <div className="">
                                 <FormElement
                                     name="date_approved"
                                     label="Date Approved *"
@@ -451,30 +380,30 @@ function AllRequestsTabs() {
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_opening"
-                                    label="Scheduled Opening*"
+                                    name="posting_date"
+                                    label="Posting Date*"
                                     errors={errors}
                                     touched={touched}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
                                         setValues={setValues}
-                                        name="scheduled_opening"
+                                        name="posting_date"
                                         placeholder="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_closing"
-                                    label="Scheduled Closing*"
+                                    name="closing_date"
+                                    label="Closing Date*"
                                     errors={errors}
                                     touched={touched}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
                                         setValues={setValues}
-                                        name="scheduled_closing"
+                                        name="closing_date"
                                         placeholder="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
@@ -502,7 +431,7 @@ function AllRequestsTabs() {
 
                             {/* positions */}
                             <DataList errors={errors} touched={touched}
-                                readonly={readOnly}
+                                readonly={true}
                                 id="position_id"
                                 setKeyword={setPositionKeyword}
                                 label="Position *"
@@ -515,8 +444,8 @@ function AllRequestsTabs() {
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
-                                    {(process == "Delete" ? "Delete" : "Submit")}
+                                <button type={(isLoading ? "button" : "submit")} className="py-2 px-4   bg-cyan-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
+                                    Submit
                                 </button>
                             </div>
                         </Form>
@@ -540,7 +469,9 @@ function AllRequestsTabs() {
                         }
 
                     }}
+
                 >
+
                     <Tabs.Item title={"Requests"}>
                     </Tabs.Item>
 
@@ -567,7 +498,6 @@ function AllRequestsTabs() {
                             year={year}
                             setYear={setYear}
                         >
-                            <button> Hello </button>
                         </Table>
 
                     </Tabs.Item>

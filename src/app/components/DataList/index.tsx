@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import { useState, useMemo } from 'react';
 import { Field, Form, Formik, FormikHelpers, useField, useFormikContext } from 'formik';
 import debounce from 'lodash/debounce';
@@ -55,7 +55,9 @@ function index(parameter: Props) {
 
     useEffect(() => {
         if (parameter.initialValues[parameter.id] != "") {
+            setFieldValue(parameter.name, parameter.initialValues[parameter.name]);
             setValue(parameter.initialValues[`${parameter.name}_autosuggest`]);
+            setFieldValue(parameter.id, parameter.initialValues[`${parameter.name}_id`]);
         }
         else {
             setValue('');
@@ -114,7 +116,6 @@ function index(parameter: Props) {
                     errors={parameter.errors}
                     touched={parameter.touched}
                 >
-
                     <Autosuggest
                         suggestions={parameter.data}
                         onSuggestionsFetchRequested={debouncedLoadSuggestions}
