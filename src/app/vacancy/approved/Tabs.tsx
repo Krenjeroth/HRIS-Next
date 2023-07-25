@@ -238,6 +238,7 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+                console.log(data);
                 setId(id);
                 setValues({
                     date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
