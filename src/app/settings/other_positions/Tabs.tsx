@@ -35,7 +35,7 @@ type header = {
 
 interface IValues {
     item_number: string;
-    office_id: string;
+    division_id: string;
     position_id: string;
     year: number;
     description: string;
@@ -44,11 +44,11 @@ interface IValues {
     position_status: string;
 }
 
-type office = {
+type division = {
     id: number;
     attributes: {
-        office_code: string
-        office_name: string
+        division_code: string
+        division_name: string
         department: string
     }
 }
@@ -95,14 +95,14 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [offices, setOffices] = useState<office[]>([]);
+    const [divisions, setOffices] = useState<division[]>([]);
     const [positions, setPositions] = useState<position[]>([]);
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "position_status", "display": "Position Status" },
         { "column": "title", "display": "Position" },
-        { "column": "department_name", "display": "Department" },
-        { "column": "office_name", "display": "Office" },
+        { "column": "department_name", "display": "Office" },
+        { "column": "division_name", "display": "Office" },
         { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Number" },
         { "column": "status", "display": "Status" },
@@ -120,12 +120,13 @@ function SalaryGradeTabs() {
     const [title, setTitle] = useState<string>("Position");
     const [positionStatus, setPositionStatus] = useState<string[]>(['Casual', 'Elective', 'Coterminous', 'Contractual', 'Contract of Service', 'Job Order']);
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     var [initialValues, setValues] = useState<IValues>(
         {
             item_number: "",
-            office_id: "",
+            division_id: "",
             position_id: "",
             year: parseInt(dayjs().format('YYYY')),
             description: "",
@@ -168,7 +169,7 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         async function getOffices() {
-            const resp = await HttpService.get("office");
+            const resp = await HttpService.get("division");
             if (resp != null) {
                 setOffices(resp.data);
             }
@@ -193,7 +194,7 @@ function SalaryGradeTabs() {
         if (id == 0) {
             setValues({
                 item_number: "",
-                office_id: "",
+                division_id: "",
                 position_id: "",
                 year: parseInt(dayjs().format('YYYY')),
                 description: "",
@@ -202,8 +203,10 @@ function SalaryGradeTabs() {
                 position_status: "",
             });
         }
-
-    }, [id]);
+        else {
+            getDataById(id);
+        }
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -224,10 +227,9 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("lgu-position/" + id);
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     item_number: data.item_number,
-                    office_id: data.office_id,
+                    division_id: data.division_id,
                     position_id: data.position_id,
                     year: parseInt(data.year),
                     description: data.description,
@@ -260,7 +262,7 @@ function SalaryGradeTabs() {
     ) => {
         const postData = {
             item_number: values.item_number,
-            office_id: values.office_id,
+            division_id: values.division_id,
             position_id: values.position_id,
             year: values.year,
             description: values.description,
@@ -429,7 +431,7 @@ function SalaryGradeTabs() {
 
                             {/*Office*/}
                             <FormElement
-                                name="office_id"
+                                name="division_id"
                                 label="Office *"
                                 errors={errors}
                                 touched={touched}
@@ -438,16 +440,16 @@ function SalaryGradeTabs() {
                                 <Field
                                     disabled={(process === "Delete") ? true : false}
                                     as="select"
-                                    id="office_id"
-                                    name="office_id"
+                                    id="division_id"
+                                    name="division_id"
                                     placeholder=""
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Salary Grade"
                                 >
                                     <option value="">Select Office</option>
-                                    {offices.map((item: office, index) => {
+                                    {divisions.map((item: division, index) => {
                                         return (
-                                            <option key={index} value={item.id}>{item.attributes.department}-{item.attributes.office_name}</option>
+                                            <option key={index} value={item.id}>{item.attributes.department}-{item.attributes.division_name}</option>
                                         );
                                     })}
 
@@ -595,7 +597,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}

@@ -94,8 +94,8 @@ function AllRequestsTabs() {
         { "column": "id", "display": "id" },
         { "column": "date_submitted", "display": "Date Submitted" },
         { "column": "title", "display": "Position" },
-        { "column": "department_name", "display": "Department" },
         { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Office" },
         { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
@@ -113,6 +113,7 @@ function AllRequestsTabs() {
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
@@ -211,7 +212,10 @@ function AllRequestsTabs() {
                 closing_date: '',
             });
         }
-    }, [id]);
+        else {
+            getDataById(id);
+        }
+    }, [id, reload]);
 
 
     useEffect(() => {
@@ -247,7 +251,6 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                setId(id);
                 setValues({
                     date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
                     position_id: data.lgu_position_id,
@@ -451,6 +454,18 @@ function AllRequestsTabs() {
                                 </FormElement>
                             </div>
 
+                            {/* positions */}
+                            <DataList errors={errors} touched={touched}
+                                readonly={readOnly}
+                                id="position_id"
+                                setKeyword={setPositionKeyword}
+                                label="Position *"
+                                title="Position"
+                                name="position"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={positionData} />
+
 
                             {/* Date Approved */}
                             <div className={`${process === "Approve" ? "" : "hidden"}`}>
@@ -519,17 +534,7 @@ function AllRequestsTabs() {
                                 </FormElement>
                             </div>
 
-                            {/* positions */}
-                            <DataList errors={errors} touched={touched}
-                                readonly={readOnly}
-                                id="position_id"
-                                setKeyword={setPositionKeyword}
-                                label="Position *"
-                                title="Position"
-                                name="position"
-                                initialValues={initialValues}
-                                setValues={setValues}
-                                data={positionData} />
+
 
                             {/* submit button */}
 
@@ -587,7 +592,9 @@ function AllRequestsTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}

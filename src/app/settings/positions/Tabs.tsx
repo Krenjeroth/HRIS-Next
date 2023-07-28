@@ -93,6 +93,7 @@ function positionTabs() {
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Position");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
@@ -159,12 +160,18 @@ function positionTabs() {
 
             });
         }
+        else {
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
+        }
+        else if (process === "Edit") {
+            setAlerts([]);
         }
         else {
             // setAlerts([]);
@@ -179,7 +186,6 @@ function positionTabs() {
         try {
             const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     title: resp.data.title,
                     salary_grade_id: resp.data.salary_grade_id,
@@ -517,7 +523,9 @@ function positionTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

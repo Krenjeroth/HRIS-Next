@@ -70,6 +70,7 @@ function SalaryGradeTabs() {
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Salary Grade");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
@@ -112,8 +113,11 @@ function SalaryGradeTabs() {
                 amount: 0
             });
         }
+        else {
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -132,7 +136,6 @@ function SalaryGradeTabs() {
         try {
             const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     number: resp.data.number,
                     amount: resp.data.amount
@@ -340,7 +343,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

@@ -71,6 +71,7 @@ function SalaryGradeTabs() {
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Holiday");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [initialValues, setValues] = useState<IValues>(
@@ -115,8 +116,11 @@ function SalaryGradeTabs() {
                 date: ''
             });
         }
+        else {
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id,reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -135,7 +139,6 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("holidays/" + id);
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     title: data.title,
                     date: dayjs(data.date).format('MM/DD/YYYY')
@@ -346,7 +349,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}

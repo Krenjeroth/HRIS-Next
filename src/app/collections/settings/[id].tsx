@@ -36,7 +36,7 @@ const CollectionSettingsPage: NextPage = () => {
 
   useEffect(() => {
     if (id) fetchCollectionSetting();
-  }, [id]);
+  }, [id,reload]);
 
   return (
     <Layout pageTitle="Collection settings" breadCrumbs={breadCrumbs}>

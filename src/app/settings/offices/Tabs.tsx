@@ -18,14 +18,14 @@ type row = {
     attributes: object[]
 }
 
-type alert = {
-    type: string,
-    message: string
-}
-
 type header = {
     column: string,
     display: string
+}
+
+type alert = {
+    type: string,
+    message: string
 }
 
 type button = {
@@ -36,29 +36,19 @@ type button = {
 
 }
 
-
-
-
 // interfaces
 
 interface IValues {
     office_code?: string;
     office_name?: string;
-    department_id?: string;
-}
-
-type department = {
-    id: string;
-    attributes: {
-        department_name: string;
-        department_code: string;
-    }
 }
 
 
 //main function
 
 function SalaryGradeTabs() {
+
+
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
@@ -69,27 +59,24 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [departments, setDepartments] = useState<department[]>([]);
-
-
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "office_code", "display": "Office Code" },
-        { "column": "office_name", "display": "Office Name" },
-        { "column": "department", "display": "Department Name" }
+        { "column": "office_name", "display": "Office Name" }
     ]);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Office");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setInitialValues] = useState<IValues>(
+    var [initialValues, setValues] = useState<IValues>(
         {
             office_code: "",
-            office_name: "",
-            department_id: ""
+            office_name: ""
         }
     );
+
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
@@ -118,33 +105,26 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        // get departments
-        async function getDepartments() {
-            const resp = await HttpService.get("department");
-            if (resp != null) {
-                setDepartments(resp.data.data);
-            }
-        }
-
-
-        getDepartments();
-    }, []);
-
-    useEffect(() => {
         if (id == 0) {
-            setInitialValues({
+            setValues({
                 office_code: '',
-                office_name: '',
-                department_id: ''
+                office_name: ''
             });
         }
+        else {
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
         }
+        else if (process === "Edit") {
+            setAlerts([]);
+        }
+
         else {
             // setAlerts([]);
         }
@@ -158,14 +138,11 @@ function SalaryGradeTabs() {
         try {
             const resp = await HttpService.get("office/" + id);
             if (resp.status === 200) {
-                setId(id);
-                setInitialValues({
+                setValues({
                     office_code: resp.data.office_code,
-                    office_name: resp.data.office_name,
-                    department_id: resp.data.department_id
-                });
+                    office_name: resp.data.office_name
+                })
                 setShowDrawer(true);
-                console.log(resp.data);
 
             }
         }
@@ -191,7 +168,6 @@ function SalaryGradeTabs() {
         const postData = {
             office_code: values.office_code,
             office_name: values.office_name,
-            department_id: values.department_id,
             device_name: "web",
         };
 
@@ -324,34 +300,6 @@ function SalaryGradeTabs() {
 
                             </FormElement>
 
-                            {/* Department */}
-                            <FormElement
-                                name="department_id"
-                                label="Department"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field as="select"
-                                    disabled={(process === "Delete") ? true : false}
-                                    id="department_id"
-                                    name="department_id"
-                                    placeholder="Enter Office Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Department"
-                                >
-                                    <option value=""></option>
-                                    {departments.map((item: department, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.department_name}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
-
-                            </FormElement>
-
 
                             {/* submit button */}
 
@@ -397,7 +345,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

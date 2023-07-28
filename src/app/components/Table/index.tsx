@@ -24,7 +24,6 @@ type button = {
     title: string,
     process: string,
     class: string,
-
 }
 
 
@@ -45,7 +44,9 @@ type Props = {
     activePage: number,
     setActivePage: Function,
     headers: header[]
-    getDataById: Function
+    setId: Function,
+    setReload: Function,
+    reload: boolean,
     setProcess: Function,
     children?: ReactNode,
 }
@@ -55,6 +56,7 @@ type Props = {
 function index(parameter: Props) {
 
     const [startDate, setStartDate] = useState(new Date());
+    const [selected, setSelected] = useState<string[]>([]);
     function search() {
         let search_input = document.getElementById("table_search") as HTMLElement;
         if (search_input != null) {
@@ -120,16 +122,16 @@ function index(parameter: Props) {
                     {parameter.data.length > 0 ?
                         parameter.data.map((item: row, index: number) => {
                             return (
-                                <CustomRow key={item.id} >
-
-                                    <Table.Cell className="whitespace-nowrap font-medium flex flex-row">
+                                <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-cyan-50' : 'bg-white')} >
+                                    <Table.Cell className="whitespace-nowrap font-medium min-w-0 flex flex-row">
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
                                                 return (
                                                     <Tooltip content={button.title} key={i}>
                                                         <button title="Edit"
                                                             className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
-                                                                parameter.getDataById(item.id);
+                                                                parameter.setReload(!parameter.reload);
+                                                                parameter.setId(item.id);
                                                                 parameter.setProcess(button.process);
                                                             }}
                                                         >
@@ -142,12 +144,24 @@ function index(parameter: Props) {
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
                                         return (
-                                            <Table.Cell key={td_index}>
+                                            <Table.Cell key={td_index} onClick={(e) => {
+                                                let newArray = [...selected];
+                                                if (newArray.includes(item.id)) {
+                                                    newArray = newArray.filter((str: string) => {
+                                                        return str !== item.id
+                                                    })
+                                                }
+                                                else {
+                                                    newArray.push(item.id);
+                                                }
+                                                setSelected(newArray);
+                                            }}>
                                                 {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
                                             </Table.Cell>
                                         );
                                     })}
-                                </CustomRow>
+
+                                </Table.Row>
                             );
                         })
                         :

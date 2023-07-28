@@ -73,6 +73,7 @@ function SalaryGradeTabs() {
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("User");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
@@ -100,7 +101,6 @@ function SalaryGradeTabs() {
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-users", postData);
-            console.log(resp.data.data);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -120,8 +120,11 @@ function SalaryGradeTabs() {
                 password_confirmation: ''
             });
         }
+        else {
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -141,7 +144,6 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("users/" + id);
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     name: data.name,
                     email: data.email,
@@ -393,7 +395,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

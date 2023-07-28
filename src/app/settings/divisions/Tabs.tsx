@@ -18,14 +18,14 @@ type row = {
     attributes: object[]
 }
 
-type header = {
-    column: string,
-    display: string
-}
-
 type alert = {
     type: string,
     message: string
+}
+
+type header = {
+    column: string,
+    display: string
 }
 
 type button = {
@@ -36,19 +36,29 @@ type button = {
 
 }
 
+
+
+
 // interfaces
 
 interface IValues {
-    department_code?: string;
-    department_name?: string;
+    division_code?: string;
+    division_name?: string;
+    office_id?: string;
+}
+
+type office = {
+    id: string;
+    attributes: {
+        office_name: string;
+        office_code: string;
+    }
 }
 
 
 //main function
 
 function SalaryGradeTabs() {
-
-
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
@@ -59,23 +69,28 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
+    const [offices, setDivision] = useState<office[]>([]);
+
+
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "department_code", "display": "Department Code" },
-        { "column": "department_name", "display": "Department Name" }
+        { "column": "division_code", "display": "Division/Section/Unit Code" },
+        { "column": "division_name", "display": "Division/Section/Unit Name" },
+        { "column": "office", "display": "Office Name" }
     ]);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Department");
+    const [title, setTitle] = useState<string>("Division/Section/Unit");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    var [initialValues, setValues] = useState<IValues>(
+    var [initialValues, setInitialValues] = useState<IValues>(
         {
-            department_code: "",
-            department_name: ""
+            division_code: "",
+            division_name: "",
+            office_id: ""
         }
     );
-
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
@@ -92,7 +107,7 @@ function SalaryGradeTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-department", postData);
+            const resp = await HttpService.post("search-division", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -104,18 +119,38 @@ function SalaryGradeTabs() {
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
-        if (id == 0) {
-            setValues({
-                department_code: '',
-                department_name: ''
-            });
+        // get offices
+        async function getDivisions() {
+            const resp = await HttpService.get("office");
+            if (resp != null) {
+                setDivision(resp.data.data);
+            }
         }
 
-    }, [id]);
+
+        getDivisions();
+    }, []);
+
+    useEffect(() => {
+        if (id == 0) {
+            setInitialValues({
+                division_code: '',
+                division_name: '',
+                office_id: ''
+            });
+        }
+        else {
+            getDataById(id);
+        }
+
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
+            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
+        }
+        else if (process === "Edit") {
+            setAlerts([]);
         }
         else {
             // setAlerts([]);
@@ -128,13 +163,13 @@ function SalaryGradeTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("department/" + id);
+            const resp = await HttpService.get("division/" + id);
             if (resp.status === 200) {
-                setId(id);
-                setValues({
-                    department_code: resp.data.department_code,
-                    department_name: resp.data.department_name
-                })
+                setInitialValues({
+                    division_code: resp.data.division_code,
+                    division_name: resp.data.division_name,
+                    office_id: resp.data.office_id
+                });
                 setShowDrawer(true);
 
             }
@@ -159,8 +194,9 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            department_code: values.department_code,
-            department_name: values.department_name,
+            division_code: values.division_code,
+            division_name: values.division_name,
+            office_id: values.office_id,
             device_name: "web",
         };
 
@@ -172,7 +208,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("department", postData);
+                const resp = await HttpService.post("division", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -189,7 +225,7 @@ function SalaryGradeTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("department/" + id, postData)
+                const resp = await HttpService.patch("division/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -206,7 +242,7 @@ function SalaryGradeTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("department/" + id);
+                const resp = await HttpService.delete("division/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -259,37 +295,65 @@ function SalaryGradeTabs() {
 
                             {/* Code */}
                             <FormElement
-                                name="department_code"
-                                label="Department Code"
+                                name="division_code"
+                                label="Division/Section/Unit Code"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="department_code"
-                                    name="department_code"
-                                    placeholder="Enter Department Code"
+                                    id="division_code"
+                                    name="division_code"
+                                    placeholder="Enter Division/Section/Unit Code"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
 
-                            {/* Department Name */}
+                            {/* Division/Section/Unit Name */}
                             <FormElement
-                                name="department_name"
-                                label="Department Name"
+                                name="division_name"
+                                label="Division/Section/Unit Name"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="department_name"
-                                    name="department_name"
-                                    placeholder="Enter Department Name"
+                                    id="division_name"
+                                    name="division_name"
+                                    placeholder="Enter Division/Section/Unit Name"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
+
+                            </FormElement>
+
+                            {/* Division/Section/Unit */}
+                            <FormElement
+                                name="office_id"
+                                label="Office"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field as="select"
+                                    disabled={(process === "Delete") ? true : false}
+                                    id="office_id"
+                                    name="office_id"
+                                    placeholder="Enter Division/Section/Unit Name"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    title="Select Division/Section/Unit"
+                                >
+                                    <option value=""></option>
+                                    {offices.map((item: office, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.attributes.office_name}</option>
+                                        );
+                                    })}
+
+
+                                </Field>
 
                             </FormElement>
 
@@ -338,7 +402,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>
