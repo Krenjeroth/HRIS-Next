@@ -157,10 +157,10 @@ function positionTabs() {
                 experience: '',
                 eligibility: '',
                 competency: ''
-
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -204,7 +204,17 @@ function positionTabs() {
 
     };
 
-
+    function resetFormik() {
+        setValues({
+            title: '',
+            salary_grade_id: '',
+            education: '',
+            training: '',
+            experience: '',
+            eligibility: '',
+            competency: ''
+        });
+    }
     // clear alert
     function clearAlert(key: number) {
         const temp_alerts = [...alerts];

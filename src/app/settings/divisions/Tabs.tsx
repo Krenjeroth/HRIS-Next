@@ -42,9 +42,10 @@ type button = {
 // interfaces
 
 interface IValues {
-    division_code?: string;
-    division_name?: string;
-    office_id?: string;
+    code: string;
+    name: string;
+    office_id: string;
+    type: string;
 }
 
 type office = {
@@ -53,6 +54,11 @@ type office = {
         office_name: string;
         office_code: string;
     }
+}
+
+type datalist = {
+    id: string,
+    label: any
 }
 
 
@@ -74,8 +80,9 @@ function SalaryGradeTabs() {
 
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "division_code", "display": "Division/Section/Unit Code" },
-        { "column": "division_name", "display": "Division/Section/Unit Name" },
+        { "column": "division_code", "display": "Code" },
+        { "column": "division_name", "display": "Name" },
+        { "column": "division_type", "display": "Type" },
         { "column": "office", "display": "Office Name" }
     ]);
     const [pages, setPages] = useState<number>(0);
@@ -86,9 +93,10 @@ function SalaryGradeTabs() {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            division_code: "",
-            division_name: "",
-            office_id: ""
+            code: "",
+            name: "",
+            office_id: "",
+            type: ""
         }
     );
     const [buttons, setButtons] = useState<button[]>([
@@ -134,12 +142,14 @@ function SalaryGradeTabs() {
     useEffect(() => {
         if (id == 0) {
             setInitialValues({
-                division_code: '',
-                division_name: '',
-                office_id: ''
+                code: '',
+                name: '',
+                office_id: '',
+                type: ''
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -166,9 +176,10 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("division/" + id);
             if (resp.status === 200) {
                 setInitialValues({
-                    division_code: resp.data.division_code,
-                    division_name: resp.data.division_name,
-                    office_id: resp.data.office_id
+                    code: resp.data.division_code,
+                    name: resp.data.division_name,
+                    office_id: resp.data.office_id,
+                    type: resp.data.division_type,
                 });
                 setShowDrawer(true);
 
@@ -179,6 +190,16 @@ function SalaryGradeTabs() {
 
     };
 
+
+
+    function resetFormik() {
+        setInitialValues({
+            code: '',
+            name: '',
+            office_id: '',
+            type: ''
+        });
+    }
 
     // clear alert
     function clearAlert(key: number) {
@@ -194,9 +215,10 @@ function SalaryGradeTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            division_code: values.division_code,
-            division_name: values.division_name,
+            code: values.code,
+            name: values.name,
             office_id: values.office_id,
+            type: values.type,
             device_name: "web",
         };
 
@@ -295,15 +317,15 @@ function SalaryGradeTabs() {
 
                             {/* Code */}
                             <FormElement
-                                name="division_code"
+                                name="code"
                                 label="Division/Section/Unit Code"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="division_code"
-                                    name="division_code"
+                                    id="code"
+                                    name="code"
                                     placeholder="Enter Division/Section/Unit Code"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
@@ -313,7 +335,7 @@ function SalaryGradeTabs() {
 
                             {/* Division/Section/Unit Name */}
                             <FormElement
-                                name="division_name"
+                                name="name"
                                 label="Division/Section/Unit Name"
                                 errors={errors}
                                 touched={touched}
@@ -321,8 +343,8 @@ function SalaryGradeTabs() {
 
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="division_name"
-                                    name="division_name"
+                                    id="name"
+                                    name="name"
                                     placeholder="Enter Division/Section/Unit Name"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
@@ -345,7 +367,7 @@ function SalaryGradeTabs() {
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Division/Section/Unit"
                                 >
-                                    <option value=""></option>
+                                    <option value="">Select Office</option>
                                     {offices.map((item: office, index) => {
                                         return (
                                             <option key={index} value={item.id}>{item.attributes.office_name}</option>
@@ -353,6 +375,29 @@ function SalaryGradeTabs() {
                                     })}
 
 
+                                </Field>
+                            </FormElement>
+
+                            {/* Division/Section/Unit */}
+                            <FormElement
+                                name="type"
+                                label="Type"
+                                errors={errors}
+                                touched={touched}
+                            >
+
+                                <Field as="select"
+                                    disabled={(process === "Delete") ? true : false}
+                                    id="type"
+                                    name="type"
+                                    placeholder="Enter Division/Section/Unit Name"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    title="Select Division/Section/Unit"
+                                >
+                                    <option value="">Select Type</option>
+                                    <option value="Division">Division</option>
+                                    <option value="Section">Section</option>
+                                    <option value="Unit">Unit</option>
                                 </Field>
 
                             </FormElement>

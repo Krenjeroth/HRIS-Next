@@ -72,8 +72,8 @@ function SalaryGradeTabs() {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
-            office_code: "",
-            office_name: ""
+            office_code: '',
+            office_name: ''
         }
     );
 
@@ -81,6 +81,9 @@ function SalaryGradeTabs() {
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
+
+
+
 
     // Use Effect Hook
 
@@ -99,8 +102,6 @@ function SalaryGradeTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
 
@@ -112,6 +113,7 @@ function SalaryGradeTabs() {
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -150,6 +152,14 @@ function SalaryGradeTabs() {
         }
 
     };
+
+
+    function resetFormik() {
+        setValues({
+            office_code: '',
+            office_name: ''
+        });
+    }
 
 
     // clear alert
@@ -246,11 +256,9 @@ function SalaryGradeTabs() {
         <>
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
-
                     {({ errors, touched }) => (
 
                         // forms

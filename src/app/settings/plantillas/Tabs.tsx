@@ -12,6 +12,7 @@ import { Alert } from 'flowbite-react';
 import YearPicker from '../../components/YearPicker';
 import dayjs from 'dayjs';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import DataList from '../../components/DataList';
 
 // types
 
@@ -36,7 +37,11 @@ type header = {
 interface IValues {
     item_number: string;
     division_id: string;
+    division: string;
+    division_autosuggest: string;
     position_id: string;
+    position: string;
+    position_autosuggest: string;
     year: number;
     description: string;
     place_of_assignment: string;
@@ -75,6 +80,11 @@ type button = {
 
 }
 
+type datalist = {
+    id: string,
+    label: any
+}
+
 
 
 
@@ -95,8 +105,10 @@ function SalaryGradeTabs() {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [divisions, setDivisions] = useState<division[]>([]);
-    const [positions, setPositions] = useState<position[]>([]);
+    const [divisions, setDivisions] = useState<datalist[]>([]);
+    const [positions, setPositions] = useState<datalist[]>([]);
+    const [positionKeyword, setPositionKeyword] = useState<position[]>([]);
+    const [divisionKeyword, setDivisionKeyword] = useState<division[]>([]);
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "title", "display": "Position" },
@@ -126,7 +138,11 @@ function SalaryGradeTabs() {
         {
             item_number: "",
             division_id: "",
+            division: "",
+            division_autosuggest: "",
             position_id: "",
+            position: "",
+            position_autosuggest: "",
             year: parseInt(dayjs().format('YYYY')),
             description: "",
             place_of_assignment: "",
@@ -164,35 +180,52 @@ function SalaryGradeTabs() {
         getData();
     }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
 
-    useEffect(() => {
-        async function getDivisions() {
-            const resp = await HttpService.get("division");
-            if (resp != null) {
-                setDivisions(resp.data);
-            }
-        }
 
-        getDivisions();
-    }, []);
-
-
+    // get positions
     useEffect(() => {
         async function getPositions() {
-            const resp = await HttpService.get("position");
+            const postData = {
+                activePage: 1,
+                searchKeyword: positionKeyword,
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
-                setPositions(resp.data);
+                setPositions(resp.data.data);
             }
         }
 
         getPositions();
-    }, []);
+    }, [positionKeyword]);
+
+
+    // get divisions
+    useEffect(() => {
+        async function getPositions() {
+            const postData = {
+                activePage: 1,
+                searchKeyword: divisionKeyword,
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-division", postData);
+            if (resp != null) {
+                setDivisions(resp.data.data);
+            }
+        }
+
+        getPositions();
+    }, [divisionKeyword]);
 
     useEffect(() => {
         if (id == 0) {
             setValues({
                 item_number: "",
                 division_id: "",
+                division: "",
+                division_autosuggest: "",
                 position_id: "",
+                position: "",
+                position_autosuggest: "",
                 year: parseInt(dayjs().format('YYYY')),
                 description: "",
                 place_of_assignment: "",
@@ -201,6 +234,7 @@ function SalaryGradeTabs() {
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -228,12 +262,16 @@ function SalaryGradeTabs() {
                 setValues({
                     item_number: data.item_number,
                     division_id: data.division_id,
+                    division: data.division_name,
+                    division_autosuggest: data.division_name,
                     position_id: data.position_id,
+                    position: data.position,
+                    position_autosuggest: data.position,
                     year: parseInt(data.year),
                     description: data.description,
                     place_of_assignment: data.place_of_assignment,
                     status: data.status,
-                    position_status: "Permanent",
+                    position_status: data.position_status,
                 });
                 setShowDrawer(true);
 
@@ -244,6 +282,24 @@ function SalaryGradeTabs() {
 
     };
 
+
+
+    function resetFormik() {
+        setValues({
+            item_number: "",
+            division_id: "",
+            division: "",
+            division_autosuggest: "",
+            position_id: "",
+            position: "",
+            position_autosuggest: "",
+            year: parseInt(dayjs().format('YYYY')),
+            description: "",
+            place_of_assignment: "",
+            status: "",
+            position_status: "Permanent",
+        });
+    }
 
     // clear alert
     function clearAlert(key: number) {
@@ -360,107 +416,74 @@ function SalaryGradeTabs() {
                                     );
                                 })}
                             </div>
+                            <div className=' grid grid-cols-2'>
 
-
-                            {/* Item Number */}
-                            <FormElement
-                                name="item_number"
-                                label="Item Number"
-                                errors={errors}
-                                touched={touched}
-                            >
-                                <Field
-                                    readOnly={(process === "Delete") ? true : false}
-                                    id="item_number"
+                                {/* Item Number */}
+                                <FormElement
                                     name="item_number"
-                                    placeholder="Enter Item Number"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
-                            </FormElement>
+                                    label="Item Number"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={(process === "Delete") ? true : false}
+                                        id="item_number"
+                                        name="item_number"
+                                        placeholder="Enter Item Number"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
+
+                                {/* Year */}
+
+                                <FormElement
+                                    name="year"
+                                    label="Year *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+
+                                    <YearPicker
+                                        readOnly={(process === "Delete") ? true : false}
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        id="year"
+                                        name="year"
+                                        placeholder="Enter Date"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+
+
+                                </FormElement>
+                            </div>
 
                             {/*Division*/}
-                            <FormElement
-                                name="division_id"
+
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="division_id"
+                                setKeyword={setDivisionKeyword}
                                 label="Division/Section/Unit *"
-                                errors={errors}
-                                touched={touched}
-                            >
+                                title="Division/Section/Unit"
+                                name="division"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={divisions} />
 
-                                <Field
-                                    disabled={(process === "Delete") ? true : false}
-                                    as="select"
-                                    id="division_id"
-                                    name="division_id"
-                                    placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
-                                >
-                                    <option value="">Select Division</option>
-                                    {divisions.map((item: division, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.office}-{item.attributes.division_name}</option>
-                                        );
-                                    })}
+                            {/* positions */}
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="position_id"
+                                setKeyword={setPositionKeyword}
+                                label="Position *"
+                                title="Position"
+                                name="position"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={positions} />
 
 
-                                </Field>
-
-                            </FormElement>
-
-
-                            {/*Position*/}
-                            <FormElement
-                                name="position_id"
-                                label={`Position *`}
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    disabled={(process === "Delete") ? true : false}
-                                    as="select"
-                                    id="position_id"
-                                    name="position_id"
-                                    placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
-                                >
-                                    <option value="">Select Position</option>
-                                    {positions.map((item: position, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.title}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
-
-                            </FormElement>
-
-
-
-                            {/* Year */}
-
-                            <FormElement
-                                name="year"
-                                label="Year *"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <YearPicker
-                                    readOnly={(process === "Delete") ? true : false}
-                                    initialValues={initialValues}
-                                    setValues={setValues}
-                                    id="year"
-                                    name="year"
-                                    placeholder="Enter Date"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-
-                            </FormElement>
 
                             {/* Position Description */}
                             <FormElement

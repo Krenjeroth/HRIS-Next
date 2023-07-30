@@ -117,10 +117,11 @@ function SalaryGradeTabs() {
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
-    }, [id,reload]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -151,6 +152,13 @@ function SalaryGradeTabs() {
         }
 
     };
+
+    function resetFormik() {
+        setValues({
+            title: "",
+            date: ""
+        });
+    }
 
 
     // clear alert

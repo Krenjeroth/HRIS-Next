@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useField, useFormikContext } from "formik";
+import { FormElement } from "../commons/FormElement";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,25 +22,26 @@ type Props = {
 function index(parameter: Props) {
     const { setFieldValue } = useFormikContext();
     const [field] = useField(parameter);
+    const [startDate, setStartDate] = useState(new Date());
 
     useEffect(() => {
-        setFieldValue(field.name,parameter.initialValues[parameter.name]);
+        setFieldValue(field.name, parameter.initialValues[parameter.name]);
     }, [parameter.initialValues]);
     return (
+
         <DatePicker
             {...field}
-            id={parameter.name}
-            name={parameter.name}
-            className={parameter.className}
+            {...parameter}
             selected={(field.value && new Date(field.value)) || null}
+            showMonthDropdown
+            showYearDropdown
+            yearDropdownItemNumber={15}
+            scrollableYearDropdown
             onChange={val => {
-                if (parameter.readOnly === true) {
-                }
-                else {
-                    setFieldValue(field.name, dayjs(val).format('MM/DD/YYYY'));
-                }
+                setFieldValue(field.name, val);
             }}
         />
+
     );
 }
 

@@ -121,6 +121,7 @@ function SalaryGradeTabs() {
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -158,6 +159,15 @@ function SalaryGradeTabs() {
         }
 
     };
+
+    function resetFormik() {
+        setValues({
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: ""
+        });
+    }
 
 
     // clear alert

@@ -41,8 +41,8 @@ type button = {
 // interfaces
 
 interface IValues {
-    number?: number;
-    amount?: number;
+    number: string;
+    amount: string;
 }
 
 
@@ -56,6 +56,7 @@ function SalaryGradeTabs() {
     const [activePage, setActivePage] = useState<number>(1);
     var [searchKeyword, setSearchKeyword] = useState<string>('');
     const [orderBy, setOrderBy] = useState<string>('');
+    const [amount, setAmount] = useState<string>('0.00');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -72,10 +73,19 @@ function SalaryGradeTabs() {
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const options = {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }
+
+    const intoptions = {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }
     var [initialValues, setValues] = useState<IValues>(
         {
-            number: 0,
-            amount: 0
+            number: '',
+            amount: ''
         }
     );
 
@@ -108,12 +118,14 @@ function SalaryGradeTabs() {
 
     useEffect(() => {
         if (id == 0) {
+            setAmount('');
             setValues({
-                number: 0,
-                amount: 0
+                number: '',
+                amount: amount
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
 
@@ -136,9 +148,10 @@ function SalaryGradeTabs() {
         try {
             const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
+                setAmount(Intl.NumberFormat(undefined, options).format(resp.data.amount));
                 setValues({
                     number: resp.data.number,
-                    amount: resp.data.amount
+                    amount: amount
                 })
                 setShowDrawer(true);
 
@@ -148,6 +161,14 @@ function SalaryGradeTabs() {
         }
 
     };
+
+    function resetFormik() {
+        setAmount('');
+        setValues({
+            number: '',
+            amount: amount
+        });
+    }
 
 
     // clear alert
@@ -165,7 +186,7 @@ function SalaryGradeTabs() {
     ) => {
         const postData = {
             number: values.number,
-            amount: values.amount,
+            amount: amount.replace(/[^0-9.]/g, ''),
             device_name: "web",
         };
 
@@ -292,6 +313,30 @@ function SalaryGradeTabs() {
                                     readOnly={(process === "Delete") ? true : false}
                                     id="amount"
                                     name="amount"
+                                    value={amount}
+                                    onChange={(e: any) => {
+                                        if (e.target.value.length == 0) {
+                                            setAmount(e.target.value);
+                                        }
+                                        else {
+                                            let string = String(e.target.value);
+
+                                            let value = e.target.value.replace(/[^0-9.]/g, '');
+
+                                            if (value.indexOf('.') == -1) {
+                                                value = Intl.NumberFormat(undefined, intoptions).format(parseInt(value));
+                                            }
+                                            else {
+                                                if (string[string.length - 1] == "." || string[string.length - 2] == ".") {
+                                                    value = string;
+                                                }
+                                                else {
+                                                    value = Intl.NumberFormat(undefined, options).format(value);
+                                                }
+                                            }
+                                            setAmount(value);
+                                        }
+                                    }}
                                     placeholder="Enter Amount"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />

@@ -215,6 +215,7 @@ function AllRequestsTabs() {
             });
         }
         else {
+            resetFormik();
             getDataById(id);
         }
     }, [id, reload]);

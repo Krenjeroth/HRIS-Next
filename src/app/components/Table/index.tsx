@@ -1,12 +1,13 @@
 "use client"
 
-import { Tooltip, Button, Table } from "flowbite-react";
+import { Tooltip, Button, Table, Label } from "flowbite-react";
 import Pagination from "../Pagination";
-import { useRef, useState, ReactNode } from "react";
+import { useRef, useState, ReactNode, useMemo, useCallback } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
 import CustomRow from "./CustomRow";
+import debounce from 'lodash/debounce';
 
 
 type row = {
@@ -57,13 +58,18 @@ function index(parameter: Props) {
 
     const [startDate, setStartDate] = useState(new Date());
     const [selected, setSelected] = useState<string[]>([]);
-    function search() {
+  
+    const search = useCallback(({ value }: any) => {
         let search_input = document.getElementById("table_search") as HTMLElement;
         if (search_input != null) {
             parameter.setActivePage(1);
             parameter.setSearchKeyword((document.getElementById("table_search") as HTMLInputElement).value);
         }
-    }
+    }, []);
+
+    const debouncedSearch = useMemo(() => {
+        return debounce(search, 500);
+    }, [search]);
 
     return (
         <div className="relative overflow-x-auto">
@@ -71,19 +77,24 @@ function index(parameter: Props) {
                 <div className="">
                     {(parameter.year === undefined) ?
                         "" :
+                        <>
+                            <div className="relative">
+                                <DatePicker id="year" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    selected={startDate}
+                                    onChange={(date: Date) => {
+                                        if (parameter.setYear != undefined) {
+                                            parameter.setYear(dayjs(date).format('YYYY'));
+                                            setStartDate(date);
+                                            parameter.setActivePage(1);
+                                        }
+                                    }}
+                                    showYearPicker
+                                    dateFormat="yyyy"
+                                />
+                                <label htmlFor="year" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Year</label>
+                            </div>
 
-                        <DatePicker id="year" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            selected={startDate}
-                            onChange={(date: Date) => {
-                                if (parameter.setYear != undefined) {
-                                    parameter.setYear(dayjs(date).format('YYYY'));
-                                    setStartDate(date);
-                                    parameter.setActivePage(1);
-                                }
-                            }}
-                            showYearPicker
-                            dateFormat="yyyy"
-                        />
+                        </>
 
                     }
                 </div>
@@ -91,7 +102,12 @@ function index(parameter: Props) {
                     <label className=" font-medium">Total Records:{parameter.pages}</label>
                 </div>
                 <div className="">
-                    <input placeholder="Search here" type="text" id="table_search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onKeyUp={() => search()} />
+                  
+                    <div className="relative">
+                        <input type="text" id="table_search" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " onChange={debouncedSearch} />
+
+                        <label htmlFor="table_search" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1" >Search Here</label>
+                    </div>
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-full text-sm min-h-min">
