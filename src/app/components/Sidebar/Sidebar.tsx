@@ -49,7 +49,7 @@ function index(parameter: Props) {
 
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Orientation" icon={<MegaphoneIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
-                    <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Employees" icon={<UserIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                    <SideBarItem isMinimized={parameter.isMinimized} href={"/employees"} label="Employees" icon={<UserIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Leaves" icon={<FolderIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
