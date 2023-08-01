@@ -51,7 +51,7 @@ type button = {
 // interfaces
 
 interface IValues {
-    date_submitted: string;
+    employee_id: string;
     date_approved: string,
     date_queued: string,
     position_id: string;
@@ -92,19 +92,16 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "employee_id", "display": "Employee ID" },
+        { "column": "first_name", "display": "First Name" },
+        { "column": "middle_name", "display": "Middle Name" },
+        { "column": "last_name", "display": "Last Name" },
+        { "column": "suffix_name", "display": "Suffix" },
         { "column": "title", "display": "Position" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "division_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Plantilla" },
-        { "column": "number", "display": "Salary Grade" },
-        { "column": "amount", "display": "Monthly Salary" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
+        { "column": "contact_number", "display": "Contact Number" },
+        { "column": "email_address", "display": "Email" },
+        { "column": "employee_status", "display": "Employee Status" }
     ]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
@@ -117,7 +114,7 @@ function AllRequestsTabs() {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
-            date_submitted: '',
+            employee_id: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -132,7 +129,7 @@ function AllRequestsTabs() {
 
     function resetFormik() {
         setValues({
-            date_submitted: '',
+            employee_id: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -201,7 +198,7 @@ function AllRequestsTabs() {
     useEffect(() => {
         if (id == 0) {
             setValues({
-                date_submitted: '',
+                employee_id: '',
                 position_id: '',
                 position: '',
                 position_autosuggest: '',
@@ -253,7 +250,7 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues({
-                    date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                    employee_id: (dayjs(data.employee_id).format('MM/DD/YYYY')),
                     position_id: data.lgu_position_id,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -286,7 +283,7 @@ function AllRequestsTabs() {
     ) => {
         setLoading(true);
         const postData = {
-            date_submitted: values.date_submitted,
+            employee_id: values.employee_id,
             date_approved: values.date_approved,
             date_queued: values.date_queued,
             posting_date: values.posting_date,
@@ -438,7 +435,7 @@ function AllRequestsTabs() {
                             {/* Date Submitted */}
                             <div className="">
                                 <FormElement
-                                    name="date_submitted"
+                                    name="employee_id"
                                     label="Date Submitted *"
                                     errors={errors}
                                     touched={touched}
@@ -448,7 +445,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         readOnly={process === "Add" || process === "Edit" ? false : true}
                                         setValues={setValues}
-                                        name="date_submitted"
+                                        name="employee_id"
                                         placeholder="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
