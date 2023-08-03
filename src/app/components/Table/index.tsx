@@ -2,7 +2,7 @@
 
 import { Tooltip, Button, Table, Label } from "flowbite-react";
 import Pagination from "../Pagination";
-import { useRef, useState, ReactNode, useMemo, useCallback } from "react";
+import { useRef, useState, ReactNode, useMemo, useCallback, useEffect } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
@@ -24,7 +24,12 @@ type button = {
     icon: ReactNode,
     title: string,
     process: string,
-    class: string,
+    class: string
+}
+
+type filter = {
+    column: string,
+    value: string,
 }
 
 
@@ -32,8 +37,8 @@ type Props = {
     buttons?: button[],
     year?: number,
     setYear?: Function,
-    searchKeyword: string,
-    setSearchKeyword: Function,
+    filters: filter[],
+    setFilters: Function,
     orderBy: string,
     setOrderBy: Function,
     orderAscending: boolean,
@@ -54,17 +59,36 @@ type Props = {
 
 
 
+
+
 function index(parameter: Props) {
+
+
+
 
     const [startDate, setStartDate] = useState(new Date());
     const [selected, setSelected] = useState<string[]>([]);
-  
-    const search = useCallback(({ value }: any) => {
-        let search_input = document.getElementById("table_search") as HTMLElement;
-        if (search_input != null) {
-            parameter.setActivePage(1);
-            parameter.setSearchKeyword((document.getElementById("table_search") as HTMLInputElement).value);
-        }
+    const [filters, setFilters] = useState<filter[]>([]);
+
+
+    useEffect(() => {
+        parameter.setFilters(filters);
+    }, [filters])
+
+
+    const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        let column = e.target.id.replaceAll("_search", "");
+        let value = e.target.value;
+        let filtered = filters.filter((value) => {
+            return value.column != column;
+        });
+
+        filtered.push({
+            column: column,
+            value: value
+        })
+
+        setFilters(filtered);
     }, []);
 
     const debouncedSearch = useMemo(() => {
@@ -102,34 +126,59 @@ function index(parameter: Props) {
                     <label className=" font-medium">Total Records:{parameter.pages}</label>
                 </div>
                 <div className="">
-                  
-                    <div className="relative">
-                        <input type="text" id="table_search" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " onChange={debouncedSearch} />
+
+                    {/* <div className="relative">
+                        <input type="text" id="table_search" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
 
                         <label htmlFor="table_search" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1" >Search Here</label>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-full text-sm min-h-min">
                 <Table.Head>
                     <Table.HeadCell>
                         <span className="sr-only">
-                            Edit
+
                         </span>
                     </Table.HeadCell>
                     {parameter.headers.map((item: header, index) => {
                         return (
-                            <Table.HeadCell key={item.column} onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
-                                {item.display.replaceAll("_", " ")}
-                                {(item.column == parameter.orderBy) ?
-                                    ((parameter.orderAscending) ?
-                                        <BarsArrowUpIcon className="h-4 float-right" />
+                            <Table.HeadCell key={item.column} >
+                                <span className="invisible">PleaseSearch{item.display.replaceAll("_", " ")} </span>
+                                <div className="mb-4 " onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
+                                    <span>{item.display.replaceAll("_", " ")}
+                                    </span>
+                                    {(item.column == parameter.orderBy) ?
+                                        ((parameter.orderAscending) ?
+                                            <BarsArrowUpIcon className="h-4 float-right" />
+                                            :
+                                            <BarsArrowDownIcon className="h-4 float-right" />
+                                        )
                                         :
-                                        <BarsArrowDownIcon className="h-4 float-right" />
-                                    )
-                                    :
-                                    <Bars4Icon className="h-4 float-right" />
-                                }
+                                        <Bars4Icon className="h-4 float-right" />
+                                    }
+                                </div>
+                                <div className="relative">
+                                    <input type="text" id={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch
+                                        // (e: React.ChangeEvent<HTMLInputElement>) => {
+                                        //     let column = e.target.id.replaceAll("_search", "");
+                                        //     let value = e.target.value;
+                                        //     let filtered = filters.filter((value) => {
+                                        //         return value.column != column;
+                                        //     });
+
+                                        //     filtered.push({
+                                        //         column: column,
+                                        //         value: value
+                                        //     })
+
+                                        //     setFilters(filtered);
+                                        // }
+                                    } />
+
+                                    <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal" >Search</label>
+                                </div>
+
                             </Table.HeadCell>
                         );
                     })}
@@ -160,7 +209,7 @@ function index(parameter: Props) {
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
                                         return (
-                                            <Table.Cell key={td_index} onClick={(e) => {
+                                            <Table.Cell className="" key={td_index} onClick={(e) => {
                                                 let newArray = [...selected];
                                                 if (newArray.includes(item.id)) {
                                                     newArray = newArray.filter((str: string) => {

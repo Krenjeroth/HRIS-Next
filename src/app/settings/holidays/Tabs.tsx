@@ -38,6 +38,11 @@ type button = {
 
 }
 
+type filter = {
+    column: string;
+    value: string;
+}
+
 
 // interfaces
 
@@ -55,7 +60,7 @@ function SalaryGradeTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -93,7 +98,7 @@ function SalaryGradeTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
                 year: year
@@ -107,7 +112,7 @@ function SalaryGradeTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
     useEffect(() => {
         if (id == 0) {
@@ -344,8 +349,8 @@ function SalaryGradeTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}

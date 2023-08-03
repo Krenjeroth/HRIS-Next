@@ -37,6 +37,18 @@ type button = {
 
 }
 
+type salaryGrade = {
+    id: string;
+    attributes: {
+        number: string;
+        amount: number;
+    }
+}
+
+type filter = {
+    column: string;
+    value: string;
+}
 
 
 // interfaces
@@ -51,13 +63,7 @@ interface IValues {
     competency?: string;
 }
 
-type salaryGrade = {
-    id: string;
-    attributes: {
-        number: string;
-        amount: number;
-    }
-}
+
 
 
 
@@ -70,7 +76,7 @@ function positionTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -119,7 +125,7 @@ function positionTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -132,7 +138,7 @@ function positionTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
         // get salary grade
@@ -520,8 +526,8 @@ function positionTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}

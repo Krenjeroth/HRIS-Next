@@ -79,6 +79,10 @@ type button = {
     class: string,
 
 }
+type filter = {
+    column: string;
+    value: string;
+}
 
 
 type datalist = {
@@ -99,7 +103,7 @@ function SalaryGradeTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -165,7 +169,7 @@ function SalaryGradeTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 year: year,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
@@ -182,14 +186,14 @@ function SalaryGradeTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
     // get positions
     useEffect(() => {
         async function getPositions() {
             const postData = {
                 activePage: 1,
-                searchKeyword: positionKeyword,
+                filters: positionKeyword,
                 orderAscending: 'asc',
             };
             const resp = await HttpService.post("search-position", postData);
@@ -207,7 +211,7 @@ function SalaryGradeTabs() {
         async function getPositions() {
             const postData = {
                 activePage: 1,
-                searchKeyword: divisionKeyword,
+                filters: divisionKeyword,
                 orderAscending: 'asc',
             };
             const resp = await HttpService.post("search-division", postData);
@@ -607,8 +611,8 @@ function SalaryGradeTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}

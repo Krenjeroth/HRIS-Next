@@ -61,6 +61,11 @@ type datalist = {
     label: any
 }
 
+type filter = {
+    column: string;
+    value: string;
+}
+
 
 //main function
 
@@ -68,7 +73,7 @@ function SalaryGradeTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -83,7 +88,7 @@ function SalaryGradeTabs() {
         { "column": "division_code", "display": "Code" },
         { "column": "division_name", "display": "Name" },
         { "column": "division_type", "display": "Type" },
-        { "column": "office", "display": "Office Name" }
+        { "column": "office_name", "display": "Office Name" }
     ]);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
@@ -111,7 +116,7 @@ function SalaryGradeTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
@@ -124,7 +129,7 @@ function SalaryGradeTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
         // get offices
@@ -434,8 +439,8 @@ function SalaryGradeTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}

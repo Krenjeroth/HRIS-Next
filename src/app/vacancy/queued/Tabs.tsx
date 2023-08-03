@@ -47,6 +47,11 @@ type button = {
     class: string
 }
 
+type filter = {
+    column: string;
+    value: string;
+}
+
 
 // interfaces
 
@@ -72,7 +77,7 @@ function AllRequestsTabs() {
     const props = { setActiveTab, tabsRef };
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+      var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
@@ -142,7 +147,7 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters:filters,
                 orderBy: orderBy,
                 year: year,
                 orderAscending: orderAscending,
@@ -155,7 +160,7 @@ function AllRequestsTabs() {
             }
         }
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, setFilters, orderBy, orderAscending, pagination, activePage, year]);
 
 
     // Get LGU Positions
@@ -164,7 +169,7 @@ function AllRequestsTabs() {
         async function getLGUPositions() {
             const postData = {
                 activePage: 1,
-                searchKeyword: positionKeyword,
+                setFilters: positionKeyword,
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
@@ -458,8 +463,8 @@ function AllRequestsTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
