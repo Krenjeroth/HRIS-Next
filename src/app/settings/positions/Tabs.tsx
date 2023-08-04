@@ -54,13 +54,14 @@ type filter = {
 // interfaces
 
 interface IValues {
-    title?: string;
-    salary_grade_id?: string;
-    education?: string;
-    training?: string;
-    experience?: string;
-    eligibility?: string;
-    competency?: string;
+    code: string;
+    title: string;
+    salary_grade_id: string;
+    education: string;
+    training: string;
+    experience: string;
+    eligibility: string;
+    competency: string;
 }
 
 
@@ -86,6 +87,7 @@ function positionTabs() {
     const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
 
     const [headers, setHeaders] = useState<header[]>([
+        { "column": "code", "display": "Code" },
         { "column": "title", "display": "title" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
@@ -103,6 +105,7 @@ function positionTabs() {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
+            code: "",
             title: "",
             salary_grade_id: "",
             education: "",
@@ -156,6 +159,7 @@ function positionTabs() {
     useEffect(() => {
         if (id == 0) {
             setValues({
+                code: '',
                 title: '',
                 salary_grade_id: '',
                 education: '',
@@ -193,6 +197,7 @@ function positionTabs() {
             const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
                 setValues({
+                    code: resp.data.code,
                     title: resp.data.title,
                     salary_grade_id: resp.data.salary_grade_id,
                     education: resp.data.education,
@@ -212,6 +217,7 @@ function positionTabs() {
 
     function resetFormik() {
         setValues({
+            code: '',
             title: '',
             salary_grade_id: '',
             education: '',
@@ -235,6 +241,7 @@ function positionTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
+            code: values.code,
             title: values.title,
             salary_grade_id: values.salary_grade_id,
             education: values.education,
@@ -260,6 +267,7 @@ function positionTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -277,6 +285,7 @@ function positionTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -294,6 +303,7 @@ function positionTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
@@ -340,29 +350,13 @@ function positionTabs() {
 
                             <div className='grid grid-cols-2'>
 
-                                {/* title */}
-                                <FormElement
-                                    name="title"
-                                    label="Position Title"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <Field
 
-                                        readOnly={(process === "Delete") ? true : false}
-                                        id="title"
-                                        name="title"
-                                        placeholder="Enter Title"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                        onClick={() => { setAlerts([]); }}
-                                    />
-                                </FormElement>
 
 
                                 {/* Salary Grade*/}
                                 <FormElement
                                     name="salary_grade_id"
-                                    label="Salary Grade"
+                                    label="Salary Grade *"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -388,13 +382,49 @@ function positionTabs() {
                                     </Field>
 
                                 </FormElement>
+
+                                {/* code */}
+                                <FormElement
+                                    name="code"
+                                    label="Position Code *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+
+                                        readOnly={(process === "Delete") ? true : false}
+                                        id="code"
+                                        name="code"
+                                        placeholder="Enter code"
+                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
                             </div>
+
+                            {/* title */}
+                            <FormElement
+                                name="title"
+                                label="Position Title *"
+                                errors={errors}
+                                touched={touched}
+                            >
+                                <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter Title"
+                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
 
 
                             {/* Education */}
                             <FormElement
                                 name="education"
-                                label="Education"
+                                label="Education *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -415,7 +445,7 @@ function positionTabs() {
                             {/* Training */}
                             <FormElement
                                 name="training"
-                                label="Training"
+                                label="Training *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -436,7 +466,7 @@ function positionTabs() {
                             {/* Experience*/}
                             <FormElement
                                 name="experience"
-                                label="Experience"
+                                label="Experience *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -457,7 +487,7 @@ function positionTabs() {
                             {/* Eligibility*/}
                             <FormElement
                                 name="eligibility"
-                                label="Eligibility"
+                                label="Eligibility *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -478,7 +508,7 @@ function positionTabs() {
                             {/*Competency*/}
                             <FormElement
                                 name="competency"
-                                label="Competency"
+                                label="Competency *"
                                 errors={errors}
                                 touched={touched}
                             >

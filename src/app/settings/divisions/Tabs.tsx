@@ -241,7 +241,8 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -258,7 +259,8 @@ function SalaryGradeTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -275,7 +277,8 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
                     }
@@ -323,7 +326,7 @@ function SalaryGradeTabs() {
                             {/* Code */}
                             <FormElement
                                 name="code"
-                                label="Division/Section/Unit Code"
+                                label="Code *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -341,7 +344,7 @@ function SalaryGradeTabs() {
                             {/* Division/Section/Unit Name */}
                             <FormElement
                                 name="name"
-                                label="Division/Section/Unit Name"
+                                label="Division/Section/Unit Name *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -359,7 +362,7 @@ function SalaryGradeTabs() {
                             {/* Division/Section/Unit */}
                             <FormElement
                                 name="office_id"
-                                label="Office"
+                                label="Office *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -372,7 +375,7 @@ function SalaryGradeTabs() {
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Division/Section/Unit"
                                 >
-                                    <option value="">Select Office</option>
+                                    <option value="">Select Office </option>
                                     {offices.map((item: office, index) => {
                                         return (
                                             <option key={index} value={item.id}>{item.attributes.office_name}</option>
@@ -386,7 +389,7 @@ function SalaryGradeTabs() {
                             {/* Division/Section/Unit */}
                             <FormElement
                                 name="type"
-                                label="Type"
+                                label="Type *"
                                 errors={errors}
                                 touched={touched}
                             >
@@ -395,7 +398,7 @@ function SalaryGradeTabs() {
                                     disabled={(process === "Delete") ? true : false}
                                     id="type"
                                     name="type"
-                                    placeholder="Enter Division/Section/Unit Name"
+                                    placeholder="Enter Division/Section/Unit Name *"
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Division/Section/Unit"
                                 >

@@ -112,15 +112,15 @@ function SalaryGradeTabs() {
     const [process, setProcess] = useState<string>("Add");
     const [divisions, setDivisions] = useState<datalist[]>([]);
     const [positions, setPositions] = useState<datalist[]>([]);
-    const [positionKeyword, setPositionKeyword] = useState<position[]>([]);
-    const [divisionKeyword, setDivisionKeyword] = useState<division[]>([]);
+    const [positionKeyword, setPositionKeyword] = useState<string>('');
+    const [divisionKeyword, setDivisionKeyword] = useState<string>('');
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "position_status", "display": "Position Status" },
         { "column": "title", "display": "Position" },
+        { "column": "description", "display": "Description" },
         { "column": "office_name", "display": "Office" },
         { "column": "division_name", "display": "Division" },
-        { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Number" },
         { "column": "status", "display": "Status" },
         { "column": "year", "display": "Year" },
@@ -165,17 +165,21 @@ function SalaryGradeTabs() {
     // Use Effect Hook
     useEffect(() => {
         // query
+        let newArrayFilter = [...filters];
+
+        // add year to filter
+        newArrayFilter.push({
+            column: "year",
+            value: String(year)
+        });
 
         async function getData() {
             const postData = {
-                activePage: activePage,
-                filters: filters,
-                year: year,
-                orderBy: orderBy,
-                orderAscending: orderAscending,
                 positionStatus: positionStatus,
-                status: ['Active', 'Abolished'],
-                viewAll: false
+                activePage: activePage,
+                filters: newArrayFilter,
+                orderBy: orderBy,
+                orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -183,8 +187,6 @@ function SalaryGradeTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
@@ -193,8 +195,8 @@ function SalaryGradeTabs() {
         async function getPositions() {
             const postData = {
                 activePage: 1,
-                filters: positionKeyword,
-                orderAscending: 'asc',
+                filters: [{ column: 'title', value: positionKeyword }],
+                orderAscending: 'asc'
             };
             const resp = await HttpService.post("search-position", postData);
             if (resp != null) {
@@ -208,10 +210,11 @@ function SalaryGradeTabs() {
 
     // get divisions
     useEffect(() => {
+
         async function getPositions() {
             const postData = {
                 activePage: 1,
-                filters: divisionKeyword,
+                filters: [{ column: 'division_name', value: divisionKeyword }],
                 orderAscending: 'asc',
             };
             const resp = await HttpService.post("search-division", postData);
@@ -289,6 +292,7 @@ function SalaryGradeTabs() {
 
     };
 
+
     function resetFormik() {
         setValues({
             item_number: "",
@@ -345,6 +349,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -362,6 +367,7 @@ function SalaryGradeTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -379,6 +385,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");

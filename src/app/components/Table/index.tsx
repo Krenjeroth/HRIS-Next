@@ -68,28 +68,33 @@ function index(parameter: Props) {
 
     const [startDate, setStartDate] = useState(new Date());
     const [selected, setSelected] = useState<string[]>([]);
-    const [filters, setFilters] = useState<filter[]>([]);
-
+    const [numberFormats] = useState<string[]>(['amount']);
+    const [filters, setFilters] = useState<filter[]>(parameter.filters);
+    const options = {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }
 
     useEffect(() => {
+        parameter.setActivePage(1);
         parameter.setFilters(filters);
     }, [filters])
 
 
-    const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const search = (e: React.ChangeEvent<HTMLInputElement>) => {
         let column = e.target.id.replaceAll("_search", "");
         let value = e.target.value;
-        let filtered = filters.filter((value) => {
+        let newArray = [...filters];
+        let filtered = newArray.filter((value) => {
             return value.column != column;
         });
 
         filtered.push({
             column: column,
             value: value
-        })
-
+        });
         setFilters(filtered);
-    }, []);
+    }
 
     const debouncedSearch = useMemo(() => {
         return debounce(search, 500);
@@ -144,8 +149,8 @@ function index(parameter: Props) {
                     {parameter.headers.map((item: header, index) => {
                         return (
                             <Table.HeadCell key={item.column} >
-                                <span className="invisible">PleaseSearch{item.display.replaceAll("_", " ")} </span>
-                                <div className="mb-4 " onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
+
+                                <div className="mb-0 pb-0 " onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
                                     <span>{item.display.replaceAll("_", " ")}
                                     </span>
                                     {(item.column == parameter.orderBy) ?
@@ -158,23 +163,23 @@ function index(parameter: Props) {
                                         <Bars4Icon className="h-4 float-right" />
                                     }
                                 </div>
-                                <div className="relative">
-                                    <input type="text" id={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch
-                                        // (e: React.ChangeEvent<HTMLInputElement>) => {
-                                        //     let column = e.target.id.replaceAll("_search", "");
-                                        //     let value = e.target.value;
-                                        //     let filtered = filters.filter((value) => {
-                                        //         return value.column != column;
-                                        //     });
 
-                                        //     filtered.push({
-                                        //         column: column,
-                                        //         value: value
-                                        //     })
 
-                                        //     setFilters(filtered);
-                                        // }
-                                    } />
+                            </Table.HeadCell>
+                        );
+                    })}
+                </Table.Head>
+                <Table.Head>
+                    <Table.HeadCell>
+                        <span className="sr-only">
+
+                        </span>
+                    </Table.HeadCell>
+                    {parameter.headers.map((item: header, index) => {
+                        return (
+                            <Table.HeadCell key={item.column} >
+                                <div className="relative mt-0 pt-0">
+                                    <input type="text" id={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
 
                                     <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal" >Search</label>
                                 </div>
@@ -208,6 +213,17 @@ function index(parameter: Props) {
                                         }
                                     </Table.Cell>
                                     {parameter.headers.map((td, td_index) => {
+                                        let value = "";
+
+                                        if (td.column == "id") {
+                                            value = item.id;
+                                        }
+                                        else {
+                                            value = item.attributes[td.column];
+                                            if (numberFormats.indexOf(td.column) != -1) {
+                                                value = Intl.NumberFormat(undefined, options).format(parseFloat(value));
+                                            }
+                                        }
                                         return (
                                             <Table.Cell className="" key={td_index} onClick={(e) => {
                                                 let newArray = [...selected];
@@ -221,7 +237,7 @@ function index(parameter: Props) {
                                                 }
                                                 setSelected(newArray);
                                             }}>
-                                                {td.column == "id" ? <>{item.id}</> : <>{item.attributes[td.column]}</>}
+                                                {value}
                                             </Table.Cell>
                                         );
                                     })}

@@ -77,7 +77,7 @@ function AllRequestsTabs() {
     const props = { setActiveTab, tabsRef };
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
-      var [filters, setFilters] = useState<filter[]>([]);
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
@@ -144,14 +144,25 @@ function AllRequestsTabs() {
 
     useEffect(() => {
         // query
+        let newArrayFilter = [...filters];
+
+        // add year to filter
+        newArrayFilter.push({
+            column: "date_submitted",
+            value: String(year)
+        });
+
+        newArrayFilter.push({
+            column: "vacancies.status",
+            value: 'Queued'
+        });
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters:filters,
+                filters: newArrayFilter,
                 orderBy: orderBy,
                 year: year,
-                orderAscending: orderAscending,
-                filter: ['vacancies.status', "Queued"]
+                orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
@@ -160,7 +171,7 @@ function AllRequestsTabs() {
             }
         }
         getData();
-    }, [refresh, setFilters, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
 
     // Get LGU Positions
@@ -169,13 +180,11 @@ function AllRequestsTabs() {
         async function getLGUPositions() {
             const postData = {
                 activePage: 1,
-                setFilters: positionKeyword,
+                filters: [{ 'column': 'lgu_positions.status', 'value': 'Active' }],
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent'],
-                status: ['Active'],
-                viewAll: false
+                positionStatus: ['Permanent']
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -191,6 +200,7 @@ function AllRequestsTabs() {
         }
         getLGUPositions();
     }, [positionKeyword]);
+
 
 
     useEffect(() => {
@@ -303,6 +313,7 @@ function AllRequestsTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -321,6 +332,7 @@ function AllRequestsTabs() {
                         resetFormik();
                         alerts.push({ "type": "success", "message": "Data has been successfully Reactivated!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {

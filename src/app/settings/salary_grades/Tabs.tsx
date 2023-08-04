@@ -209,7 +209,8 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -226,7 +227,8 @@ function SalaryGradeTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -243,7 +245,8 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
-                        setRefresh(!refresh);
+                        setFilters([]);
+setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
                     }
