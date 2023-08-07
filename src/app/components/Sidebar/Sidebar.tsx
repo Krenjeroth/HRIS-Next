@@ -35,7 +35,7 @@ function index(parameter: Props) {
                     </SidebarDropdown>
 
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Applicants" icon={<UserGroupIcon className='w-6 h-6' />}>
-                        <SidebarDropdownItem href={"/"} label="Master List" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applicants/master_list"} label="Master List" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
