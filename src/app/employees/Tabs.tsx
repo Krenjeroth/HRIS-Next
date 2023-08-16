@@ -15,6 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import { createContext } from 'vm';
+import PDS from '../components/PDS';
 
 
 
@@ -178,7 +179,7 @@ function AllRequestsTabs() {
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent','Coterminous','Elective','Casual']
+                positionStatus: ['Permanent', 'Coterminous', 'Elective', 'Casual']
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -422,7 +423,7 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/2' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
@@ -438,106 +439,7 @@ function AllRequestsTabs() {
                                 })}
                             </div>
 
-                            {/* Date Submitted */}
-                            <div className="">
-                                <FormElement
-                                    name="employee_id"
-                                    label="Date Submitted *"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        readOnly={process === "Add" || process === "Edit" ? false : true}
-                                        setValues={setValues}
-                                        name="employee_id"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-                            </div>
-
-                            {/* positions */}
-                            <DataList errors={errors} touched={touched}
-                                readonly={readOnly}
-                                id="position_id"
-                                setKeyword={setPositionKeyword}
-                                label="Position *"
-                                title="Position"
-                                name="position"
-                                initialValues={initialValues}
-                                setValues={setValues}
-                                data={positionData} />
-
-
-                            {/* Date Approved */}
-                            <div className={`${process === "Approve" ? "" : "hidden"}`}>
-                                <FormElement
-                                    name="date_approved"
-                                    label="Date Approved *"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="date_approved"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                <FormElement
-                                    name="posting_date"
-                                    label="Posting Date*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="posting_date"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                <FormElement
-                                    name="closing_date"
-                                    label="Closing Date*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="closing_date"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-                            </div>
-
-
-                            {/* Date Queued */}
-                            <div className={`${process === "Queue" ? "" : "hidden"}`}>
-                                <FormElement
-                                    name="date_queued"
-                                    label="Date Queued *"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="date_queued"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-                            </div>
-
+                            <PDS errors={errors} touched={touched} ></PDS>
 
 
                             {/* submit button */}
