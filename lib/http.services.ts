@@ -6,7 +6,7 @@ import AuthService from "./auth.service";
 class HttpService {
   private static api = () => {
     const api = axios.create({
-      baseURL: "http://127.0.0.1:8000/api/",
+      baseURL: "http://localhost:8000/api/",
     });
 
     api.interceptors.response.use(

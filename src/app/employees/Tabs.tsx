@@ -1,11 +1,11 @@
 "use client";
 import { Button, Tabs, TabsRef } from 'flowbite-react';
-import React, { ReactNode, useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
 import { useState } from 'react';
 import Table from "../components/Table";
 import HttpService from '../../../lib/http.services';
 import Drawer from '../components/Drawer';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikContext, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -14,8 +14,9 @@ import DatePicker from '../components/DatePicker'
 import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { createContext } from 'vm';
 import PDS from '../components/PDS';
+import { IValues, formContextType } from '../types/pds';
+import PDSContextProvider from '../contexts/PDSContext';
 
 
 
@@ -54,19 +55,9 @@ type filter = {
 }
 
 
-// interfaces
 
-interface IValues {
-    employee_id: string;
-    date_approved: string,
-    date_queued: string,
-    position_id: string;
-    position: string;
-    position_autosuggest: string;
-    status: string;
-    posting_date: string,
-    closing_date: string,
-}
+
+
 
 
 //main function
@@ -121,7 +112,7 @@ function AllRequestsTabs() {
     var [initialValues, setValues] = useState<IValues>(
         {
             employee_id: '',
-            position_id: '',
+            birth_date: '',
             position: '',
             position_autosuggest: '',
             status: '',
@@ -131,12 +122,11 @@ function AllRequestsTabs() {
             closing_date: '',
         }
     );
-    const initialValueContext = createContext();
 
     function resetFormik() {
         setValues({
             employee_id: '',
-            position_id: '',
+            birth_date: '',
             position: '',
             position_autosuggest: '',
             status: '',
@@ -146,6 +136,7 @@ function AllRequestsTabs() {
             closing_date: '',
         });
     }
+
 
     // Use Effect Hook
 
@@ -202,7 +193,7 @@ function AllRequestsTabs() {
         if (id == 0) {
             setValues({
                 employee_id: '',
-                position_id: '',
+                birth_date: '',
                 position: '',
                 position_autosuggest: '',
                 status: '',
@@ -254,7 +245,7 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 setValues({
                     employee_id: (dayjs(data.employee_id).format('MM/DD/YYYY')),
-                    position_id: data.lgu_position_id,
+                    birth_date: data.lgu_birth_date,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
                     status: data.status,
@@ -291,7 +282,7 @@ function AllRequestsTabs() {
             date_queued: values.date_queued,
             posting_date: values.posting_date,
             closing_date: values.closing_date,
-            position_id: values.position_id,
+            birth_date: values.birth_date,
             position: values.position,
             device_name: "web",
             process: process,
@@ -438,9 +429,13 @@ function AllRequestsTabs() {
                                     );
                                 })}
                             </div>
-
-                            <PDS errors={errors} touched={touched} ></PDS>
-
+                            <PDSContextProvider
+                                errors={errors}
+                                touched={touched}
+                                initialValues={initialValues}
+                                setValues={setValues}>
+                                <PDS/>
+                            </PDSContextProvider>
 
                             {/* submit button */}
 

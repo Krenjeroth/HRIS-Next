@@ -2,8 +2,12 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    // modern: true,
+    // modularize: true,
+    // css: true,
   },
+
   // reactStrictMode: false,
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;

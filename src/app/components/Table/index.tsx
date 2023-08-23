@@ -108,7 +108,7 @@ function index(parameter: Props) {
                         "" :
                         <>
                             <div className="relative">
-                                <DatePicker id="year" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                <DatePicker name="year" id="year" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                     selected={startDate}
                                     onChange={(date: Date) => {
                                         if (parameter.setYear != undefined) {
@@ -128,15 +128,11 @@ function index(parameter: Props) {
                     }
                 </div>
                 <div className="flex items-center justify-center text-center my-2">
-                    <label className=" font-medium">Total Records:{parameter.pages}</label>
+                    <div className=" font-medium">Total Records:{parameter.pages}</div>
                 </div>
                 <div className="">
 
-                    {/* <div className="relative">
-                        <input type="text" id="table_search" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
 
-                        <label htmlFor="table_search" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1" >Search Here</label>
-                    </div> */}
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-full text-sm min-h-min">
@@ -177,9 +173,9 @@ function index(parameter: Props) {
                     </Table.HeadCell>
                     {parameter.headers.map((item: header, index) => {
                         let strlen = item.column.length;
-                        let hiddenLabel = item.column+"here";
-                        if(strlen<7){
-                            hiddenLabel="Searchhere"
+                        let hiddenLabel = item.column + "here";
+                        if (strlen < 7) {
+                            hiddenLabel = "Searchhere"
                         }
 
                         return (
@@ -188,7 +184,7 @@ function index(parameter: Props) {
                                     <span className="invisible">
                                         {hiddenLabel}
                                     </span>
-                                    <input type="text" id={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-2 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
+                                    <input type="text" id={`${item.column}_search`} name={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-2 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
 
                                     <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal mt-2" >Search</label>
                                 </div>

@@ -1,6 +1,5 @@
 "use client";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
 
 class AuthService {
 

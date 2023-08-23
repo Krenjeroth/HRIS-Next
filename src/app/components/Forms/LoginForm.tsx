@@ -82,7 +82,7 @@ export const LoginForm = () => {
               />
             </FormElement>
 
-            <FormElement
+            <FormElement 
               name="password"
               label="Password"
               errors={errors}
