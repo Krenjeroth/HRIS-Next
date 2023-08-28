@@ -1,5 +1,5 @@
 
-
+"use client";
 import LoginCard from "./LoginCard";
 export const metadata = {
   title: 'HRIS-Login',

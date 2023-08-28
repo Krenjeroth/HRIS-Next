@@ -1,6 +1,9 @@
+
+"use client";
 import React, { createContext, useContext, useState } from 'react';
 import { IValues, formContextType } from '../types/pds';
-export const PDSContext = createContext<formContextType | null>(null);
+import { error } from 'console';
+const PDSContext = createContext<formContextType | null>(null);
 
 
 type Props = {
@@ -8,32 +11,35 @@ type Props = {
     errors: any,
     touched: any,
     isEmployee?: boolean,
-    initialValues: any
+    initialValues: IValues
     setValues: Function
     children?: React.ReactNode,
 }
 
 
 export default function index(parameter: Props) {
-    const [b, setB] = useState<formContextType>({
+    return <PDSContext.Provider value={{
         readonly: parameter.readonly,
         errors: parameter.errors,
         touched: parameter.touched,
         isEmployee: parameter.isEmployee,
         initialValues: parameter.initialValues,
         setValues: parameter.setValues
-    })
-    return <PDSContext.Provider value={b}>
+    }}>
         {parameter.children}
     </PDSContext.Provider>;
 };
 
+
 export function usePDSContext() {
-    const context = useContext(PDSContext);
-    if (!context) {
-        throw new Error(
-            "PDS Context error"
-        );
-        return context;
-    }
+
+    return "hello";
+    // const context = useContext(PDSContext);
+    // if (!context) {
+    //     throw new Error(
+    //         "PDS Context Error"
+    //     );
+    // }
+
+    // return context;
 }

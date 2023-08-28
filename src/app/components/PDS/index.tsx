@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field } from 'formik';
 import DatePicker from "../DatePicker";
-import { PDSContext, usePDSContext } from "@/app/contexts/PDSContext"
+import { usePDSContext } from "@/app/contexts/PDSContext"
 import { formContextType } from '@/app/types/pds';
 
 type Props = {
@@ -17,8 +17,7 @@ type Props = {
 }
 
 function index() {
-    console.log(usePDSContext);
-    // const parameter = useContext();
+    // const context = usePDSContext();
     return (
         <>
         </>
@@ -33,11 +32,11 @@ function index() {
         //     >
 
         //         <div className='grid lg:grid-cols-4 grid-col'>
-        //             <FormElement
+        //             {/* <FormElement
         //                 name="employee_id"
         //                 label="Employee ID"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //                 className='lg:col-span-2'
         //             >
         //                 <Field
@@ -46,13 +45,13 @@ function index() {
         //                     placeholder="Employee ID"
         //                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
         //                 />
-        //             </FormElement>
+        //             </FormElement> */}
 
-        //             <FormElement
+        //             {/* <FormElement
         //                 name="employee_type"
         //                 label="Employee Type"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field as="select"
         //                     id="employee_type"
@@ -77,8 +76,8 @@ function index() {
         //             <FormElement
         //                 name="birth_place"
         //                 label="First Name"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             // className='lg:col-span-2'
         //             >
         //                 <Field
@@ -91,8 +90,8 @@ function index() {
         //             <FormElement
         //                 name="middle_name"
         //                 label="Middle Name"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="middle_name"
@@ -105,8 +104,8 @@ function index() {
         //             <FormElement
         //                 name="last_name"
         //                 label="Last Name"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="last_name"
@@ -120,8 +119,8 @@ function index() {
         //             <FormElement
         //                 name="suffix"
         //                 label="Suffix"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="suffix"
@@ -135,8 +134,8 @@ function index() {
         //             <FormElement
         //                 name="birth_place"
         //                 label="Birth Place"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //                 className='lg:col-span-4'
         //             >
         //                 <Field
@@ -149,12 +148,12 @@ function index() {
         //             <FormElement
         //                 name="birth_date"
         //                 label="Birthdate"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <DatePicker
-        //                     initialValues={parameter.initialValues}
-        //                     setValues={parameter.setValues}
+        //                     initialValues={context.initialValues}
+        //                     setValues={context.setValues}
         //                     name="birth_date"
         //                     placeholder="Enter Date"
         //                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -164,8 +163,8 @@ function index() {
         //             <FormElement
         //                 name="age"
         //                 label="Age"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="age"
@@ -178,8 +177,8 @@ function index() {
         //             <FormElement
         //                 name="sex"
         //                 label="Sex"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     as="select"
@@ -196,8 +195,8 @@ function index() {
         //             <FormElement
         //                 name="height"
         //                 label="Height"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="height"
@@ -210,8 +209,8 @@ function index() {
         //             <FormElement
         //                 name="weight"
         //                 label="Weight"
-        //                 errors={parameter.errors}
-        //                 touched={parameter.touched}
+        //                 errors={context.errors}
+        //                 touched={context.touched}
         //             >
         //                 <Field
         //                     id="weight"
@@ -219,7 +218,7 @@ function index() {
         //                     placeholder="Weight"
         //                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
         //                 />
-        //             </FormElement>
+        //             </FormElement> */}
         //         </div>
         //     </Tabs.Item>
         //     <Tabs.Item

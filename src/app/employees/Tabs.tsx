@@ -18,8 +18,6 @@ import PDS from '../components/PDS';
 import { IValues, formContextType } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 
-
-
 // types
 
 type row = {
@@ -434,7 +432,7 @@ function AllRequestsTabs() {
                                 touched={touched}
                                 initialValues={initialValues}
                                 setValues={setValues}>
-                                <PDS/>
+                                <PDS />
                             </PDSContextProvider>
 
                             {/* submit button */}
