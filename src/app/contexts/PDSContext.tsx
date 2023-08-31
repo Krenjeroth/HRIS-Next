@@ -32,14 +32,11 @@ export default function index(parameter: Props) {
 
 
 export function usePDSContext() {
-
-    return "hello";
-    // const context = useContext(PDSContext);
-    // if (!context) {
-    //     throw new Error(
-    //         "PDS Context Error"
-    //     );
-    // }
-
-    // return context;
+    const context = useContext(PDSContext);
+    if (!context) {
+        throw new Error(
+            "PDS Context Error"
+        );
+    }
+    return context;
 }
