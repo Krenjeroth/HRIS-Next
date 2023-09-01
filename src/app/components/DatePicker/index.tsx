@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 type Props = {
+    id: string,
     name: string,
     placeholder: string,
     className: string,

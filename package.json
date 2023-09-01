@@ -37,6 +37,7 @@
     "react-dom": "^18.2.0",
     "react-imask": "^6.6.1",
     "react-redux": "^8.0.5",
+    "react-select-country-list": "^2.2.3",
     "react-timer-hook": "^3.0.6",
     "typescript": "5.0.3",
     "yup": "^1.2.0"

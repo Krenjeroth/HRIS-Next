@@ -9,6 +9,11 @@ export type formContextType = {
     setValues: Function,
 };
 
+export type country = {
+    value: string,
+    label: string,
+};
+
 
 // interfaces
 

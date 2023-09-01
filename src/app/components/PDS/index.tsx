@@ -1,14 +1,20 @@
 "use client";
 import { Tabs } from 'flowbite-react';
-import React, { useContext } from 'react'
+import React, { useContext, useState, useMemo } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field } from 'formik';
 import DatePicker from "../DatePicker";
 import { usePDSContext } from "@/app/contexts/PDSContext"
 import { formContextType } from '@/app/types/pds';
+import { country } from '@/app/types/pds';
+import countryList from 'react-select-country-list';
 
 function index() {
     const context = usePDSContext();
+    const [country, setCountry] = useState('');
+    const options = useMemo(() => countryList().getData(), []);
+
+
     return (
         <Tabs.Group
             aria-label="Default tabs"
@@ -19,7 +25,6 @@ function index() {
                 // icon={HiUserCircle}
                 title="Personal"
             >
-
                 <div className='grid lg:grid-cols-4 grid-col'>
                     <FormElement
                         name="employee_id"
@@ -38,7 +43,7 @@ function index() {
 
                     <FormElement
                         name="employee_type"
-                        label="Employee Type"
+                        label="Employee Type *"
                         className='lg:col-span-2'
                         errors={context.errors}
                         touched={context.touched}
@@ -64,13 +69,12 @@ function index() {
                 <div className='grid lg:grid-cols-4 grid-col'>
                     <FormElement
                         name="first_name"
-                        label="Employee ID *"
+                        label="First Name *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
                     >
                         <Field
-                            id="First Name"
+                            id="first_name"
                             name="first_name"
                             placeholder="First Name"
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -95,7 +99,7 @@ function index() {
 
                     <FormElement
                         name="last_name"
-                        label="Last Name"
+                        label="Last Name *"
                         errors={context.errors}
                         touched={context.touched}
                     >
@@ -125,10 +129,10 @@ function index() {
 
                     <FormElement
                         name="birth_place"
-                        label="Birth Place"
+                        label="Birth Place *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-4'
+                        className='lg:col-span-2'
                     >
                         <Field
                             name="birth_place"
@@ -137,17 +141,19 @@ function index() {
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                         />
                     </FormElement>
+
                     <FormElement
                         name="birth_date"
-                        label="Birthdate"
+                        label="Birthdate *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='lg:col-span-2'
                     >
                         <DatePicker
                             initialValues={context.initialValues}
                             setValues={context.setValues}
-                            name="birth_date"
                             id="birth_date"
+                            name="birth_date"
                             placeholder="Enter Date"
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                         />
@@ -155,7 +161,7 @@ function index() {
 
                     <FormElement
                         name="age"
-                        label="Age"
+                        label="Age *"
                         errors={context.errors}
                         touched={context.touched}
                     >
@@ -169,7 +175,7 @@ function index() {
 
                     <FormElement
                         name="sex"
-                        label="Sex"
+                        label="Sex *"
                         errors={context.errors}
                         touched={context.touched}
                     >
@@ -187,30 +193,136 @@ function index() {
 
                     <FormElement
                         name="height"
-                        label="Height"
+                        label="Height *"
                         errors={context.errors}
                         touched={context.touched}
                     >
                         <Field
+                            type="number"
                             id="height"
                             name="height"
-                            placeholder="Height"
+                            placeholder="Height (Meters)"
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                         />
                     </FormElement>
 
                     <FormElement
                         name="weight"
-                        label="Weight"
+                        label="Weight *"
                         errors={context.errors}
                         touched={context.touched}
                     >
                         <Field
+                            type="number"
                             id="weight"
                             name="weight"
-                            placeholder="Weight"
+                            placeholder="Weight (Kilograms)"
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                         />
+                    </FormElement>
+
+                    <FormElement
+                        name="citizenship"
+                        label="Citizenship *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='lg:col-span-2'
+                    >
+                        <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
+                            <label className='p-1 mt-2' htmlFor='citizenship'>
+                                <Field type="radio" id="citizenship" name="citizenship" value="Filipino" />
+                                <span className='ml-2'>Filipino</span>
+                            </label>
+                            <label className='p-1 mt-2' htmlFor='citizenship2'>
+                                <Field type="radio" id="citizenship2" name="citizenship" value="Dual Citizenship" />
+                                <span className='ml-2'>Dual Citizenship</span>
+                            </label>
+                        </div>
+                    </FormElement>
+
+                    <FormElement
+                        name="citizenship"
+                        label="Citizenship Type"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='lg:col-span-2'
+                    >
+                        <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
+                            <label className='p-1 mt-2' htmlFor='citizenship_type'>
+                                <Field type="radio" id="citizenship_type" name="citizenship_type" value="By Birth" />
+                                <span className='ml-2'>By Birth</span>
+                            </label>
+                            <label className='p-1 mt-2' htmlFor='citizenship_type2'>
+                                <Field type="radio" id="citizenship_type2" name="citizenship_type" value="By Naturalization" />
+                                <span className='ml-2'>By Naturalization</span>
+                            </label>
+                        </div>
+                    </FormElement>
+
+                    <FormElement
+                        name="country"
+                        label="Country *"
+                        errors={context.errors}
+                        touched={context.touched}
+                    >
+                        <Field
+                            as="select"
+                            id="country"
+                            name="country"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        >
+
+                            {options.map((object: country) => {
+                                return <option key={object.value} value={object.label}>{object.label}</option>
+                            })}
+
+                        </Field>
+                    </FormElement>
+
+
+
+                    <FormElement
+                        name="blood_type"
+                        label="Blood Type *"
+                        errors={context.errors}
+                        touched={context.touched}
+                    >
+                        <Field
+                            as="select"
+                            id="blood_type"
+                            name="blood_type"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        >
+                            <option value="">Select Type </option>
+                            <option value="A+"> A+ </option>
+                            <option value="A-"> A- </option>
+                            <option value="B+"> B+ </option>
+                            <option value="B-"> B- </option>
+                            <option value="O+"> O+ </option>
+                            <option value="O-"> O- </option>
+                            <option value="AB+"> AB+ </option>
+                            <option value="AB-"> AB- </option>
+                        </Field>
+                    </FormElement>
+
+                    <FormElement
+                        name="civil_status"
+                        label="Civil Status *"
+                        errors={context.errors}
+                        touched={context.touched}
+                    >
+                        <Field
+                            as="select"
+                            id="civil_status"
+                            name="civil_status"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        >
+                            <option value="">Select Type </option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </Field>
                     </FormElement>
                 </div>
             </Tabs.Item>
