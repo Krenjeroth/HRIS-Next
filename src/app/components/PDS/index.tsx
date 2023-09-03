@@ -8,6 +8,8 @@ import { usePDSContext } from "@/app/contexts/PDSContext"
 import { formContextType } from '@/app/types/pds';
 import { country } from '@/app/types/pds';
 import countryList from 'react-select-country-list';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark } from 'react-icons/hi';
 
 function index() {
     const context = usePDSContext();
@@ -17,21 +19,25 @@ function index() {
 
     return (
         <Tabs.Group
-            aria-label="Default tabs"
-            style="default"
+            aria-label="Pills"
+            style="pills"
         >
             <Tabs.Item
                 active
-                // icon={HiUserCircle}
+                icon={HiUser}
                 title="Personal"
             >
                 <div className='grid lg:grid-cols-4 grid-col'>
+                    <div className='col-span-4'>
+                        <span className=' text-cyan-600 font-medium '>I. Personal Information</span>
+                        <hr className='text-cyan-600' />
+                    </div>
                     <FormElement
                         name="employee_id"
                         label="Employee ID *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             id="employee_id"
@@ -44,7 +50,7 @@ function index() {
                     <FormElement
                         name="employee_type"
                         label="Employee Type *"
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-2'
                         errors={context.errors}
                         touched={context.touched}
                     >
@@ -63,15 +69,13 @@ function index() {
 
                         </Field>
                     </FormElement>
-                </div>
 
-
-                <div className='grid lg:grid-cols-4 grid-col'>
                     <FormElement
                         name="first_name"
                         label="First Name *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             id="first_name"
@@ -88,6 +92,7 @@ function index() {
                         label="Middle Name"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             id="middle_name"
@@ -102,6 +107,7 @@ function index() {
                         label="Last Name *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             id="last_name"
@@ -117,6 +123,7 @@ function index() {
                         label="Suffix"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             id="suffix"
@@ -132,7 +139,7 @@ function index() {
                         label="Birth Place *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             name="birth_place"
@@ -147,7 +154,7 @@ function index() {
                         label="Birthdate *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-1'
                     >
                         <DatePicker
                             initialValues={context.initialValues}
@@ -164,8 +171,10 @@ function index() {
                         label="Age *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
+                            type="number"
                             id="age"
                             name="age"
                             placeholder="Age"
@@ -178,6 +187,7 @@ function index() {
                         label="Sex *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             as="select"
@@ -196,6 +206,7 @@ function index() {
                         label="Height *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             type="number"
@@ -211,6 +222,7 @@ function index() {
                         label="Weight *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             type="number"
@@ -226,7 +238,7 @@ function index() {
                         label="Citizenship *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-2'
                     >
                         <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                             <label className='p-1 mt-2' htmlFor='citizenship'>
@@ -245,7 +257,7 @@ function index() {
                         label="Citizenship Type"
                         errors={context.errors}
                         touched={context.touched}
-                        className='lg:col-span-2'
+                        className='col-span-4 md:col-span-2'
                     >
                         <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                             <label className='p-1 mt-2' htmlFor='citizenship_type'>
@@ -264,6 +276,7 @@ function index() {
                         label="Country *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             as="select"
@@ -286,6 +299,7 @@ function index() {
                         label="Blood Type *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             as="select"
@@ -310,6 +324,7 @@ function index() {
                         label="Civil Status *"
                         errors={context.errors}
                         touched={context.touched}
+                        className='col-span-4 md:col-span-2'
                     >
                         <Field
                             as="select"
@@ -324,10 +339,15 @@ function index() {
                             <option value="Widowed">Widowed</option>
                         </Field>
                     </FormElement>
+
+                    <div className='col-span-4 mt-4'>
+                        <span className=' text-cyan-600 font-medium '>Personal Information</span>
+                        <hr className='text-cyan-600' />
+                    </div>
                 </div>
             </Tabs.Item>
             <Tabs.Item
-                // icon={MdDashboard}
+                icon={HiUserGroup}
                 title="Family and Education"
             >
                 <p>
@@ -341,7 +361,7 @@ function index() {
                 </p>
             </Tabs.Item>
             <Tabs.Item
-                // icon={HiAdjustments}
+                icon={HiIdentification}
                 title="Eligibility and Experience"
             >
                 <p>
@@ -355,7 +375,7 @@ function index() {
                 </p>
             </Tabs.Item>
             <Tabs.Item
-                // icon={HiClipboardList}
+                icon={HiCollection}
                 title="Voluntary Work and Experience"
             >
                 <p>
@@ -369,7 +389,7 @@ function index() {
                 </p>
             </Tabs.Item>
             <Tabs.Item
-
+                icon={HiBookmark}
                 title="Other Information"
             >
                 <p>
