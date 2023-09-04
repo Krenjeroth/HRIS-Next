@@ -401,8 +401,144 @@ function AllRequestsTabs() {
                 setFormikErrors(error.response.data.errors, setFieldError);
             }
         }
-
         setLoading(false);
+    };
+
+    const updateAddress = async (
+        values: any,
+        { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
+    ) => {
+        console.log("test");
+        // setLoading(true);
+        // const postData = {
+        //     employee_id: values.employee_id,
+        //     date_approved: values.date_approved,
+        //     date_queued: values.date_queued,
+        //     posting_date: values.posting_date,
+        //     closing_date: values.closing_date,
+        //     birth_date: values.birth_date,
+        //     position: values.position,
+        //     device_name: "web",
+        //     process: process,
+        //     status: "Active"
+        // };
+
+
+        // alerts.forEach(element => {
+        //     alerts.pop();
+        // });
+
+
+        // try {
+        //     // add
+        //     if (process === "Add") {
+        //         const resp = await HttpService.post("vacancy", postData);
+        //         if (resp.status === 200) {
+        //             let status = resp.data.status;
+        //             if (status === "Request was Successful") {
+        //                 alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+        //                 resetForm({});
+        //                 resetFormik();
+        //                 setActivePage(1);
+        //                 setFilters([]);
+        //                 setRefresh(!refresh);
+        //                 setId(0);
+        //                 setProcess("Add");
+        //             }
+        //             else {
+        //                 if (typeof resp.data != "undefined") {
+        //                     alerts.push({ "type": "failure", "message": resp.data.message });
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     // update
+        //     else if (process === "Edit") {
+
+        //         const resp = await HttpService.patch("vacancy/" + id, postData)
+        //         if (resp.status === 200) {
+        //             let status = resp.data.status;
+        //             if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+        //                 alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+        //                 setActivePage(1);
+        //                 setFilters([]);
+        //                 setRefresh(!refresh);
+        //             }
+        //             else {
+        //                 if (typeof resp.data != "undefined") {
+        //                     alerts.push({ "type": "failure", "message": resp.data.message });
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     // approve and queue
+        //     else if (process === "Approve" || process === "Queue") {
+        //         if (id != 0) {
+        //             if (process === "Approve") {
+        //                 postData.status = "Approved";
+        //             }
+        //             if (process == "Queue") {
+        //                 postData.status = "Queued";
+        //             }
+        //             const resp = await HttpService.patch("vacancy/" + id, postData)
+        //             if (resp.status === 200) {
+        //                 let status = resp.data.status;
+        //                 if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+        //                     alerts.push({ "type": "success", "message": `Data has been  successfully ${postData.status} !` });
+        //                     resetForm({});
+        //                     resetFormik();
+        //                     setActivePage(1);
+        //                     setFilters([]);
+        //                     setRefresh(!refresh);
+        //                     setId(0);
+        //                 }
+        //                 else {
+        //                     if (typeof resp.data != "undefined") {
+        //                         alerts.push({ "type": "failure", "message": resp.data.message });
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         else {
+        //             setProcess("Add");
+        //         }
+        //     }
+
+        //     // delete
+        //     else {
+        //         if (id != 0) {
+        //             const resp = await HttpService.delete("vacancy/" + id);
+        //             if (resp.status === 200) {
+        //                 let status = resp.data.status;
+        //                 if (status === "Request was Successful") {
+        //                     alerts.push({ "type": "success", "message": resp.data.message });
+        //                     setActivePage(1);
+        //                     setFilters([]);
+        //                     setRefresh(!refresh);
+        //                     setId(0);
+
+        //                 }
+        //                 else {
+        //                     if (typeof resp.data != "undefined") {
+        //                         alerts.push({ "type": "failure", "message": resp.data.message });
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         else {
+        //             setProcess("Add");
+        //             // setShowDrawer(false);
+        //         }
+        //     }
+        // }
+        // catch (error: any) {
+        //     if (error.response.status === 422) {
+        //         setFormikErrors(error.response.data.errors, setFieldError);
+        //     }
+        // }
+
+        // setLoading(false);
 
     };
 
@@ -412,7 +548,7 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-1/2' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
@@ -428,6 +564,7 @@ function AllRequestsTabs() {
                                 })}
                             </div>
                             <PDSContextProvider
+                                updateAddress={updateAddress}
                                 errors={errors}
                                 touched={touched}
                                 initialValues={initialValues}

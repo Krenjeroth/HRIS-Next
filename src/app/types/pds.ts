@@ -2,6 +2,7 @@
 
 export type formContextType = {
     readonly?: boolean,
+    updateAddress: Function,
     errors: any,
     touched: any,
     isEmployee?: boolean,

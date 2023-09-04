@@ -11,14 +11,16 @@ type Props = {
     errors: any,
     touched: any,
     isEmployee?: boolean,
-    initialValues: IValues
-    setValues: Function
+    initialValues: IValues,
+    setValues: Function,
+    updateAddress: Function
     children?: React.ReactNode,
 }
 
 
 export default function index(parameter: Props) {
     return <PDSContext.Provider value={{
+        updateAddress: parameter.updateAddress,
         readonly: parameter.readonly,
         errors: parameter.errors,
         touched: parameter.touched,

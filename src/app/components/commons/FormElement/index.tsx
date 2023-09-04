@@ -33,9 +33,14 @@ export const FormElement: React.FC<Props> = ({
         <FormFieldError name="name" errors={errors} touched={touched} />
 
       </div> */}
-      <label htmlFor={name} className="text-sm font-medium">
-        {label}
-      </label>
+      {!name
+        ? <span className="text-sm font-medium">
+          {label}
+        </span>
+        : <label htmlFor={name} className="text-sm font-medium">
+          {label}
+        </label>}
+
       <div className="relative mt-1">{children}</div>
       <FormFieldError name={name} errors={errors} touched={touched} />
     </div>

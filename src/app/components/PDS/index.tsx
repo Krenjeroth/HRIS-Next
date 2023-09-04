@@ -1,5 +1,5 @@
 "use client";
-import { Tabs } from 'flowbite-react';
+import { Tabs, ToggleSwitch } from 'flowbite-react';
 import React, { useContext, useState, useMemo } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field } from 'formik';
@@ -10,13 +10,21 @@ import { country } from '@/app/types/pds';
 import countryList from 'react-select-country-list';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark } from 'react-icons/hi';
+import Address from '../Address';
+
+
+
+
+
+
 
 function index() {
+
     const context = usePDSContext();
     const [country, setCountry] = useState('');
+    const [dualCitizen, setDualCitizen] = useState(false);
+    const [sameAddress, setSameAddress] = useState(false);
     const options = useMemo(() => countryList().getData(), []);
-
-
     return (
         <Tabs.Group
             aria-label="Pills"
@@ -234,7 +242,7 @@ function index() {
                     </FormElement>
 
                     <FormElement
-                        name="citizenship"
+                        name=""
                         label="Citizenship *"
                         errors={context.errors}
                         touched={context.touched}
@@ -242,22 +250,26 @@ function index() {
                     >
                         <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                             <label className='p-1 mt-2' htmlFor='citizenship'>
-                                <Field type="radio" id="citizenship" name="citizenship" value="Filipino" />
+                                <Field type="radio" id="citizenship" name="citizenship" value="Filipino" onClick={() => {
+                                    setDualCitizen(false);
+                                }} />
                                 <span className='ml-2'>Filipino</span>
                             </label>
                             <label className='p-1 mt-2' htmlFor='citizenship2'>
-                                <Field type="radio" id="citizenship2" name="citizenship" value="Dual Citizenship" />
+                                <Field type="radio" id="citizenship2" name="citizenship" value="Dual Citizenship" onClick={() => {
+                                    setDualCitizen(true);
+                                }} />
                                 <span className='ml-2'>Dual Citizenship</span>
                             </label>
                         </div>
                     </FormElement>
 
                     <FormElement
-                        name="citizenship"
-                        label="Citizenship Type"
+                        name=""
+                        label="Citizenship Type *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='col-span-4 md:col-span-2'
+                        className={`col-span-4 md:col-span-2 ${dualCitizen ? '' : 'invisible'} `}
                     >
                         <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                             <label className='p-1 mt-2' htmlFor='citizenship_type'>
@@ -276,13 +288,14 @@ function index() {
                         label="Country *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='col-span-4 md:col-span-2'
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             as="select"
                             id="country"
                             name="country"
                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                            autoComplete="on"
                         >
 
                             {options.map((object: country) => {
@@ -292,14 +305,12 @@ function index() {
                         </Field>
                     </FormElement>
 
-
-
                     <FormElement
                         name="blood_type"
                         label="Blood Type *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='col-span-4 md:col-span-2'
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             as="select"
@@ -324,7 +335,7 @@ function index() {
                         label="Civil Status *"
                         errors={context.errors}
                         touched={context.touched}
-                        className='col-span-4 md:col-span-2'
+                        className='col-span-4 md:col-span-1'
                     >
                         <Field
                             as="select"
@@ -340,10 +351,159 @@ function index() {
                         </Field>
                     </FormElement>
 
+
+                    <FormElement
+                        name="tin"
+                        label="Tax Identification Number *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="tin"
+                            name="tin"
+                            placeholder="Tax Identification Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+                    <FormElement
+                        name="gsis"
+                        label="GSIS Number *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="gsis"
+                            name="gsis"
+                            placeholder="GSIS Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+                    <FormElement
+                        name="pagibig"
+                        label="PAGIBIG Number *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="pagibig"
+                            name="pagibig"
+                            placeholder="PAGIBIG Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+                    <FormElement
+                        name="philhealth"
+                        label="Philhealth Number *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="philhealth"
+                            name="philhealth"
+                            placeholder="Philhealth Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+                    <FormElement
+                        name="sss"
+                        label="SSS Number"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="sss"
+                            name="sss"
+                            placeholder="SSS Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
                     <div className='col-span-4 mt-4'>
-                        <span className=' text-cyan-600 font-medium '>Personal Information</span>
+                        <span className=' text-cyan-600 font-medium '>Residential Address</span>
                         <hr className='text-cyan-600' />
                     </div>
+
+                    <Address name='residential' />
+
+                    <div className='col-span-4 mt-4'>
+                        <span className=' text-cyan-600 font-medium '>Permanent Address</span>
+                        <hr className='text-cyan-600' />
+                    </div>
+
+                    <div
+                        className='col-span-4 mt-4'
+                        id="toggle"
+                    >
+                        <ToggleSwitch
+                            checked={sameAddress}
+                            label="Same as Residential Address"
+                            onChange={function () {
+                                setSameAddress(!sameAddress);
+
+                            }}
+                        />
+                    </div>
+
+                    <Address name='permanent' />
+
+                    <div className='col-span-4 mt-4'>
+                        <span className=' text-cyan-600 font-medium '></span>
+                        <hr className='text-cyan-600' />
+                    </div>
+                    <FormElement
+                        name="telephone"
+                        label="Telephone Number"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="telephone"
+                            name="telephone"
+                            placeholder="Telephone Number"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+                    <FormElement
+                        name="mobile"
+                        label="Mobile Number *"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="mobile"
+                            name="mobile"
+                            placeholder="09XXXXXXXXX"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        />
+                    </FormElement>
+
+
+                    <FormElement
+                        name="email"
+                        label="Email Address (if any)"
+                        errors={context.errors}
+                        touched={context.touched}
+                        className='col-span-4 md:col-span-1'
+                    >
+                        <Field
+                            id="email"
+                            name="email"
+                            placeholder="juan@gmail.com"
+                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                            autoComplete="on"
+                        />
+                    </FormElement>
                 </div>
             </Tabs.Item>
             <Tabs.Item
