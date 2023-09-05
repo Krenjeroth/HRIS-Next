@@ -444,10 +444,10 @@ function index() {
                     >
                         <ToggleSwitch
                             checked={sameAddress}
-                            label="Same as Residential Address"
+                            label="The same as Residential Address"
                             onChange={function () {
                                 setSameAddress(!sameAddress);
-
+                                context.updateAddress();
                             }}
                         />
                     </div>
