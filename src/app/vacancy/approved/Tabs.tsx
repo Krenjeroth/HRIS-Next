@@ -407,6 +407,7 @@ function AllRequestsTabs() {
                                 >
 
                                     <DatePicker
+                                        id="date_submitted"
                                         readOnly={process === "Reactivate" ? true : false}
                                         initialValues={initialValues}
                                         setValues={setValues}
@@ -440,6 +441,7 @@ function AllRequestsTabs() {
                                     touched={touched}
                                 >
                                     <DatePicker
+                                        id="date_approved"
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="date_approved"
@@ -455,6 +457,7 @@ function AllRequestsTabs() {
                                     touched={touched}
                                 >
                                     <DatePicker
+                                        id="posting_date"
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="posting_date"
@@ -470,6 +473,7 @@ function AllRequestsTabs() {
                                     touched={touched}
                                 >
                                     <DatePicker
+                                        id="closing_date"
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="closing_date"

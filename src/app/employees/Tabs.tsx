@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Table from "../components/Table";
 import HttpService from '../../../lib/http.services';
 import Drawer from '../components/Drawer';
-import { Form, Formik, FormikContext, FormikHelpers } from 'formik';
+import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
 import { IValues, formContextType } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
-
 // types
 
 type row = {
@@ -107,32 +106,53 @@ function AllRequestsTabs() {
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const defaultData = {
+        employee_id: '',
+        employee_type: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        suffix: '',
+        birth_place: '',
+        birth_date: '',
+        age: 0,
+        sex: '',
+        height: 0,
+        weight: 0,
+        citizenship: '',
+        citizenship_type: '',
+        country: '',
+        blood_type: '',
+        civil_status: '',
+        tin: '',
+        gsis: '',
+        pagibig: '',
+        philhealth: '',
+        sss: '',
+        residential_province: '',
+        residential_municipality: '',
+        residential_barangay: '',
+        residential_house: '',
+        residential_subdivision: '',
+        residential_street: '',
+        residential_zipcode: '',
+        permanent_province: '',
+        permanent_municipality: '',
+        permanent_barangay: '',
+        permanent_house: '',
+        permanent_subdivision: '',
+        permanent_street: '',
+        permanent_zipcode: '',
+        telephone: '',
+        mobile: '',
+        email: '',
+    };
     var [initialValues, setValues] = useState<IValues>(
-        {
-            employee_id: '',
-            birth_date: '',
-            position: '',
-            position_autosuggest: '',
-            status: '',
-            date_approved: '',
-            date_queued: '',
-            posting_date: '',
-            closing_date: '',
-        }
+        defaultData
     );
 
     function resetFormik() {
-        setValues({
-            employee_id: '',
-            birth_date: '',
-            position: '',
-            position_autosuggest: '',
-            status: '',
-            date_approved: '',
-            date_queued: '',
-            posting_date: '',
-            closing_date: '',
-        });
+        setValues(defaultData);
     }
 
 
@@ -189,17 +209,7 @@ function AllRequestsTabs() {
 
     useEffect(() => {
         if (id == 0) {
-            setValues({
-                employee_id: '',
-                birth_date: '',
-                position: '',
-                position_autosuggest: '',
-                status: '',
-                date_approved: '',
-                date_queued: '',
-                posting_date: '',
-                closing_date: '',
-            });
+            setValues(defaultData);
         }
         else {
             resetFormik();
@@ -241,17 +251,7 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                setValues({
-                    employee_id: (dayjs(data.employee_id).format('MM/DD/YYYY')),
-                    birth_date: data.lgu_birth_date,
-                    position: `${data.title} - ${data.item_number}`,
-                    position_autosuggest: `${data.title} - ${data.item_number}`,
-                    status: data.status,
-                    date_approved: '',
-                    date_queued: '',
-                    posting_date: '',
-                    closing_date: '',
-                });
+                setValues(defaultData);
                 setShowDrawer(true);
             }
         }
@@ -405,7 +405,8 @@ function AllRequestsTabs() {
     };
 
     const updateAddress = () => {
-        console.log("testing");
+
+        // console.log("testing");
     };
 
 
@@ -439,11 +440,11 @@ function AllRequestsTabs() {
 
                             {/* submit button */}
 
-                            <div className="grid grid-flow-row auto-rows-max mt-5">
+                            {/* <div className="grid grid-flow-row auto-rows-max mt-5">
                                 <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
-                            </div>
+                            </div> */}
                         </Form>
                     )}
                 </Formik>
@@ -456,15 +457,15 @@ function AllRequestsTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                     ref={props.tabsRef}
-                    onActiveTabChange={(tab) => {
-                        // if (tab == 1) {
-                        //     router.push('/vacancy/approved');
-                        // }
-                        // else if (2) {
-                        //     router.push('/vacancy/queued');
-                        // }
+                // onActiveTabChange={(tab) => {
+                //     // if (tab == 1) {
+                //     //     router.push('/vacancy/approved');
+                //     // }
+                //     // else if (2) {
+                //     //     router.push('/vacancy/queued');
+                //     // }
 
-                    }}
+                // }}
 
                 >
 

@@ -1,14 +1,17 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePDSContext } from "@/app/contexts/PDSContext"
 import { FormElement } from '../commons/FormElement';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 // These plugin has no typescript types
 // @ts-expect-error
 import { sort, provinces, getCityMunByProvince, getBarangayByMun } from 'phil-reg-prov-mun-brgy';
+import { ToggleSwitch } from 'flowbite-react';
 
 type props = {
-    name: string
+    name: string,
+    sameAddress?: boolean,
+    setSameAddress: Function
 }
 
 type province = {
@@ -31,12 +34,15 @@ type barangay = {
 
 
 
-function index(paramater: props) {
+function index(parameter: props) {
+    const [province, setProvince] = useState<string>('');
     const [municipality, setMunicipality] = useState<string>('');
     const [provinces_list, setProvinces] = useState<province[]>(sort(provinces, 'A'));
     const [municipalities, setMunicipalities] = useState<municipality[]>([]);
     const [barangays, setBarangays] = useState<barangay[]>([]);
     const context = usePDSContext();
+    const { setFieldValue } = useFormikContext();
+
 
     const provinceOnchange = (e: React.FormEvent<HTMLInputElement>) => {
         const filtered = provinces_list.filter(((object: province) => {
@@ -44,10 +50,12 @@ function index(paramater: props) {
         }))
         setMunicipality('');
         if (filtered.length === 0) {
+            setProvince('');
             setMunicipalities([]);
             setBarangays([]);
         }
         else {
+            setProvince(filtered[0].name);
             const municipalities = getCityMunByProvince(filtered[0].prov_code);
             setMunicipalities(municipalities);
             setBarangays([]);
@@ -69,22 +77,53 @@ function index(paramater: props) {
         }
     }
 
+    useEffect(() => {
+        if (parameter.sameAddress === true) {
+            setProvince('');
+            setMunicipality('');
+            setFieldValue(`${parameter.name}_barangay`, '');
+            setFieldValue(`${parameter.name}_house`, '');
+            setFieldValue(`${parameter.name}_subdivision`, '');
+            setFieldValue(`${parameter.name}_street`, '');
+            setFieldValue(`${parameter.name}_zipcode`, '');
+        }
+    }, [parameter.sameAddress])
+
 
     return (
         <>
+
+            {typeof parameter.sameAddress == 'undefined' ?
+                '' :
+                <div
+                    className={`col-span-4 mt-4 `}
+                    id="toggle"
+                >
+                    <ToggleSwitch
+                        checked={!parameter.sameAddress ? false : true}
+                        label="The same as Residential Address"
+                        onChange={function () {
+                            parameter.setSameAddress(typeof parameter.sameAddress == 'undefined' ? false : !parameter.sameAddress);
+                        }}
+                    />
+                </div>
+            }
+
+
             <FormElement
-                name={`${paramater.name}_province`}
+                name={`${parameter.name}_province`}
                 label="Province *"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field as="select"
+                    value={province}
                     onChange={(e: React.FormEvent<HTMLInputElement>) => {
                         provinceOnchange(e);
                     }}
-                    id={`${paramater.name}_province`}
-                    name={`${paramater.name}_province`}
+                    id={`${parameter.name}_province`}
+                    name={`${parameter.name}_province`}
                     placeholder="Province"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
@@ -96,11 +135,11 @@ function index(paramater: props) {
             </FormElement>
 
             <FormElement
-                name={`${paramater.name}_municipality`}
+                name={`${parameter.name}_municipality`}
                 label="Municipality/City *"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
                     onChange={(e: React.FormEvent<HTMLInputElement>) => {
@@ -108,8 +147,8 @@ function index(paramater: props) {
                     }}
                     value={municipality}
                     as="select"
-                    id={`${paramater.name}_municipality`}
-                    name={`${paramater.name}_municipality`}
+                    id={`${parameter.name}_municipality`}
+                    name={`${parameter.name}_municipality`}
                     placeholder="Municipality"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
@@ -122,17 +161,17 @@ function index(paramater: props) {
             </FormElement>
 
             <FormElement
-                name={`${paramater.name}_barangay`}
+                name={`${parameter.name}_barangay`}
                 label="Barangay"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
 
                     as="select"
-                    id={`${paramater.name}_barangay`}
-                    name={`${paramater.name}_barangay`}
+                    id={`${parameter.name}_barangay`}
+                    name={`${parameter.name}_barangay`}
                     placeholder="Barangay *"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
@@ -147,30 +186,30 @@ function index(paramater: props) {
 
 
             <FormElement
-                name={`${paramater.name}_house`}
+                name={`${parameter.name}_house`}
                 label="House/Block/Lot No. *"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
-                    id={`${paramater.name}_house`}
-                    name={`${paramater.name}_house`}
+                    id={`${parameter.name}_house`}
+                    name={`${parameter.name}_house`}
                     placeholder="House/Block/Lot No."
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
 
             <FormElement
-                name={`${paramater.name}_subdivision`}
+                name={`${parameter.name}_subdivision`}
                 label="Subdivision/Village"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
-                    id={`${paramater.name}_subdivision`}
-                    name={`${paramater.name}_subdivision`}
+                    id={`${parameter.name}_subdivision`}
+                    name={`${parameter.name}_subdivision`}
                     placeholder="Subdivision/Village"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
@@ -178,30 +217,30 @@ function index(paramater: props) {
 
 
             <FormElement
-                name={`${paramater.name}_street`}
+                name={`${parameter.name}_street`}
                 label="Street"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
-                    id={`${paramater.name}_street`}
-                    name={`${paramater.name}_street`}
+                    id={`${parameter.name}_street`}
+                    name={`${parameter.name}_street`}
                     placeholder="Street"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
 
             <FormElement
-                name={`${paramater.name}_zipcode`}
+                name={`${parameter.name}_zipcode`}
                 label="Zipcode *"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
             >
                 <Field
-                    id={`${paramater.name}_zipcode`}
-                    name={`${paramater.name}_zipcode`}
+                    id={`${parameter.name}_zipcode`}
+                    name={`${parameter.name}_zipcode`}
                     placeholder="Zipcode"
                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />

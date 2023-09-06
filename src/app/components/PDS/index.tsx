@@ -1,8 +1,8 @@
 "use client";
-import { Tabs, ToggleSwitch } from 'flowbite-react';
-import React, { useContext, useState, useMemo } from 'react'
+import { Button, Tabs, TabsRef, ToggleSwitch } from 'flowbite-react';
+import React, { useContext, useState, useMemo, useRef } from 'react'
 import { FormElement } from '../commons/FormElement';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import DatePicker from "../DatePicker";
 import { usePDSContext } from "@/app/contexts/PDSContext"
 import { formContextType } from '@/app/types/pds';
@@ -25,10 +25,17 @@ function index() {
     const [dualCitizen, setDualCitizen] = useState(false);
     const [sameAddress, setSameAddress] = useState(false);
     const options = useMemo(() => countryList().getData(), []);
+    const [activeTab, setActiveTab] = useState<number>(0);
+    const tabsRef = useRef<TabsRef>(null);
+    const props = { setActiveTab, tabsRef };
+    const { setFieldValue } = useFormikContext();
+
     return (
         <Tabs.Group
             aria-label="Pills"
             style="pills"
+            ref={props.tabsRef}
+            onActiveTabChange={(tab) => props.setActiveTab(tab)}
         >
             <Tabs.Item
                 active
@@ -431,28 +438,16 @@ function index() {
                         <hr className='text-cyan-600' />
                     </div>
 
-                    <Address name='residential' />
+                    <Address name='residential' setSameAddress={setSameAddress} />
 
                     <div className='col-span-4 mt-4'>
                         <span className=' text-cyan-600 font-medium '>Permanent Address</span>
                         <hr className='text-cyan-600' />
                     </div>
 
-                    <div
-                        className='col-span-4 mt-4'
-                        id="toggle"
-                    >
-                        <ToggleSwitch
-                            checked={sameAddress}
-                            label="The same as Residential Address"
-                            onChange={function () {
-                                setSameAddress(!sameAddress);
-                                context.updateAddress();
-                            }}
-                        />
-                    </div>
 
-                    <Address name='permanent' />
+
+                    <Address name='permanent' sameAddress={sameAddress} setSameAddress={setSameAddress} />
 
                     <div className='col-span-4 mt-4'>
                         <span className=' text-cyan-600 font-medium '></span>
@@ -504,6 +499,12 @@ function index() {
                             autoComplete="on"
                         />
                     </FormElement>
+
+                    <div className='col-span-4 mt-5 mx-auto'>
+                        <Button className='btn btn-sm text-white rounded-lg bg-stone-900  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
+                            Next
+                        </Button>
+                    </div>
                 </div>
             </Tabs.Item>
             <Tabs.Item
