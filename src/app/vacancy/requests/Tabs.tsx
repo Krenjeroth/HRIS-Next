@@ -467,7 +467,7 @@ function AllRequestsTabs() {
                                         readOnly={process === "Add" || process === "Edit" ? false : true}
                                         setValues={setValues}
                                         name="date_submitted"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -498,7 +498,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="date_approved"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -513,7 +513,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="posting_date"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -528,7 +528,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="closing_date"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -547,7 +547,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         setValues={setValues}
                                         name="date_queued"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>

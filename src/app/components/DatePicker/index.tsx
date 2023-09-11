@@ -3,16 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useField, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+
 type Props = {
     id: string,
     name: string,
-    placeholder: string,
+    placeholderText: string,
     className: string,
     initialValues: any,
     readOnly?: boolean,

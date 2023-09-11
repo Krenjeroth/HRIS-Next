@@ -51,6 +51,12 @@ type filter = {
     value: string;
 }
 
+type child = {
+    name: string;
+    birthday: Date;
+}
+
+
 
 
 
@@ -67,9 +73,10 @@ function AllRequestsTabs() {
     const [activeTab, setActiveTab] = useState<number>(1);
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
+    const [children, setChildren] = useState<child[]>([]);
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
-    var [filters, setFilters] = useState<filter[]>([]);
+    const [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
@@ -471,7 +478,7 @@ function AllRequestsTabs() {
 
                     <Tabs.Item title={title + "s"} active>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

@@ -465,7 +465,7 @@ function SalaryGradeTabs() {
                                         setValues={setValues}
                                         id="year"
                                         name="year"
-                                        placeholder="Enter Date"
+                                        placeholderText="Enter Date"
                                         className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
 
