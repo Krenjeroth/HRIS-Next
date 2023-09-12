@@ -52,8 +52,9 @@ type filter = {
 }
 
 type child = {
+    number: number;
     name: string;
-    birthday: Date;
+    birthday: string;
 }
 
 
@@ -104,6 +105,8 @@ function AllRequestsTabs() {
         { "column": "email_address", "display": "Email" },
         { "column": "employee_status", "display": "Employee Status" }
     ]);
+
+
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
@@ -114,6 +117,8 @@ function AllRequestsTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const defaultData = {
+
+        // personal information
         employee_id: '',
         employee_type: '',
         first_name: '',
@@ -153,6 +158,31 @@ function AllRequestsTabs() {
         telephone: '',
         mobile: '',
         email: '',
+        spouse_first_name: '',
+        spouse_middle_name: '',
+        spouse_last_name: '',
+        spouse_suffix: '',
+        spouse_occupation: '',
+        spouse_employer: '',
+        spouse_employer_address: '',
+        spouse_employer_telephone: '',
+        children: [
+            {
+                number: 1,
+                name: '',
+                email: '',
+            },
+        ],
+        father_first_name: '',
+        father_middle_name: '',
+        father_last_name: '',
+        father_suffix: '',
+        mother_first_name: '',
+        mother_middle_name: '',
+        mother_last_name: '',
+        mother_suffix: '',
+        // family
+
     };
     var [initialValues, setValues] = useState<IValues>(
         defaultData

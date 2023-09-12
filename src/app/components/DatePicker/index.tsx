@@ -16,7 +16,6 @@ type Props = {
     className: string,
     initialValues: any,
     readOnly?: boolean,
-    setValues: Function
 }
 
 

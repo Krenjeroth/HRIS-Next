@@ -7,6 +7,7 @@ import { usePDSContext } from "@/app/contexts/PDSContext"
 import { Button } from 'flowbite-react';
 import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
 import { date } from 'yup';
+import { FormFieldError } from '../commons/FormFieldError';
 
 type child = {
     number: number;
@@ -23,7 +24,6 @@ function Family() {
     const context = usePDSContext();
     const [children, setChildren] = useState<child[]>([
         { number: 1, name: "First", birthday: "" },
-        { number: 2, name: "Second", birthday: "" }
     ]);
 
     return (
@@ -170,17 +170,28 @@ function Family() {
                     {/* <hr className='text-cyan-600' /> */}
                 </div>
 
-                <FieldArray
-                    name="children"
-                    render={arrayHelpers => (
+                <FieldArray name="children">
+                    {({ insert, remove, push }) => (
                         <>
                             {children.map((object: child, index: number) => {
                                 return <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col' key={index}>
-                                    <div className="mt-4 mx-2 col-span-4 md:col-span-2">
+                                    <div className="mt-4 mx-2 col-span-4 md:col-span-1">
                                         <Field
-                                            id={`child_name${index}`}
-                                            name={`child_name${index}`}
+                                            id={`children.${index}.number`}
+                                            name={`children.${index}.number`}
+                                            placeholder="Number"
+                                            // value={object.name}
+                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            autoComplete="on"
+                                        />
+                                    </div>
+
+                                    <div className="mt-4 mx-2 col-span-4 md:col-span-1">
+                                        <Field
+                                            id={`children.${index}.name`}
+                                            name={`children.${index}.name`}
                                             placeholder="Name"
+                                            // value={object.name}
                                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
@@ -188,44 +199,77 @@ function Family() {
                                     <div className="mt-4 mx-2 col-span-4 md:col-span-1">
                                         <DatePicker
                                             initialValues={context.initialValues}
-                                            setValues={context.setValues}
-                                            id={`child_birth_date${index}`}
-                                            name={`child_birth_date${index}`}
+                                            id={`children.${index}.birthday`}
+                                            name={`children.${index}.birthday`}
                                             placeholderText="Birthday"
                                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         />
                                     </div>
                                     <div className="mt-4 col-span-4 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
-
+                                            // let reinitialize_children = [...children].map((object: child, index: number) => {
+                                            //     object.number = index + 1;
+                                            //     return object;
+                                            // });
+                                            // remove(index);
+                                            // arrayHelpers.remove(index);
                                         }}>
                                             <HiUserRemove />
                                         </Button>
                                     </div>
-
-
-                                    {/* <DatePicker
-                                    initialValues={context.initialValues}
-                                    setValues={context.setValues}
-                                    id={`child_birth_date${index}`}
-                                    name={`child_birth_date${index}`}
-                                    placeholderText="Birthday"
-                                    className="mt-4 mx-2 col-span-4 md:col-span-1 p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                                <div className='mt-4 mx-2 align-middle col-span-4 md:col-span-1'>
-                                    <Button className='btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left ' onClick={() => {
-
-                                    }}>
-                                        <HiUserRemove />
-                                    </Button>
-                                </div> */}
-
+                                    {/* <div className="col">
+                                        <Field
+                                            name={`friends.${index}.name`}
+                                            placeholder="Jane Doe"
+                                            type="text"
+                                        />
+                                        <FormFieldError name={`friends.${index}.name`} errors={context.errors} touched={context.touched} />
+                                    </div>
+                                    <div className="col">
+                                        <label htmlFor={`friends.${index}.email`}>Email</label>
+                                        <Field
+                                            name={`friends.${index}.email`}
+                                            placeholder="jane@acme.com"
+                                            type="email"
+                                        />
+                                        <FormFieldError name={`friends.${index}.name`} errors={context.errors} touched={context.touched} />
+                                    </div>
+                                    <div className="col">
+                                        <button
+                                            type="button"
+                                            className="secondary"
+                                            onClick={() => remove(index)}
+                                        >
+                                            X
+                                        </button>
+                                    </div> */}
                                 </div>
                             })}
+                            <div className='grid md:grid-cols-4 grid-col'>
+                                <div className='col-span-4 md:col-start-4 md:col-span-1  mt-4 flex justify-end'>
+                                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm mx-auto ' onClick={() => {
+                                        let reinitialize_children = [...children].map((object: child, index: number) => {
+                                            object.number = index + 1;
+                                            return object;
+                                        });
+
+                                        reinitialize_children.push({
+                                            number: reinitialize_children.length + 1,
+                                            name: '',
+                                            birthday: ''
+                                        })
+                                        setChildren(reinitialize_children);
+
+                                    }}>
+                                        <HiUserAdd />
+                                    </Button>
+                                </div>
+                            </div>
                         </>
                     )}
-                />
+                </FieldArray>
+
+
             </div>
 
             {/* {
@@ -256,7 +300,7 @@ function Family() {
                         >
                             <DatePicker
                                 initialValues={context.initialValues}
-                                setValues={context.setValues}
+                               
                                 id={`child_birth_date${index}`}
                                 name={`child_birth_date${index}`}
                                 placeholderText="Birthday"
@@ -269,13 +313,24 @@ function Family() {
 
 
             <div className='grid md:grid-cols-4 grid-col'>
-                <div className='col-span-4 mt-4 flex justify-end'>
-                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm float-left ' onClick={() => {
+                {/* <div className='col-span-4 md:col-start-4 md:col-span-1  mt-4 flex justify-end'>
+                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm mx-auto ' onClick={() => {
+                        let reinitialize_children = [...children].map((object: child, index: number) => {
+                            object.number = index + 1;
+                            return object;
+                        });
+
+                        reinitialize_children.push({
+                            number: reinitialize_children.length + 1,
+                            name: '',
+                            birthday: ''
+                        })
+                        setChildren(reinitialize_children);
 
                     }}>
                         <HiUserAdd />
                     </Button>
-                </div>
+                </div> */}
 
 
 

@@ -156,7 +156,7 @@ function Personal() {
             >
                 <DatePicker
                     initialValues={context.initialValues}
-                    setValues={context.setValues}
+                   
                     id="birth_date"
                     name="birth_date"
                     placeholderText="Enter Date"
