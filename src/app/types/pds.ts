@@ -8,12 +8,31 @@ export type formContextType = {
     isEmployee?: boolean,
     initialValues: IValues,
     setValues: Function,
+    setChildren: Function,
+    isLoading: boolean
 };
 
 export type country = {
     value: string,
     label: string,
 };
+
+export type child = {
+    number: number,
+    name: string,
+    birthday: string,
+}
+
+export type school = {
+    level: string,
+    name: string,
+    degree: string,
+    period_from: string,
+    period_to: string,
+    highest_unit_earned: string,
+    year_graduated: string,
+    scholarship_academic_awards: string
+}
 
 
 // interfaces
@@ -59,4 +78,22 @@ export interface IValues {
     telephone: string,
     mobile: string,
     email: string,
+    spouse_first_name: string,
+    spouse_middle_name: string,
+    spouse_last_name: string,
+    spouse_suffix: string,
+    spouse_occupation: string,
+    spouse_employer: string,
+    spouse_employer_address: string,
+    spouse_employer_telephone: string,
+    children: child[],
+    father_first_name: string,
+    father_middle_name: string,
+    father_last_name: string,
+    father_suffix: string,
+    mother_first_name: string,
+    mother_middle_name: string,
+    mother_last_name: string,
+    mother_suffix: string,
+    schools: school[],
 }

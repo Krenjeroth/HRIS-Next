@@ -5,6 +5,7 @@ import { FormElement } from '../commons/FormElement';
 import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark } from 'react-icons/hi';
 import Personal from './Personal';
 import FamilyEducation from './Family';
+import Education from './Education';
 
 
 
@@ -24,7 +25,7 @@ function index() {
             <Tabs.Item
                 active
                 icon={HiUser}
-                title="Personal"
+                title={`Personal`}
             >
                 <Personal />
                 <div className='grid lg:grid-cols-4 grid-col'>
@@ -37,13 +38,14 @@ function index() {
             </Tabs.Item>
             <Tabs.Item
                 icon={HiUserGroup}
-                title="Family and Education"
+                title={`Family and Education`}
             >
                 <FamilyEducation />
+                <Education></Education>
             </Tabs.Item >
             < Tabs.Item
                 icon={HiIdentification}
-                title="Eligibility and Experience"
+                title={`Eligibility and Experience`}
             >
                 <p>
                     This is
@@ -57,7 +59,7 @@ function index() {
             </ Tabs.Item>
             <Tabs.Item
                 icon={HiCollection}
-                title="Voluntary Work and Experience"
+                title={`Voluntary Work and Experience`}
             >
                 <p>
                     This is
@@ -71,7 +73,7 @@ function index() {
             </Tabs.Item>
             <Tabs.Item
                 icon={HiBookmark}
-                title="Other Information"
+                title={`Other Information`}
             >
                 <p>
                     Disabled content

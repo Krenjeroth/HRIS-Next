@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType } from '../types/pds';
+import { IValues, formContextType, child, school } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -51,11 +51,7 @@ type filter = {
     value: string;
 }
 
-type child = {
-    number: number;
-    name: string;
-    birthday: string;
-}
+
 
 
 
@@ -75,6 +71,36 @@ function AllRequestsTabs() {
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
     const [children, setChildren] = useState<child[]>([]);
+    const [schools, setSchools] = useState<school[]>([{
+        level: '',
+        name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    },
+    {
+        level: '',
+        name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    },
+    {
+        level: '',
+        name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    }]);
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
@@ -116,7 +142,7 @@ function AllRequestsTabs() {
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    const defaultData = {
+    const [defaultData, setDefaultData] = useState<IValues>({
 
         // personal information
         employee_id: '',
@@ -166,13 +192,7 @@ function AllRequestsTabs() {
         spouse_employer: '',
         spouse_employer_address: '',
         spouse_employer_telephone: '',
-        children: [
-            {
-                number: 1,
-                name: '',
-                email: '',
-            },
-        ],
+        children: children,
         father_first_name: '',
         father_middle_name: '',
         father_last_name: '',
@@ -181,9 +201,10 @@ function AllRequestsTabs() {
         mother_middle_name: '',
         mother_last_name: '',
         mother_suffix: '',
+        schools: schools
         // family
 
-    };
+    });
     var [initialValues, setValues] = useState<IValues>(
         defaultData
     );
@@ -311,6 +332,7 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         setLoading(true);
+        console.log(values);
         const postData = {
             employee_id: values.employee_id,
             date_approved: values.date_approved,
@@ -467,6 +489,8 @@ function AllRequestsTabs() {
                                 })}
                             </div>
                             <PDSContextProvider
+                                isLoading={isLoading}
+                                setChildren={setChildren}
                                 updateAddress={updateAddress}
                                 errors={errors}
                                 touched={touched}

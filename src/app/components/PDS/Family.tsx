@@ -1,30 +1,28 @@
 "use client";
-import React, { useContext, useState, useMemo, useRef } from 'react'
+import React, { useContext, useState, useMemo, useRef, useEffect } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field, FieldArray, useFormikContext } from 'formik';
 import DatePicker from "../DatePicker";
 import { usePDSContext } from "@/app/contexts/PDSContext"
-import { Button } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
 import { date } from 'yup';
 import { FormFieldError } from '../commons/FormFieldError';
-
-type child = {
-    number: number;
-    name: string;
-    birthday: string;
-}
-
-
-
+import { child } from '@/app/types/pds';
+import { initial } from 'lodash';
 
 
 function Family() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [children, setChildren] = useState<child[]>([
-        { number: 1, name: "First", birthday: "" },
-    ]);
+    const [children, setChildren] = useState<child[]>([...context.initialValues.children]);
+
+    useEffect(() => {
+        let reinitializeValues = context.initialValues;
+        reinitializeValues.children = children;
+    }, [children])
+
+
 
     return (
         <>
@@ -173,25 +171,23 @@ function Family() {
                 <FieldArray name="children">
                     {({ insert, remove, push }) => (
                         <>
-                            {children.map((object: child, index: number) => {
+                            {children.map((object, index: number) => {
                                 return <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col' key={index}>
-                                    <div className="mt-4 mx-2 col-span-4 md:col-span-1">
+                                    {/* <div className="mt-4 mx-2 col-span-4 md:col-span-1">
                                         <Field
                                             id={`children.${index}.number`}
                                             name={`children.${index}.number`}
                                             placeholder="Number"
-                                            // value={object.name}
                                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
-                                    </div>
+                                    </div> */}
 
-                                    <div className="mt-4 mx-2 col-span-4 md:col-span-1">
+                                    <div className="mt-4 mx-2 col-span-4 md:col-span-2">
                                         <Field
                                             id={`children.${index}.name`}
                                             name={`children.${index}.name`}
                                             placeholder="Name"
-                                            // value={object.name}
                                             className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
@@ -207,47 +203,31 @@ function Family() {
                                     </div>
                                     <div className="mt-4 col-span-4 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
-                                            // let reinitialize_children = [...children].map((object: child, index: number) => {
-                                            //     object.number = index + 1;
-                                            //     return object;
-                                            // });
-                                            // remove(index);
-                                            // arrayHelpers.remove(index);
-                                        }}>
-                                            <HiUserRemove />
+                                            remove(index);
+                                            let reinitialize_children = [...children].filter((object, filterIndedx: number) => {
+                                                return index != filterIndedx;
+                                            });
+
+                                            reinitialize_children = reinitialize_children.map((object, index: number) => {
+                                                object.number = index + 1;
+                                                return object;
+                                            });
+
+                                            setChildren(reinitialize_children);
+                                        }
+                                        }>
+                                            <Tooltip content="Remove Child">
+                                                <HiUserRemove className='text-lg' />
+                                            </Tooltip>
                                         </Button>
                                     </div>
-                                    {/* <div className="col">
-                                        <Field
-                                            name={`friends.${index}.name`}
-                                            placeholder="Jane Doe"
-                                            type="text"
-                                        />
-                                        <FormFieldError name={`friends.${index}.name`} errors={context.errors} touched={context.touched} />
-                                    </div>
-                                    <div className="col">
-                                        <label htmlFor={`friends.${index}.email`}>Email</label>
-                                        <Field
-                                            name={`friends.${index}.email`}
-                                            placeholder="jane@acme.com"
-                                            type="email"
-                                        />
-                                        <FormFieldError name={`friends.${index}.name`} errors={context.errors} touched={context.touched} />
-                                    </div>
-                                    <div className="col">
-                                        <button
-                                            type="button"
-                                            className="secondary"
-                                            onClick={() => remove(index)}
-                                        >
-                                            X
-                                        </button>
-                                    </div> */}
                                 </div>
                             })}
-                            <div className='grid md:grid-cols-4 grid-col'>
-                                <div className='col-span-4 md:col-start-4 md:col-span-1  mt-4 flex justify-end'>
-                                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm mx-auto ' onClick={() => {
+                            <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>
+                                <div className="mt-4 mx-2 md:col-start-4 col-span-4 md:col-span-1">
+
+                                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
+
                                         let reinitialize_children = [...children].map((object: child, index: number) => {
                                             object.number = index + 1;
                                             return object;
@@ -257,11 +237,20 @@ function Family() {
                                             number: reinitialize_children.length + 1,
                                             name: '',
                                             birthday: ''
-                                        })
+                                        });
+
+                                        push({
+                                            number: context.initialValues.children.length + 1,
+                                            name: '',
+                                            birthday: ''
+                                        });
+
                                         setChildren(reinitialize_children);
 
                                     }}>
-                                        <HiUserAdd />
+                                        <Tooltip content="Add Child">
+                                            <HiUserAdd className='text-lg' />
+                                        </Tooltip>
                                     </Button>
                                 </div>
                             </div>
@@ -272,79 +261,7 @@ function Family() {
 
             </div>
 
-            {/* {
-                children.map((object: child, index: number) => {
-                    return <div className='grid lg:grid-cols-4 grid-col' key={index}>
-                        <FormElement
-                            name={`child_name${index}`}
-                            label="Name*"
-                            errors={context.errors}
-                            touched={context.touched}
-                            className='col-span-4 md:col-span-3'
-                        >
-                            <Field
-                                id={`child_name${index}`}
-                                name={`child_name${index}`}
-                                placeholder="Name"
-                                className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                autoComplete="on"
-                            />
-                        </FormElement>
-
-                        <FormElement key={index}
-                            name={`child_birth_date${index}`}
-                            label="Birthdate *"
-                            errors={context.errors}
-                            touched={context.touched}
-                            className='col-span-4 md:col-span-1'
-                        >
-                            <DatePicker
-                                initialValues={context.initialValues}
-                               
-                                id={`child_birth_date${index}`}
-                                name={`child_birth_date${index}`}
-                                placeholderText="Birthday"
-                                className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                            />
-                        </FormElement>
-                    </div>;
-                })
-            } */}
-
-
             <div className='grid md:grid-cols-4 grid-col'>
-                {/* <div className='col-span-4 md:col-start-4 md:col-span-1  mt-4 flex justify-end'>
-                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm mx-auto ' onClick={() => {
-                        let reinitialize_children = [...children].map((object: child, index: number) => {
-                            object.number = index + 1;
-                            return object;
-                        });
-
-                        reinitialize_children.push({
-                            number: reinitialize_children.length + 1,
-                            name: '',
-                            birthday: ''
-                        })
-                        setChildren(reinitialize_children);
-
-                    }}>
-                        <HiUserAdd />
-                    </Button>
-                </div> */}
-
-
-
-
-                {/* <div className='col-span-4 mt-5 mx-auto'>
-                <Button className='btn btn-sm text-white rounded-lg bg-stone-600  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
-                    Next
-                </Button>
-            </div> */}
-
-
-
-
-
                 <div className='col-span-4 mt-4'>
                     <span className=' text-cyan-600 font-medium '> Father's Name</span>
                     {/* <hr className='text-cyan-600' /> */}
@@ -414,7 +331,7 @@ function Family() {
 
 
                 <div className='col-span-4 mt-4'>
-                    <span className=' text-cyan-600 font-medium '> Mothers's Maiden Name</span>
+                    <span className=' text-cyan-600 font-medium '> Mother's Maiden Name</span>
                     {/* <hr className='text-cyan-600' /> */}
                 </div>
                 <FormElement
