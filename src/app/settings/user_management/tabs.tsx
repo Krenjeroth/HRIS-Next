@@ -306,7 +306,7 @@ function SalaryGradeTabs() {
                                     id="name"
                                     name="name"
                                     placeholder="Enter Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -325,7 +325,7 @@ function SalaryGradeTabs() {
                                     id="email"
                                     name="email"
                                     placeholder="Enter Email"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -344,7 +344,7 @@ function SalaryGradeTabs() {
                                     id="password"
                                     name="password"
                                     placeholder="Enter Password"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -363,7 +363,7 @@ function SalaryGradeTabs() {
                                     id="password_confirmation"
                                     name="password_confirmation"
                                     placeholder="Enter Password"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>

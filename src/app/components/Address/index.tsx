@@ -125,7 +125,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_province`}
                     name={`${parameter.name}_province`}
                     placeholder="Province"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Province </option>
                     {provinces_list.map((object: province, index: number) => {
@@ -150,7 +150,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_municipality`}
                     name={`${parameter.name}_municipality`}
                     placeholder="Municipality"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Municipality/City</option>
                     {municipalities.map((object: municipality, index: number) => {
@@ -173,7 +173,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_barangay`}
                     name={`${parameter.name}_barangay`}
                     placeholder="Barangay *"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Barangay</option>
                     {barangays.map((object: barangay, index: number) => {
@@ -196,7 +196,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_house`}
                     name={`${parameter.name}_house`}
                     placeholder="House/Block/Lot No."
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
 
@@ -211,7 +211,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_subdivision`}
                     name={`${parameter.name}_subdivision`}
                     placeholder="Subdivision/Village"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
 
@@ -227,7 +227,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_street`}
                     name={`${parameter.name}_street`}
                     placeholder="Street"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
 
@@ -242,7 +242,7 @@ function index(parameter: props) {
                     id={`${parameter.name}_zipcode`}
                     name={`${parameter.name}_zipcode`}
                     placeholder="Zipcode"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement >
         </>

@@ -445,7 +445,7 @@ function SalaryGradeTabs() {
                                         id="item_number"
                                         name="item_number"
                                         placeholder="Enter Item Number"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         onClick={() => { setAlerts([]); }}
                                     />
                                 </FormElement>
@@ -466,7 +466,7 @@ function SalaryGradeTabs() {
                                         id="year"
                                         name="year"
                                         placeholderText="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
 
 
@@ -514,7 +514,7 @@ function SalaryGradeTabs() {
                                     id="description"
                                     name="description"
                                     placeholder="Enter Description "
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -534,7 +534,7 @@ function SalaryGradeTabs() {
                                     id="place_of_assignment"
                                     name="place_of_assignment"
                                     placeholder="Enter Place of Assignment"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -554,7 +554,7 @@ function SalaryGradeTabs() {
                                     id="status"
                                     name="status"
                                     placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Abolished">Abolished</option>

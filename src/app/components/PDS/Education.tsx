@@ -39,13 +39,13 @@ function Education() {
                         <>
                             {schools.map((object, index: number) => {
                                 return <div className='col-span-4 md:col-span-4 grid md:grid-cols-12 grid-col' key={index}>
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-2">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-2">
                                         <Field
                                             as="select"
                                             id={`schools.${index}.level`}
                                             name={`schools.${index}.level`}
                                             placeholder="Level"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         >
                                             <option value="">Select Level</option>
@@ -60,83 +60,83 @@ function Education() {
                                         <FormFieldError name={`schools.${index}.level`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-3">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-3">
                                         <Field
                                             id={`schools.${index}.name`}
                                             name={`schools.${index}.name`}
                                             placeholder="School Name"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.name`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-3">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-3">
                                         <Field
                                             id={`schools.${index}.degree`}
                                             name={`schools.${index}.degree`}
                                             placeholder="Basic Education/Degree/Course"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.degree`} errors={context.errors} touched={context.touched} />
                                     </div>
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-2">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-2">
                                         <Field
                                             id={`schools.${index}.period_from`}
                                             name={`schools.${index}.period_from`}
                                             placeholder="From"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.period_from`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-2">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-2">
                                         <Field
                                             id={`schools.${index}.period_to`}
                                             name={`schools.${index}.period_to`}
                                             placeholder="To"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.period_to`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-2">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-2">
                                         <Field
                                             id={`schools.${index}.highest_unit_earned`}
                                             name={`schools.${index}.highest_unit_earned`}
                                             placeholder="Highest Units Earned"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.highest_unit_earned`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-3">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-3">
                                         <Field
                                             id={`schools.${index}.year_graduated`}
                                             name={`schools.${index}.year_graduated`}
                                             placeholder="Year Graduated"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.year_graduated`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 mx-2 col-span-8 md:col-span-5">
+                                    <div className="mt-2 mx-2 col-span-8 md:col-span-5">
                                         <Field
                                             id={`schools.${index}.scholarship_academic_awards`}
                                             name={`schools.${index}.scholarship_academic_awards`}
                                             placeholder="Scolarship / Academic Honors Received"
-                                            className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
                                         <FormFieldError name={`schools.${index}.scholarship_academic_awards`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-                                    <div className="mt-4 col-span-4 md:col-span-1 mx-auto ">
+                                    <div className="mt-1 col-span-4 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
                                             remove(index);
                                             let reinitialize_schools = [...schools].filter((object, filterIndedx: number) => {
@@ -155,7 +155,7 @@ function Education() {
                                 </div>
                             })}
                             <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>
-                                <div className="mt-4 mx-2 md:col-start-4 col-span-4 md:col-span-1">
+                                <div className="mt-2 mx-2 md:col-start-4 col-span-4 md:col-span-1">
 
                                     <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
 

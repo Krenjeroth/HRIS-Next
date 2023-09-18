@@ -335,7 +335,7 @@ setRefresh(!refresh);
                                     id="code"
                                     name="code"
                                     placeholder="Enter Division/Section/Unit Code"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -354,7 +354,7 @@ setRefresh(!refresh);
                                     id="name"
                                     name="name"
                                     placeholder="Enter Division/Section/Unit Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -372,7 +372,7 @@ setRefresh(!refresh);
                                     id="office_id"
                                     name="office_id"
                                     placeholder="Enter Division/Section/Unit Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Division/Section/Unit"
                                 >
                                     <option value="">Select Office </option>
@@ -399,7 +399,7 @@ setRefresh(!refresh);
                                     id="type"
                                     name="type"
                                     placeholder="Enter Division/Section/Unit Name *"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     title="Select Division/Section/Unit"
                                 >
                                     <option value="">Select Type</option>

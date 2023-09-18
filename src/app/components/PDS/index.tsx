@@ -6,6 +6,13 @@ import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBo
 import Personal from './Personal';
 import FamilyEducation from './Family';
 import Education from './Education';
+import Eligiblility from './Eligibility';
+import WorkExperience from './WorkExperience';
+import VoluntaryWork from './VoluntaryWork';
+import LearningAndDevelopment from './LearningAndDevelopment';
+import OtherInformation from './OtherInformation';
+import { Field } from 'formik';
+import { FormFieldError } from '../commons/FormFieldError';
 
 
 
@@ -28,9 +35,14 @@ function index() {
                 title={`Personal`}
             >
                 <Personal />
-                <div className='grid lg:grid-cols-4 grid-col'>
-                    <div className='col-span-4 mt-5 mx-auto'>
-                        <Button className='btn btn-sm text-white rounded-lg bg-stone-600  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            window.scrollTo(0, 0);
+                            props.tabsRef.current?.setActiveTab(1);
+                        }
+                        }>
                             Next
                         </Button>
                     </div>
@@ -42,42 +54,71 @@ function index() {
             >
                 <FamilyEducation />
                 <Education></Education>
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(0)}>
+                            Back
+                        </Button>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(2)}>
+                            Next
+                        </Button>
+                    </div>
+                </div>
             </Tabs.Item >
             < Tabs.Item
                 icon={HiIdentification}
-                title={`Eligibility and Experience`}
+                title={`Civil Service Eligibility and Experience`}
             >
-                <p>
-                    This is
-                    <span className="font-medium text-gray-800 dark:text-white">
-                        Settings tab's associated content
-                    </span>
-                    .
-                    Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-                    control the content visibility and styling.
-                </p>
+                <Eligiblility />
+                <WorkExperience />
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
+                            Back
+                        </Button>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
+                            Next
+                        </Button>
+                    </div>
+                </div>
             </ Tabs.Item>
             <Tabs.Item
                 icon={HiCollection}
-                title={`Voluntary Work and Experience`}
+                title={`Voluntary Work, and Learning and Development`}
             >
-                <p>
-                    This is
-                    <span className="font-medium text-gray-800 dark:text-white">
-                        Contacts tab's associated content
-                    </span>
-                    .
-                    Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-                    control the content visibility and styling.
-                </p>
+                <VoluntaryWork />
+                {/* <hr className='text-cyan-600 col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4' /> */}
+                <LearningAndDevelopment />
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(2)}>
+                            Back
+                        </Button>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(4)}>
+                            Next
+                        </Button>
+                    </div>
+                </div>
             </Tabs.Item>
             <Tabs.Item
                 icon={HiBookmark}
                 title={`Other Information`}
             >
-                <p>
-                    Disabled content
-                </p>
+                <OtherInformation />
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
+                            Back
+                        </Button>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(5)}>
+                            Submit
+                        </Button>
+                    </div>
+                </div>
             </Tabs.Item>
         </Tabs.Group >
     )

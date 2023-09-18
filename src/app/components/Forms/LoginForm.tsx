@@ -78,7 +78,7 @@ export const LoginForm = () => {
                 id="email"
                 name="email"
                 placeholder="Enter the email"
-                className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
               />
             </FormElement>
 
@@ -92,7 +92,7 @@ export const LoginForm = () => {
                 id="password"
                 name="password"
                 placeholder="Enter the password"
-                className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
+                className="w-full p-3 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
                 type="password"
               />
             </FormElement>

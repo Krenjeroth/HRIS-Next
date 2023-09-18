@@ -303,7 +303,7 @@ setRefresh(!refresh);
                                     id="number"
                                     name="number"
                                     placeholder="Enter Number"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -346,7 +346,7 @@ setRefresh(!refresh);
                                         }
                                     }}
                                     placeholder="Enter Amount"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>

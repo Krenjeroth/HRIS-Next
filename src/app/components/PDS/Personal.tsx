@@ -41,7 +41,7 @@ function Personal() {
                     id="employee_id"
                     name="employee_id"
                     placeholder="Employee ID"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -56,7 +56,7 @@ function Personal() {
                     id="employee_type"
                     name="employee_type"
                     placeholder="Employee Type"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
                     <option value="Permanent">Permanent</option>
@@ -79,7 +79,7 @@ function Personal() {
                     id="first_name"
                     name="first_name"
                     placeholder="First Name"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 />
             </FormElement>
@@ -96,7 +96,7 @@ function Personal() {
                     id="middle_name"
                     name="middle_name"
                     placeholder="Middle Name"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -111,7 +111,7 @@ function Personal() {
                     id="last_name"
                     name="last_name"
                     placeholder="Last Name"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -127,7 +127,7 @@ function Personal() {
                     id="suffix"
                     name="suffix"
                     placeholder="Suffix"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -143,7 +143,7 @@ function Personal() {
                     name="birth_place"
                     id="birth_place"
                     placeholder="Birth Place"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -156,11 +156,11 @@ function Personal() {
             >
                 <DatePicker
                     initialValues={context.initialValues}
-                   
+
                     id="birth_date"
                     name="birth_date"
                     placeholderText="Enter Date"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -176,7 +176,7 @@ function Personal() {
                     id="age"
                     name="age"
                     placeholder="Age"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -191,7 +191,7 @@ function Personal() {
                     as="select"
                     id="sex"
                     name="sex"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
                     <option value="Female">Female</option>
@@ -211,7 +211,7 @@ function Personal() {
                     id="height"
                     name="height"
                     placeholder="Height (Meters)"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -227,7 +227,7 @@ function Personal() {
                     id="weight"
                     name="weight"
                     placeholder="Weight (Kilograms)"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -238,7 +238,7 @@ function Personal() {
                 touched={context.touched}
                 className='col-span-4 md:col-span-2'
             >
-                <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
+                <div className='w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                     <label className='p-1 mt-2' htmlFor='citizenship'>
                         <Field type="radio" id="citizenship" name="citizenship" value="Filipino" onClick={() => {
                             setDualCitizen(false);
@@ -261,7 +261,7 @@ function Personal() {
                 touched={context.touched}
                 className={`col-span-4 md:col-span-2 ${dualCitizen ? '' : 'invisible'} `}
             >
-                <div className='w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
+                <div className='w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                     <label className='p-1 mt-2' htmlFor='citizenship_type'>
                         <Field type="radio" id="citizenship_type" name="citizenship_type" value="By Birth" />
                         <span className='ml-2'>By Birth</span>
@@ -278,13 +278,13 @@ function Personal() {
                 label="Country *"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className={`col-span-4 md:col-span-1 ${dualCitizen ? '' : 'hidden'} `}
             >
                 <Field
                     as="select"
                     id="country"
                     name="country"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 >
 
@@ -306,7 +306,7 @@ function Personal() {
                     as="select"
                     id="blood_type"
                     name="blood_type"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
                     <option value="A+"> A+ </option>
@@ -331,7 +331,7 @@ function Personal() {
                     as="select"
                     id="civil_status"
                     name="civil_status"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
                     <option value="Single">Single</option>
@@ -353,7 +353,7 @@ function Personal() {
                     id="tin"
                     name="tin"
                     placeholder="Tax Identification Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -368,7 +368,7 @@ function Personal() {
                     id="gsis"
                     name="gsis"
                     placeholder="GSIS Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -383,7 +383,7 @@ function Personal() {
                     id="pagibig"
                     name="pagibig"
                     placeholder="PAGIBIG Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -398,7 +398,7 @@ function Personal() {
                     id="philhealth"
                     name="philhealth"
                     placeholder="Philhealth Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
 
@@ -413,7 +413,7 @@ function Personal() {
                     id="sss"
                     name="sss"
                     placeholder="SSS Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
             <div className='col-span-4 mt-4'>
@@ -447,7 +447,7 @@ function Personal() {
                     id="telephone"
                     name="telephone"
                     placeholder="Telephone Number"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 />
             </FormElement>
@@ -463,7 +463,7 @@ function Personal() {
                     id="mobile"
                     name="mobile"
                     placeholder="09XXXXXXXXX"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 />
             </FormElement>
@@ -480,12 +480,12 @@ function Personal() {
                     id="email"
                     name="email"
                     placeholder="juan@gmail.com"
-                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 />
             </FormElement>
 
-            
+
         </div>
     )
 }

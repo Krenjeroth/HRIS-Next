@@ -23,6 +23,57 @@ export type child = {
     birthday: string,
 }
 
+export type eligibility = {
+    eligibility_title: string,
+    rating: number,
+    date_of_examination_conferment: string,
+    place_of_examination_conferment: string,
+    license_number: string,
+    license_date_validity: string,
+}
+
+export type workExperience = {
+    date_from: string,
+    date_to: string,
+    position_title: string,
+    office_company: string,
+    monthly_salary: number,
+    salary_grade: string,
+    status_of_appointment: string,
+    government_service: boolean,
+}
+
+export type voluntaryWork = {
+    organization_name: string,
+    organization_address: string,
+    period_from: string,
+    period_to: string,
+    number_of_hours: number,
+    position_nature_of_work: string
+}
+
+
+export type training = {
+    training_title: string,
+    attendance_from: string,
+    attendance_to: string,
+    number_of_hours: number,
+    training_type: string,
+    conducted_sponsored_by: string
+}
+
+export type skill = {
+    name: string
+}
+
+export type recognition = {
+    title: string
+}
+
+export type membership = {
+    title: string
+}
+
 export type school = {
     level: string,
     name: string,
@@ -96,4 +147,11 @@ export interface IValues {
     mother_last_name: string,
     mother_suffix: string,
     schools: school[],
+    eligibilities: eligibility[],
+    workExperiences: workExperience[],
+    voluntaryWorks: voluntaryWork[],
+    trainings: training[],
+    skills: skill[],
+    recognitions: recognition[]
+    memberships: membership[]
 }

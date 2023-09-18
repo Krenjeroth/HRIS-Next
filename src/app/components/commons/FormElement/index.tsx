@@ -23,8 +23,8 @@ export const FormElement: React.FC<Props> = ({
 
 
 
-    <div className={`mt-4 mx-2 ${className}`}>
-      {/* <div className={`mt-4 mx-2 ${col_span}`}>
+    <div className={`mt-2 mx-2 ${className}`}>
+      {/* <div className={`mt-2 mx-2 ${col_span}`}>
 
         <div className="text-sm font-medium">
           {label}

@@ -86,7 +86,7 @@ function index(parameter: Props) {
                         id={parameter.id}
                         name={parameter.id}
                         placeholder={`${parameter.title} ID`}
-                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     />
                 </FormElement>
             </div>
@@ -102,7 +102,7 @@ function index(parameter: Props) {
                         id={parameter.name}
                         name={parameter.name}
                         placeholder={`${parameter.title}`}
-                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     />
 
                 </FormElement>
@@ -142,7 +142,7 @@ function index(parameter: Props) {
                             value: value,
                             id: `${parameter.name}_autosuggest`,
                             name: `${parameter.name}_autosuggest`,
-                            className: "w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
+                            className: "w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
                             type: "text",
                             onChange: (_event, { newValue }) => {
                                 setValue(newValue);

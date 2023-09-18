@@ -56,7 +56,7 @@ export const PollFrequencySettingForm: React.FC<Props> = ({
               <Field
                 as="select"
                 name="url_check_frequency"
-                className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
+                className="w-full p-3 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
                 value={pollFreq}
                 onChange={(event: any) => setPollFreq(event.target.value)}
               >

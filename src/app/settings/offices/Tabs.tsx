@@ -293,7 +293,7 @@ setRefresh(!refresh);
                                     id="office_code"
                                     name="office_code"
                                     placeholder="Enter Office Code"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -312,7 +312,7 @@ setRefresh(!refresh);
                                     id="office_name"
                                     name="office_name"
                                     placeholder="Enter Office Name"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>

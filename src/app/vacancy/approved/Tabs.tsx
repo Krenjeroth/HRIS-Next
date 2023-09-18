@@ -413,7 +413,7 @@ function AllRequestsTabs() {
                                         // setValues={setValues}
                                         name="date_submitted"
                                         placeholderText="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
@@ -446,7 +446,7 @@ function AllRequestsTabs() {
                                         // setValues={setValues}
                                         name="date_approved"
                                         placeholderText="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
@@ -462,7 +462,7 @@ function AllRequestsTabs() {
                                         // setValues={setValues}
                                         name="posting_date"
                                         placeholderText="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
@@ -478,7 +478,7 @@ function AllRequestsTabs() {
                                         // setValues={setValues}
                                         name="closing_date"
                                         placeholderText="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
@@ -495,7 +495,7 @@ function AllRequestsTabs() {
                                         id="publication_status"
                                         name="publication_status"
                                         placeholder="Select Status"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         title="Select Salary Grade"
                                     >
                                         <option value="Active">Active</option>

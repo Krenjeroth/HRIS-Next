@@ -293,7 +293,7 @@ setRefresh(!refresh);
                                     id="title"
                                     name="title"
                                     placeholder="Enter Title"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -313,7 +313,7 @@ setRefresh(!refresh);
                                     setValues={setValues}
                                     name="date"
                                     placeholderText="Enter Date"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
 

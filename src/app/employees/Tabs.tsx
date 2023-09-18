@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType, child, school } from '../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -101,6 +101,47 @@ function AllRequestsTabs() {
         year_graduated: '',
         scholarship_academic_awards: ''
     }]);
+    const [eligibilities, setEligibilities] = useState<eligibility[]>([
+        {
+            eligibility_title: '',
+            rating: 0,
+            date_of_examination_conferment: '',
+            place_of_examination_conferment: '',
+            license_number: '',
+            license_date_validity: ''
+        }
+    ]);
+    const [workExperiences, setWorkExperiences] = useState<workExperience[]>([{
+        date_from: '',
+        date_to: '',
+        position_title: '',
+        office_company: '',
+        monthly_salary: 0,
+        salary_grade: '',
+        status_of_appointment: '',
+        government_service: false,
+    }]);
+    const [voluntaryWorks, setVoluntaryWorks] = useState<voluntaryWork[]>([]);
+    const [trainings, setTrainings] = useState<training[]>([
+        {
+            training_title: '',
+            attendance_from: '',
+            attendance_to: '',
+            number_of_hours: 0,
+            training_type: '',
+            conducted_sponsored_by: '',
+        }
+    ]);
+    const [skills, setSkills] = useState<skill[]>([{
+        name: ""
+    }]);
+    const [recognitions, setRecognitions] = useState<recognition[]>([{
+        title: ""
+    }]);
+    const [memberships, msetMemberships] = useState<membership[]>([{
+        title: ""
+    }]);
+
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
@@ -143,7 +184,6 @@ function AllRequestsTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<IValues>({
-
         // personal information
         employee_id: '',
         employee_type: '',
@@ -201,7 +241,14 @@ function AllRequestsTabs() {
         mother_middle_name: '',
         mother_last_name: '',
         mother_suffix: '',
-        schools: schools
+        schools: schools,
+        eligibilities: eligibilities,
+        workExperiences: workExperiences,
+        voluntaryWorks: voluntaryWorks,
+        trainings: trainings,
+        skills: skills,
+        recognitions: recognitions,
+        memberships: memberships,
         // family
 
     });

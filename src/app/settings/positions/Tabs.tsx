@@ -368,7 +368,7 @@ function positionTabs() {
                                         id="salary_grade_id"
                                         name="salary_grade_id"
                                         placeholder="Enter alary"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         title="Select Salary Grade"
                                     >
                                         <option value=""></option>
@@ -396,7 +396,7 @@ function positionTabs() {
                                         id="code"
                                         name="code"
                                         placeholder="Enter code"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         onClick={() => { setAlerts([]); }}
                                     />
                                 </FormElement>
@@ -415,7 +415,7 @@ function positionTabs() {
                                     id="title"
                                     name="title"
                                     placeholder="Enter Title"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -436,7 +436,7 @@ function positionTabs() {
                                     id="education"
                                     name="education"
                                     placeholder="Enter Education"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -457,7 +457,7 @@ function positionTabs() {
                                     id="training"
                                     name="training"
                                     placeholder="Enter Training"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -478,7 +478,7 @@ function positionTabs() {
                                     id="experience"
                                     name="experience"
                                     placeholder="Enter Experience"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -499,7 +499,7 @@ function positionTabs() {
                                     id="eligibility"
                                     name="eligibility"
                                     placeholder="Enter Eligibility"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -519,7 +519,7 @@ function positionTabs() {
                                     id="competency"
                                     name="competency"
                                     placeholder="Enter Competency"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>

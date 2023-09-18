@@ -47,7 +47,7 @@ export const UrlAddForm: React.FC<Props> = ({ onSuccess, collectionId }) => {
                 id="url"
                 name="url"
                 placeholder="Enter the URL to add"
-                className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
+                className="w-full p-3 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
               />
             </FormElement>
             <div className="mt-4">

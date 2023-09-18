@@ -45,7 +45,7 @@ export const CollectionAddForm: React.FC<Props> = ({ onSuccess }) => {
                 id="name"
                 name="name"
                 placeholder="Enter the collection name"
-                className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
+                className="w-full p-3 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
               />
             </FormElement>
             <div className="mt-4">
