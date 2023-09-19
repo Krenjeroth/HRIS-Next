@@ -8,8 +8,11 @@ export type formContextType = {
     isEmployee?: boolean,
     initialValues: IValues,
     setValues: Function,
-    setChildren: Function,
-    isLoading: boolean
+    setAnswers: Function,
+    isLoading: boolean,
+    process: string,
+    children?: React.ReactNode,
+
 };
 
 export type country = {
@@ -17,11 +20,20 @@ export type country = {
     label: string,
 };
 
+
 export type child = {
     number: number,
     name: string,
     birthday: string,
 }
+
+export type answer = {
+    number: string,
+    answer: string,
+    details: string,
+    question: string
+}
+
 
 export type eligibility = {
     eligibility_title: string,
@@ -60,6 +72,12 @@ export type training = {
     number_of_hours: number,
     training_type: string,
     conducted_sponsored_by: string
+}
+
+export type question = {
+    id: string,
+    number: string,
+    question: string
 }
 
 export type skill = {
@@ -154,4 +172,5 @@ export interface IValues {
     skills: skill[],
     recognitions: recognition[]
     memberships: membership[]
+    answers: answer[]
 }

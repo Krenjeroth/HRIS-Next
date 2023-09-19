@@ -6,21 +6,10 @@ import { error } from 'console';
 const PDSContext = createContext<formContextType | null>(null);
 
 
-type Props = {
-    readonly?: boolean,
-    errors: any,
-    touched: any,
-    isEmployee?: boolean,
-    initialValues: IValues,
-    setValues: Function,
-    updateAddress: Function,
-    setChildren: Function,
-    children?: React.ReactNode,
-    isLoading: boolean
-}
 
 
-export default function index(parameter: Props) {
+
+export default function index(parameter: formContextType) {
     return <PDSContext.Provider value={{
         updateAddress: parameter.updateAddress,
         readonly: parameter.readonly,
@@ -28,9 +17,10 @@ export default function index(parameter: Props) {
         touched: parameter.touched,
         isEmployee: parameter.isEmployee,
         initialValues: parameter.initialValues,
-        setChildren: parameter.setChildren,
+        setAnswers: parameter.setAnswers,
         setValues: parameter.setValues,
-        isLoading: parameter.isLoading
+        isLoading: parameter.isLoading,
+        process: parameter.process
     }}>
         {parameter.children}
     </PDSContext.Provider>;

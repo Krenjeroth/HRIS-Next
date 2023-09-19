@@ -13,6 +13,7 @@ import LearningAndDevelopment from './LearningAndDevelopment';
 import OtherInformation from './OtherInformation';
 import { Field } from 'formik';
 import { FormFieldError } from '../commons/FormFieldError';
+import { usePDSContext } from '@/app/contexts/PDSContext';
 
 
 
@@ -21,6 +22,7 @@ function index() {
     const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
+    const context = usePDSContext();
 
     return (
         <Tabs.Group
@@ -68,7 +70,7 @@ function index() {
             </Tabs.Item >
             < Tabs.Item
                 icon={HiIdentification}
-                title={`Civil Service Eligibility and Experience`}
+                title={`CS Eligibility and Experience`}
             >
                 <Eligiblility />
                 <WorkExperience />
@@ -114,9 +116,11 @@ function index() {
                         <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
                             Back
                         </Button>
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(5)}>
-                            Submit
-                        </Button>
+
+                        <button type={(context.isLoading ? "button" : "submit")} className={`py-2 px-4   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                            {(context.process == "Delete" ? "Delete" : "Submit")}
+                        </button>
+
                     </div>
                 </div>
             </Tabs.Item>

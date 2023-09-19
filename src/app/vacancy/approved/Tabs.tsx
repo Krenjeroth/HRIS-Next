@@ -410,7 +410,6 @@ function AllRequestsTabs() {
                                         id="date_submitted"
                                         readOnly={process === "Reactivate" ? true : false}
                                         initialValues={initialValues}
-                                        // setValues={setValues}
                                         name="date_submitted"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -443,7 +442,6 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         id="date_approved"
                                         initialValues={initialValues}
-                                        // setValues={setValues}
                                         name="date_approved"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -459,7 +457,6 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         id="posting_date"
                                         initialValues={initialValues}
-                                        // setValues={setValues}
                                         name="posting_date"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -475,7 +472,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         id="closing_date"
                                         initialValues={initialValues}
-                                        // setValues={setValues}
+                                       
                                         name="closing_date"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"

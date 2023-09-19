@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership } from '../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, question, answer } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -50,11 +50,6 @@ type filter = {
     column: string;
     value: string;
 }
-
-
-
-
-
 
 
 
@@ -138,9 +133,18 @@ function AllRequestsTabs() {
     const [recognitions, setRecognitions] = useState<recognition[]>([{
         title: ""
     }]);
-    const [memberships, msetMemberships] = useState<membership[]>([{
+    const [memberships, setMemberships] = useState<membership[]>([{
         title: ""
     }]);
+
+    const [answers, setAnswers] = useState<answer[]>([
+        {
+            number: "1",
+            question: 'some question',
+            answer: 'no',
+            details: ''
+        }
+    ]);
 
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
@@ -249,6 +253,7 @@ function AllRequestsTabs() {
         skills: skills,
         recognitions: recognitions,
         memberships: memberships,
+        answers: answers
         // family
 
     });
@@ -537,12 +542,13 @@ function AllRequestsTabs() {
                             </div>
                             <PDSContextProvider
                                 isLoading={isLoading}
-                                setChildren={setChildren}
+                                setAnswers={setAnswers}
                                 updateAddress={updateAddress}
                                 errors={errors}
                                 touched={touched}
                                 initialValues={initialValues}
-                                setValues={setValues}>
+                                setValues={setValues}
+                                process={process}>
                                 <PDS />
                             </PDSContextProvider>
 

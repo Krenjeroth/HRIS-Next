@@ -465,7 +465,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         initialValues={initialValues}
                                         readOnly={process === "Add" || process === "Edit" ? false : true}
-                                        setValues={setValues}
+                                        id="date_approved"
                                         name="date_submitted"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -496,7 +496,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_approved"
                                         name="date_approved"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -511,7 +511,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="posting_date"
                                         name="posting_date"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -526,7 +526,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="closing_date"
                                         name="closing_date"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -545,7 +545,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_approved"
                                         name="date_queued"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"

@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 type Props = {
     id: string,
     name: string,
-    placeholder: string,
+    placeholderText: string,
     className: string,
     initialValues: any,
     setValues: Function,

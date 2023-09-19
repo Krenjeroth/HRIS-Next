@@ -387,7 +387,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         readOnly={process === "Reactivate" ? true : false}
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_submitted"
                                         name="date_submitted"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -419,7 +419,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_queued"
                                         name="date_queued"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"

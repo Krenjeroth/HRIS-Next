@@ -200,7 +200,7 @@ function SalaryGradeTabs() {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -218,7 +218,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -236,7 +236,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
                     }
@@ -310,8 +310,8 @@ setRefresh(!refresh);
                                 <DatePicker
                                     readOnly={(process === "Delete") ? true : false}
                                     initialValues={initialValues}
-                                    setValues={setValues}
                                     name="date"
+                                    id="date"
                                     placeholderText="Enter Date"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
