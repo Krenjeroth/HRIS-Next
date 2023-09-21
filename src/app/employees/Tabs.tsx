@@ -138,13 +138,7 @@ function AllRequestsTabs() {
     }]);
 
     const [answers, setAnswers] = useState<answer[]>([
-        {
-            number: "1",
-            question: 'some question',
-            answer: 'no',
-            details: ''
-        }
-    ]);
+]);
 
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);

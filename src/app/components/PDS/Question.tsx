@@ -11,22 +11,32 @@ import { FormFieldError } from '../commons/FormFieldError';
 import { answer, child, eligibility, question } from '@/app/types/pds';
 import { initial } from 'lodash';
 import HttpService from '../../../../lib/http.services';
+import TableInput from './TableInput';
 
 
 function Question() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
     const [questions, setQuestions] = useState<question[]>([]);
-    const [answers, setAnswers] = useState<answer[]>([...context.initialValues.answers]);
+    const [answers, setAnswers] = useState<answer[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.answers = answers;
+        // console.log(answers);
+        // if (answers.length > 0) {
+        //     answers.forEach((object, index) => {
+        //         // setFieldValue("first_name","duriel");
+        //         setFieldValue(`answers.${index}.number`, "hi");
+        //         // setFieldValue(`answers.${index}.question`, object.question);
+        //         setFieldValue(`answers.${index}.answer`, object.answer);
+        //     });
+
+        // }
     }, [answers])
+
 
     // Get Questions
     useEffect(() => {
-        async function getData() {
+        async function getQuestions() {
             const resp = await HttpService.get("question");
             if (resp != null) {
                 setAnswers(resp.data.data.map((object: question) => {
@@ -39,7 +49,7 @@ function Question() {
                 }));
             }
         }
-        getData();
+        getQuestions();
     }, []);
 
     return (
@@ -49,7 +59,7 @@ function Question() {
                 <hr className='text-cyan-600 mt-6' />
             </div>
             <div className='col-span-2 md:col-span-2 md:grid-cols-3 grid-col content-start'>
-                <Table>
+                {/* <Table>
                     <Table.Head>
                         <Table.HeadCell>
                             Number
@@ -95,12 +105,12 @@ function Question() {
                                                 <Field type="radio" name={`answers.${index}.answer`} value="Yes" />
                                             </Table.Cell>
                                             <Table.Cell>
-                                                <Field
+                                                <TableInput
+                                                    value={object.details}
                                                     id={`answers.${index}.details`}
                                                     name={`answers.${index}.details`}
-                                                    placeholder="Details"
+                                                    placeholder=" Number *"
                                                     className="w-full p-3  text-sm   rounded-lg "
-                                                    autoComplete="on"
                                                 />
                                                 <FormFieldError name={`answers.${index}.details`} errors={context.errors} touched={context.touched} />
                                             </Table.Cell>
@@ -110,7 +120,52 @@ function Question() {
                             )}
                         </FieldArray>
                     </Table.Body>
-                </Table>
+                </Table>  */}
+                {/* 
+                <FieldArray
+                    name="answers"
+                    render={({ move, swap, push, insert, unshift, pop }) => (
+                        <>
+                            {answers.map((object, index: number) => {
+                                <Field
+                                    value={object.number}
+                                    id={`answers.${index}.number`}
+                                    name={`answers.${index}.number`}
+                                    placeholder=" Number *"
+                                    className="w-full p-3  text-sm border   rounded-lg "
+                                    autoComplete="on"
+                                />
+                            })}
+                        </>
+                    )}
+                /> */}
+
+                <FieldArray name="answers">
+                    {({ insert, remove, push }) => (
+                        <>
+                            {answers.map((object, index: number) => {
+                                return <div key={index}>
+                                    <Field
+                                        // readOnly={true}
+                                        // value={object.number}
+                                        id={`answers.${index}.number`}
+                                        name={`answers.${index}.number`}
+                                        placeholder=" Number *"
+                                        className="w-full p-3  text-sm   rounded-lg "
+                                        autoComplete="on"
+
+                                        onClick={() => {
+                                            push({
+                                                number: object.number
+                                            })
+                                        }}
+                                    />
+                                    <FormFieldError name={`answers.${index}.number`} errors={context.errors} touched={context.touched} />
+                                </div >
+                            })}
+                        </>
+                    )}
+                </FieldArray>
 
 
             </div>

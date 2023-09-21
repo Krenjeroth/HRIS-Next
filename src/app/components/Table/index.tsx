@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Tooltip, Button, Table, Label } from "flowbite-react";
 import Pagination from "../Pagination";
