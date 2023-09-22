@@ -14,6 +14,7 @@ import OtherInformation from './OtherInformation';
 import { Field } from 'formik';
 import { FormFieldError } from '../commons/FormFieldError';
 import { usePDSContext } from '@/app/contexts/PDSContext';
+import CharacterReference from './CharacterReference';
 
 
 
@@ -110,6 +111,7 @@ function index() {
                 title={`Other Information`}
             >
                 <OtherInformation />
+                <CharacterReference />
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">

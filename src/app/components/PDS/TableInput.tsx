@@ -1,6 +1,6 @@
 
 "use client";
-import { Field } from 'formik';
+import { Field, FieldArray, useFormikContext } from 'formik';
 import React, { useState } from 'react'
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 
 function TableInput(parameter: Props) {
     const [value, setValue] = useState<string>(parameter.value);
-    // console.log(parameter.name);
+    const { setFieldValue } = useFormikContext();
     return (
         <>
             <Field
@@ -23,8 +23,8 @@ function TableInput(parameter: Props) {
                 className={parameter.className}
                 autoComplete="on"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setFieldValue(parameter.name, e.target.value);
                     setValue(e.target.value);
-                    
                 }}
                 value={value}
             />

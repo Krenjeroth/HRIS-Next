@@ -27,6 +27,13 @@ export type child = {
     birthday: string,
 }
 
+
+export type characterReference = {
+    name: string,
+    address: string,
+    number: string,
+}
+
 export type answer = {
     number: string,
     answer: string,
@@ -172,5 +179,6 @@ export interface IValues {
     skills: skill[],
     recognitions: recognition[]
     memberships: membership[]
-    answers: answer[]
+    answers: answer[],
+    characterReferences: characterReference[]
 }

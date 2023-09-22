@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, question, answer } from '../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, question, answer, characterReference } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -138,9 +138,29 @@ function AllRequestsTabs() {
     }]);
 
     const [answers, setAnswers] = useState<answer[]>([
-]);
+    ]);
 
-    // props.setActiveTab(1);
+    const [characterReferences, setCharacterReferences] = useState<characterReference[]>([
+        {
+            name: '',
+            address: '',
+            number: '',
+        },
+        {
+            name: '',
+            address: '',
+            number: '',
+        },
+        {
+            name: '',
+            address: '',
+            number: '',
+        }
+    ]);
+
+
+
+
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
@@ -247,7 +267,8 @@ function AllRequestsTabs() {
         skills: skills,
         recognitions: recognitions,
         memberships: memberships,
-        answers: answers
+        answers: answers,
+        characterReferences: characterReferences
         // family
 
     });
@@ -260,8 +281,15 @@ function AllRequestsTabs() {
     }
 
 
+
+
     // Use Effect Hook
 
+    useEffect(() => {
+        // resetFormik();
+        // setValues(defaultData);
+        // console.log(initialValues);
+    }, [answers]);
 
     useEffect(() => {
         // query
