@@ -2,9 +2,9 @@
 import { Button, Tabs, TabsRef, ToggleSwitch } from 'flowbite-react';
 import React, { useContext, useState, useMemo, useRef } from 'react'
 import { FormElement } from '../commons/FormElement';
-import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark } from 'react-icons/hi';
+import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark, HiAcademicCap } from 'react-icons/hi';
 import Personal from './Personal';
-import FamilyEducation from './Family';
+import Family from './Family';
 import Education from './Education';
 import Eligiblility from './Eligibility';
 import WorkExperience from './WorkExperience';
@@ -15,6 +15,7 @@ import { Field } from 'formik';
 import { FormFieldError } from '../commons/FormFieldError';
 import { usePDSContext } from '@/app/contexts/PDSContext';
 import CharacterReference from './CharacterReference';
+import EmployeeDetail from './EmployeeDetails';
 
 
 
@@ -37,6 +38,7 @@ function index() {
                 icon={HiUser}
                 title={`Personal`}
             >
+                <EmployeeDetail />
                 <Personal />
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
@@ -53,10 +55,10 @@ function index() {
             </Tabs.Item>
             <Tabs.Item
                 icon={HiUserGroup}
-                title={`Family and Education`}
+                title={`Family`}
+                autoFocus
             >
-                <FamilyEducation />
-                <Education></Education>
+                <Family />
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
@@ -64,6 +66,24 @@ function index() {
                             Back
                         </Button>
                         <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(2)}>
+                            Next
+                        </Button>
+                    </div>
+                </div>
+            </Tabs.Item >
+            <Tabs.Item
+                icon={HiAcademicCap}
+                title={`Education`}
+                autoFocus
+            >
+                <Education />
+                <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
+                    <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                    <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
+                            Back
+                        </Button>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
                             Next
                         </Button>
                     </div>
@@ -78,10 +98,10 @@ function index() {
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(1)}>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(2)}>
                             Back
                         </Button>
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(4)}>
                             Next
                         </Button>
                     </div>
@@ -97,10 +117,10 @@ function index() {
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(2)}>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
                             Back
                         </Button>
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(4)}>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(5)}>
                             Next
                         </Button>
                     </div>
@@ -115,7 +135,7 @@ function index() {
                 <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                     <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(3)}>
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => props.tabsRef.current?.setActiveTab(4)}>
                             Back
                         </Button>
 

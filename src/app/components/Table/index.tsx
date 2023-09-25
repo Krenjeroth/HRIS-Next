@@ -97,7 +97,7 @@ function index(parameter: Props) {
     }
 
     const debouncedSearch = useMemo(() => {
-        return debounce(search, 500);
+        return debounce(search, 300);
     }, [search]);
 
     return (

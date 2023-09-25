@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, question, answer, characterReference } from '../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -205,6 +205,9 @@ function AllRequestsTabs() {
         // personal information
         employee_id: '',
         employee_type: '',
+        division_id: '',
+        division: '',
+        division_autosuggest: '',
         first_name: '',
         middle_name: '',
         last_name: '',
@@ -285,11 +288,6 @@ function AllRequestsTabs() {
 
     // Use Effect Hook
 
-    useEffect(() => {
-        // resetFormik();
-        // setValues(defaultData);
-        // console.log(initialValues);
-    }, [answers]);
 
     useEffect(() => {
         // query
@@ -309,33 +307,6 @@ function AllRequestsTabs() {
         getData();
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
-
-    // Get LGU Positions
-    useEffect(() => {
-        // query
-        async function getLGUPositions() {
-            const postData = {
-                activePage: 1,
-                filters: [{ 'column': 'lgu_positions.status', 'value': 'Active' }],
-                orderBy: 'title',
-                year: '',
-                orderAscending: "asc",
-                positionStatus: ['Permanent', 'Coterminous', 'Elective', 'Casual']
-            };
-            const resp = await HttpService.post("search-lgu-position", postData);
-            if (resp != null) {
-                setPositionData(
-                    resp.data.data.map((data: any) => {
-                        return {
-                            "id": data.id,
-                            "label": data.attributes.label
-                        }
-                    })
-                );
-            }
-        }
-        getLGUPositions();
-    }, [positionKeyword]);
 
 
 
@@ -407,20 +378,18 @@ function AllRequestsTabs() {
     ) => {
         setLoading(true);
         console.log(values);
-        const postData = {
-            employee_id: values.employee_id,
-            date_approved: values.date_approved,
-            date_queued: values.date_queued,
-            posting_date: values.posting_date,
-            closing_date: values.closing_date,
-            birth_date: values.birth_date,
-            position: values.position,
-            device_name: "web",
-            process: process,
-            status: "Active"
-        };
-
-
+        // const postData = {
+        //     employee_id: values.employee_id,
+        //     date_approved: values.date_approved,
+        //     date_queued: values.date_queued,
+        //     posting_date: values.posting_date,
+        //     closing_date: values.closing_date,
+        //     birth_date: values.birth_date,
+        //     position: values.position,
+        //     device_name: "web",
+        //     process: process,
+        //     status: "Active"
+        // };
         alerts.forEach(element => {
             alerts.pop();
         });
@@ -429,7 +398,7 @@ function AllRequestsTabs() {
         try {
             // add
             if (process === "Add") {
-                const resp = await HttpService.post("vacancy", postData);
+                const resp = await HttpService.post("employee", values);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -452,7 +421,7 @@ function AllRequestsTabs() {
             // update
             else if (process === "Edit") {
 
-                const resp = await HttpService.patch("vacancy/" + id, postData)
+                const resp = await HttpService.patch("vacancy/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -473,16 +442,16 @@ function AllRequestsTabs() {
             else if (process === "Approve" || process === "Queue") {
                 if (id != 0) {
                     if (process === "Approve") {
-                        postData.status = "Approved";
+                        values.status = "Approved";
                     }
                     if (process == "Queue") {
-                        postData.status = "Queued";
+                        values.status = "Queued";
                     }
-                    const resp = await HttpService.patch("vacancy/" + id, postData)
+                    const resp = await HttpService.patch("vacancy/" + id, values)
                     if (resp.status === 200) {
                         let status = resp.data.status;
                         if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                            alerts.push({ "type": "success", "message": `Data has been  successfully ${postData.status} !` });
+                            alerts.push({ "type": "success", "message": `Data has been  successfully ${values.status} !` });
                             resetForm({});
                             resetFormik();
                             setActivePage(1);
@@ -576,11 +545,11 @@ function AllRequestsTabs() {
 
                             {/* submit button */}
 
-                            {/* <div className="grid grid-flow-row auto-rows-max mt-5">
+                            <div className="grid grid-flow-row auto-rows-max mt-5">
                                 <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
-                            </div> */}
+                            </div>
                         </Form>
                     )}
                 </Formik>

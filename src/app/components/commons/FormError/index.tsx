@@ -7,7 +7,7 @@ interface Props {
 export const ValidationMessage: React.FC<Props> = ({ name }) => {
   return (
     <div className="validation-error">
-      <ErrorMessage name={name} />
+      <ErrorMessage name={name.replace("_autosuggest", "")} />
     </div>
   );
 };

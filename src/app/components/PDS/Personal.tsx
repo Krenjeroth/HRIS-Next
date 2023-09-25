@@ -25,48 +25,12 @@ function Personal() {
     const options = useMemo(() => countryList().getData(), []);
 
     return (
-        <div className='grid lg:grid-cols-4 grid-col'>
+        <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>
                 <span className=' text-cyan-600 font-medium text-lg '>I. Personal Information</span>
                 <hr className='text-cyan-600 mt-6' />
             </div>
-            <FormElement
-                name="employee_id"
-                label="Employee ID *"
-                errors={context.errors}
-                touched={context.touched}
-                className='col-span-4 md:col-span-2'
-            >
-                <Field
-                    id="employee_id"
-                    name="employee_id"
-                    placeholder="Employee ID"
-                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                />
-            </FormElement>
 
-            <FormElement
-                name="employee_type"
-                label="Employee Type *"
-                className='col-span-4 md:col-span-2'
-                errors={context.errors}
-                touched={context.touched}
-            >
-                <Field as="select"
-                    id="employee_type"
-                    name="employee_type"
-                    placeholder="Employee Type"
-                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                >
-                    <option value="">Select Type </option>
-                    <option value="Permanent">Permanent</option>
-                    <option value="Casual">Casual</option>
-                    <option value="Elective">Elective </option>
-                    <option value="Coterminous">Coterminous</option>
-                    <option value="Contractual">Contractual</option>
-
-                </Field>
-            </FormElement>
 
             <FormElement
                 name="first_name"

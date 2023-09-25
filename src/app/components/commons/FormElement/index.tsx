@@ -21,8 +21,6 @@ export const FormElement: React.FC<Props> = ({
 }) => {
   return (
 
-
-
     <div className={`mt-2 mx-2 ${className}`}>
       {/* <div className={`mt-2 mx-2 ${col_span}`}>
 
@@ -42,7 +40,7 @@ export const FormElement: React.FC<Props> = ({
         </label>}
 
       <div className="relative mt-1">{children}</div>
-      <FormFieldError name={name} errors={errors} touched={touched} />
+      <FormFieldError name={name.replaceAll('_autosuggest', '')} errors={errors} touched={touched} />
     </div>
 
   );

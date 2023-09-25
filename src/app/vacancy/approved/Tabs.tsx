@@ -427,7 +427,9 @@ function AllRequestsTabs() {
                                     name="position"
                                     initialValues={initialValues}
                                     setValues={setValues}
-                                    data={positionData} />
+                                    data={positionData}
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
                             </div>
 
 

@@ -117,6 +117,9 @@ export interface IValues {
     // personal information
     employee_id: string,
     employee_type: string,
+    division_id: string,
+    division: string,
+    division_autosuggest: string,
     first_name: string,
     middle_name: string,
     last_name: string,

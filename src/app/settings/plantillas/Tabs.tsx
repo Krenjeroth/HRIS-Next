@@ -213,8 +213,9 @@ function SalaryGradeTabs() {
     // get divisions
     useEffect(() => {
 
-        async function getPositions() {
+        async function getDivisions() {
             const postData = {
+                multiFilter: true,
                 activePage: 1,
                 filters: [{ column: 'division_name', value: divisionKeyword }],
                 orderAscending: 'asc',
@@ -225,7 +226,7 @@ function SalaryGradeTabs() {
             }
         }
 
-        getPositions();
+        getDivisions();
     }, [divisionKeyword]);
 
     useEffect(() => {
@@ -484,7 +485,9 @@ function SalaryGradeTabs() {
                                 name="division"
                                 initialValues={initialValues}
                                 setValues={setValues}
-                                data={divisions} />
+                                data={divisions}
+                                className=""
+                            />
 
                             {/* positions */}
                             <DataList errors={errors} touched={touched}
@@ -496,7 +499,9 @@ function SalaryGradeTabs() {
                                 name="position"
                                 initialValues={initialValues}
                                 setValues={setValues}
-                                data={positions} />
+                                data={positions}
+                                className=""
+                            />
 
 
 
