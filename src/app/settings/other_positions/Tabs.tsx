@@ -481,6 +481,7 @@ function SalaryGradeTabs() {
                                 name="division"
                                 initialValues={initialValues}
                                 setValues={setValues}
+                                className=""
                                 data={divisions} />
 
                             {/* positions */}
@@ -493,6 +494,7 @@ function SalaryGradeTabs() {
                                 name="position"
                                 initialValues={initialValues}
                                 setValues={setValues}
+                                className=""
                                 data={positions} />
 
                             {/* Position Status */}
@@ -510,12 +512,13 @@ function SalaryGradeTabs() {
                                     placeholder=""
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
                                     <option value="">Select Position Status</option>
-                                    <option value='Casual'>Casual</option>
-                                    <option value='Coterminous'>Coterminous</option>
-                                    <option value='Contractual'>Contractual</option>
-                                    <option value='Contract of Service'>Contract of Service</option>
-                                    <option value='Elective'>Elective</option>
-                                    <option value='Job Order'>Job Order</option>
+                                    <option value='permanent'>permanent</option>
+                                    <option value='casual'>casual</option>
+                                    <option value='coterminous'>coterminous</option>
+                                    <option value='fixed term'>fixed term</option>
+                                    <option value='contractual'>contractual</option>
+                                    <option value='substitute'>substitute</option>
+                                    <option value='provisional'>provisional</option>
                                 </Field>
                             </FormElement>
 

@@ -196,7 +196,7 @@ function Personal() {
             </FormElement>
 
             <FormElement
-                name=""
+                name="citizenship"
                 label="Citizenship *"
                 errors={context.errors}
                 touched={context.touched}

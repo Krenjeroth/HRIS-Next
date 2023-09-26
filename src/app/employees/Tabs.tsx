@@ -204,7 +204,7 @@ function AllRequestsTabs() {
     const [defaultData, setDefaultData] = useState<IValues>({
         // personal information
         employee_id: '',
-        employee_type: '',
+        employment_status: '',
         division_id: '',
         division: '',
         division_autosuggest: '',
