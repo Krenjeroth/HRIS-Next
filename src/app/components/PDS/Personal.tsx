@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState, useMemo, useRef } from 'react'
+import React, { useContext, useState, useMemo, useRef, useEffect } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field, useFormikContext } from 'formik';
 import DatePicker from "../DatePicker";
@@ -17,12 +17,36 @@ import { type } from 'os';
 
 
 function Personal() {
-    const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
     const [country, setCountry] = useState('');
     const [dualCitizen, setDualCitizen] = useState(false);
     const [sameAddress, setSameAddress] = useState(false);
     const options = useMemo(() => countryList().getData(), []);
+    const { setFieldValue } = useFormikContext();
+
+
+    useEffect(() => {
+        setFieldValue('isSameAddress', sameAddress);
+
+        if (!sameAddress) {
+            setFieldValue('permanent_barangay', '');
+            setFieldValue('permanent_house', '');
+            setFieldValue('permanent_municipality', '');
+            setFieldValue('permanent_province', '');
+            setFieldValue('permanent_street', '');
+            setFieldValue('permanent_subdivision', '');
+            setFieldValue('permanent_zipcode', '');
+        }
+        else {
+            setFieldValue('permanent_barangay', context.formikData.current.values.residential_barangay);
+            setFieldValue('permanent_house', context.formikData.current.values.residential_house);
+            setFieldValue('permanent_municipality', context.formikData.current.values.residential_municipality);
+            setFieldValue('permanent_province', context.formikData.current.values.residential_province);
+            setFieldValue('permanent_street', context.formikData.current.values.residential_street);
+            setFieldValue('permanent_subdivision', context.formikData.current.values.residential_subdivision);
+            setFieldValue('permanent_zipcode', context.formikData.current.values.residential_zipcode);
+        }
+    }, [sameAddress]);
 
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
@@ -78,7 +102,6 @@ function Personal() {
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
-
 
             <FormElement
                 name="suffix"
@@ -219,7 +242,7 @@ function Personal() {
             </FormElement>
 
             <FormElement
-                name=""
+                name="citizenship_type"
                 label="Citizenship Type *"
                 errors={context.errors}
                 touched={context.touched}

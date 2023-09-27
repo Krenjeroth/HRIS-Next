@@ -61,6 +61,7 @@ function index(parameter: Props) {
             setValue("");
             setFieldValue(parameter.id, '');
             setFieldValue(parameter.name, '');
+            setFieldValue(`${parameter.name}_autosuggest`, '');
         }
     }, [parameter.data])
 
@@ -77,10 +78,10 @@ function index(parameter: Props) {
                     suggestions={parameter.data}
                     onSuggestionsFetchRequested={debouncedLoadSuggestions}
                     onSuggestionsClearRequested={() => {
-                        console.log(value);
                         if (value == "") {
                             setFieldValue(parameter.id, '');
                             setFieldValue(parameter.name, '');
+                            setFieldValue(`${parameter.name}_autosuggest`, '');
                         }
 
                     }}
@@ -99,6 +100,7 @@ function index(parameter: Props) {
                         setValue(suggestion.label);
                         setFieldValue(parameter.id, suggestion.id);
                         setFieldValue(parameter.name, suggestion.label);
+                        setFieldValue(`${parameter.name}_autosuggest`, suggestion.label);
                     }}
                     inputProps={{
                         placeholder: `Enter ${parameter.title}`,

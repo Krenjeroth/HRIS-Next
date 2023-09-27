@@ -1,8 +1,8 @@
 "use client";
 
 export type formContextType = {
+    formikData: any,
     readonly?: boolean,
-    updateAddress: Function,
     errors: any,
     touched: any,
     isEmployee?: boolean,
@@ -116,7 +116,7 @@ export type school = {
 export interface IValues {
     // personal information
     employee_id: string,
-    employee_type: string,
+    employment_status: string,
     division_id: string,
     division: string,
     division_autosuggest: string,
@@ -147,6 +147,7 @@ export interface IValues {
     residential_subdivision: string,
     residential_street: string,
     residential_zipcode: string,
+    isSameAddress: boolean,
     permanent_province: string,
     permanent_municipality: string,
     permanent_barangay: string,

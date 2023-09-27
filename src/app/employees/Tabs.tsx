@@ -62,7 +62,10 @@ function AllRequestsTabs() {
 
     // variables
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<number>(1);
+    const formikRef = useRef(null);
+    const [formikData, setFormikData] = useState<any>();
+    const [formActiveTab, setFormActiveTab] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
     const [children, setChildren] = useState<child[]>([]);
@@ -159,8 +162,6 @@ function AllRequestsTabs() {
     ]);
 
 
-
-
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
@@ -190,7 +191,6 @@ function AllRequestsTabs() {
         { "column": "email_address", "display": "Email" },
         { "column": "employee_status", "display": "Employee Status" }
     ]);
-
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
@@ -235,6 +235,7 @@ function AllRequestsTabs() {
         residential_subdivision: '',
         residential_street: '',
         residential_zipcode: '',
+        isSameAddress: false,
         permanent_province: '',
         permanent_municipality: '',
         permanent_barangay: '',
@@ -271,7 +272,8 @@ function AllRequestsTabs() {
         recognitions: recognitions,
         memberships: memberships,
         answers: answers,
-        characterReferences: characterReferences
+        characterReferences: characterReferences,
+
         // family
 
     });
@@ -283,12 +285,13 @@ function AllRequestsTabs() {
         setValues(defaultData);
     }
 
+    useEffect(() => {
+        setFormikData(formikRef);
+    }, [formikRef]);
 
 
 
     // Use Effect Hook
-
-
     useEffect(() => {
         // query
         async function getData() {
@@ -377,87 +380,53 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         setLoading(true);
-        console.log(values);
-        // const postData = {
-        //     employee_id: values.employee_id,
-        //     date_approved: values.date_approved,
-        //     date_queued: values.date_queued,
-        //     posting_date: values.posting_date,
-        //     closing_date: values.closing_date,
-        //     birth_date: values.birth_date,
-        //     position: values.position,
-        //     device_name: "web",
-        //     process: process,
-        //     status: "Active"
-        // };
+        if (values.isSameAddress) {
+            values.permanent_barangay = values.residential_barangay;
+            values.permanent_house = values.residential_house;
+            values.permanent_municipality = values.residential_municipality;
+            values.permanent_province = values.residential_province;
+            values.permanent_street = values.residential_street;
+            values.permanent_subdivision = values.residential_subdivision;
+            values.permanent_zipcode = values.residential_zipcode;
+        }
+        if (values.citizenship == "Filipino") {
+            values.citizenship_type = "";
+            values.country = "";
+        }
+
         alerts.forEach(element => {
             alerts.pop();
         });
 
 
         try {
-            // add
-            if (process === "Add") {
-                const resp = await HttpService.post("employee", values);
+            // validate
+
+            if (values.validation === true) {
+                const resp = await HttpService.post("employee-validation", values);
                 if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        resetForm({});
-                        resetFormik();
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
-                        setId(0);
-                        setProcess("Add");
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
+                    if (resp.data.data == "true") {
+                        setFormActiveTab(formActiveTab + 1);
                     }
                 }
             }
-            // update
-            else if (process === "Edit") {
+            else {
 
-                const resp = await HttpService.patch("vacancy/" + id, values)
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
-            }
+                // add
 
-            // approve and queue
-            else if (process === "Approve" || process === "Queue") {
-                if (id != 0) {
-                    if (process === "Approve") {
-                        values.status = "Approved";
-                    }
-                    if (process == "Queue") {
-                        values.status = "Queued";
-                    }
-                    const resp = await HttpService.patch("vacancy/" + id, values)
+                if (process === "Add") {
+                    const resp = await HttpService.post("employee", values);
                     if (resp.status === 200) {
                         let status = resp.data.status;
-                        if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                            alerts.push({ "type": "success", "message": `Data has been  successfully ${values.status} !` });
+                        if (status === "Request was Successful") {
+                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                             resetForm({});
                             resetFormik();
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
                             setId(0);
+                            setProcess("Add");
                         }
                         else {
                             if (typeof resp.data != "undefined") {
@@ -466,24 +435,17 @@ function AllRequestsTabs() {
                         }
                     }
                 }
-                else {
-                    setProcess("Add");
-                }
-            }
+                // update
+                else if (process === "Edit") {
 
-            // delete
-            else {
-                if (id != 0) {
-                    const resp = await HttpService.delete("vacancy/" + id);
+                    const resp = await HttpService.patch("vacancy/" + id, values)
                     if (resp.status === 200) {
                         let status = resp.data.status;
-                        if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": resp.data.message });
+                        if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
-                            setId(0);
-
                         }
                         else {
                             if (typeof resp.data != "undefined") {
@@ -492,9 +454,65 @@ function AllRequestsTabs() {
                         }
                     }
                 }
+
+                // approve and queue
+                else if (process === "Approve" || process === "Queue") {
+                    if (id != 0) {
+                        if (process === "Approve") {
+                            values.status = "Approved";
+                        }
+                        if (process == "Queue") {
+                            values.status = "Queued";
+                        }
+                        const resp = await HttpService.patch("vacancy/" + id, values)
+                        if (resp.status === 200) {
+                            let status = resp.data.status;
+                            if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+                                alerts.push({ "type": "success", "message": `Data has been  successfully ${values.status} !` });
+                                resetForm({});
+                                resetFormik();
+                                setActivePage(1);
+                                setFilters([]);
+                                setRefresh(!refresh);
+                                setId(0);
+                            }
+                            else {
+                                if (typeof resp.data != "undefined") {
+                                    alerts.push({ "type": "failure", "message": resp.data.message });
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        setProcess("Add");
+                    }
+                }
+
+                // delete
                 else {
-                    setProcess("Add");
-                    // setShowDrawer(false);
+                    if (id != 0) {
+                        const resp = await HttpService.delete("vacancy/" + id);
+                        if (resp.status === 200) {
+                            let status = resp.data.status;
+                            if (status === "Request was Successful") {
+                                alerts.push({ "type": "success", "message": resp.data.message });
+                                setActivePage(1);
+                                setFilters([]);
+                                setRefresh(!refresh);
+                                setId(0);
+
+                            }
+                            else {
+                                if (typeof resp.data != "undefined") {
+                                    alerts.push({ "type": "failure", "message": resp.data.message });
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        setProcess("Add");
+                        // setShowDrawer(false);
+                    }
                 }
             }
         }
@@ -506,19 +524,13 @@ function AllRequestsTabs() {
         setLoading(false);
     };
 
-    const updateAddress = () => {
-
-        // console.log("testing");
-    };
-
-
     // tsx
     return (
         <>
             {/* drawer */}
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
                     {({ errors, touched }) => (
 
@@ -532,24 +544,27 @@ function AllRequestsTabs() {
                                 })}
                             </div>
                             <PDSContextProvider
+                                formikData={formikData}
                                 isLoading={isLoading}
                                 setAnswers={setAnswers}
-                                updateAddress={updateAddress}
                                 errors={errors}
                                 touched={touched}
                                 initialValues={initialValues}
                                 setValues={setValues}
                                 process={process}>
-                                <PDS />
+                                <PDS
+                                    formActiveTab={formActiveTab}
+                                    setFormActiveTab={setFormActiveTab}
+                                />
                             </PDSContextProvider>
 
                             {/* submit button */}
 
-                            <div className="grid grid-flow-row auto-rows-max mt-5">
+                            {/* <div className="grid grid-flow-row auto-rows-max mt-5">
                                 <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
-                            </div>
+                            </div> */}
                         </Form>
                     )}
                 </Formik>
@@ -606,9 +621,7 @@ function AllRequestsTabs() {
                             setYear={setYear}
                         >
                         </Table>
-
                     </Tabs.Item>
-
                 </Tabs.Group >
 
             </div >

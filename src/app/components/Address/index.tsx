@@ -50,14 +50,20 @@ function index(parameter: props) {
         }))
         setMunicipality('');
         if (filtered.length === 0) {
+            setFieldValue(`${parameter.name}_province`, '');
+            setFieldValue(`${parameter.name}_municipality`, '');
+            setFieldValue(`${parameter.name}_barangay`, '');
             setProvince('');
             setMunicipalities([]);
             setBarangays([]);
         }
         else {
             setProvince(filtered[0].name);
+            setFieldValue(`${parameter.name}_province`, filtered[0].name);
             const municipalities = getCityMunByProvince(filtered[0].prov_code);
             setMunicipalities(municipalities);
+            setFieldValue(`${parameter.name}_municipality`, '');
+            setFieldValue(`${parameter.name}_barangay`, '');
             setBarangays([]);
         }
     }
@@ -68,11 +74,15 @@ function index(parameter: props) {
         }));
         if (filtered.length === 0) {
             setMunicipality('');
+            setFieldValue(`${parameter.name}_municipality`, '');
+            setFieldValue(`${parameter.name}_barangay`, '');
             setBarangays([]);
         }
         else {
             setMunicipality(filtered[0].name);
             const barangays = getBarangayByMun(filtered[0].mun_code);
+            setFieldValue(`${parameter.name}_municipality`, filtered[0].name);
+            setFieldValue(`${parameter.name}_barangay`, '');
             setBarangays(barangays);
         }
     }

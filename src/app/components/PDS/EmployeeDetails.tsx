@@ -60,15 +60,15 @@ function EmployeeDetail() {
             </FormElement>
 
             <FormElement
-                name="employee_type"
-                label="Employee Type *"
+                name="employment_status"
+                label="Employment Status *"
                 className='col-span-4 md:col-span-2'
                 errors={context.errors}
                 touched={context.touched}
             >
                 <Field as="select"
-                    id="employee_type"
-                    name="employee_type"
+                    id="employment_status"
+                    name="employment_status"
                     placeholder="Employee Type"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
