@@ -173,15 +173,6 @@ function Family() {
                         <>
                             {children.map((object, index: number) => {
                                 return <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col' key={index}>
-                                    {/* <div className="mt-2 mx-2 col-span-4 md:col-span-1">
-                                        <Field
-                                            id={`children.${index}.number`}
-                                            name={`children.${index}.number`}
-                                            placeholder="Number"
-                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                            autoComplete="on"
-                                        />
-                                    </div> */}
 
                                     <div className="mt-2 mx-2 col-span-4 md:col-span-2">
                                         <Field
@@ -191,6 +182,7 @@ function Family() {
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
+                                        <FormFieldError name={`children.${index}.name`} errors={context.errors} touched={context.touched} />
                                     </div>
                                     <div className="mt-2 mx-2 col-span-4 md:col-span-1">
                                         <DatePicker
@@ -200,6 +192,7 @@ function Family() {
                                             placeholderText="Birthday *"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         />
+                                        <FormFieldError name={`children.${index}.birthday`} errors={context.errors} touched={context.touched} />
                                     </div>
                                     <div className="mt-1 col-span-4 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
@@ -396,6 +389,8 @@ function Family() {
                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     />
                 </FormElement>
+
+                
             </div>
         </>
     )
