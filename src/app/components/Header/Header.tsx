@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import logo from 'public/logo.png';
+import logo from '../../../../public/logo.png';
 import { Navbar } from 'flowbite-react';
 import { Dropdown } from 'flowbite-react';
 import { Avatar } from 'flowbite-react';
@@ -23,7 +23,6 @@ type Props = {
 };
 
 export default function Header(parameter: Props) {
-
     const name = useSelector((state: RootState) => state.user.name);
     const token = useSelector((state: RootState) => state.user.token);
     const email = useSelector((state: RootState) => state.user.email);

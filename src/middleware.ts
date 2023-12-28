@@ -7,6 +7,9 @@ export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const url = request.nextUrl.clone();
 
+    const response = NextResponse.next();
+    return response;
+
     // redirect to login page if not logged in
     if (pathname != "/login" && !request.cookies.has('token')) {
         const url = request.nextUrl.clone()
