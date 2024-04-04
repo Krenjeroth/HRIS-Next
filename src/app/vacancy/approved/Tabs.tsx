@@ -95,22 +95,16 @@ function AllRequestsTabs() {
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "item_number", "display": "Position" },
         { "column": "title", "display": "Position" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "division_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" },
         { "column": "date_approved", "display": "Date Approved" },
         { "column": "posting_date", "display": "Posting Date" },
         { "column": "closing_date", "display": "Closing Date" },
         { "column": "publication_status", "display": "Publication Status" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
     ]);
 
     const [pages, setPages] = useState<number>(0);

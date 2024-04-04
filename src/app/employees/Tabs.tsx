@@ -428,7 +428,11 @@ function AllRequestsTabs() {
                             setId(0);
                             setProcess("Add");
                         }
+                        else if (status === "Validation") {
+                        }
+
                         else {
+                            console.log(resp.data);
                             if (typeof resp.data != "undefined") {
                                 alerts.push({ "type": "failure", "message": resp.data.message });
                             }

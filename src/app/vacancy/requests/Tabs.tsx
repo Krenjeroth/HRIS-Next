@@ -98,18 +98,12 @@ function AllRequestsTabs() {
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "item_number", "display": "Position" },
         { "column": "title", "display": "Position" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "division_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" }
     ]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
@@ -187,15 +181,26 @@ function AllRequestsTabs() {
     // Get LGU Positions
     useEffect(() => {
         // query
-        async function getLGUPositions() {
+        async function getPositions() {
+            var keyword = positionKeyword.split("-");
+            var filters =[];
+            if (keyword.length === 2) {
+                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+            }
+            else {
+                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
+            }
+
             const postData = {
                 activePage: 1,
-                filters: [{ 'column': 'lgu_positions.status', 'value': 'Active' }],
+                filters: filters,
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
                 positionStatus: ['Permanent']
             };
+
+
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
                 setPositionData(
@@ -208,7 +213,7 @@ function AllRequestsTabs() {
                 );
             }
         }
-        getLGUPositions();
+        getPositions();
     }, [positionKeyword]);
 
 
@@ -465,7 +470,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         initialValues={initialValues}
                                         readOnly={process === "Add" || process === "Edit" ? false : true}
-                                        id="date_approved"
+                                        id="date_submitted"
                                         name="date_submitted"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
@@ -473,12 +478,13 @@ function AllRequestsTabs() {
                                 </FormElement>
                             </div>
 
-                            {/* positions */}
+                            {/*positions */}
                             <DataList errors={errors} touched={touched}
+                                className=''
                                 readonly={readOnly}
                                 id="position_id"
                                 setKeyword={setPositionKeyword}
-                                label="Position *"
+                                label="Position - Plantilla*"
                                 title="Position"
                                 name="position"
                                 initialValues={initialValues}
@@ -545,7 +551,7 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        id="date_approved"
+                                        id="date_queued"
                                         name="date_queued"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"

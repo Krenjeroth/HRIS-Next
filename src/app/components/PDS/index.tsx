@@ -28,19 +28,37 @@ function index(parameter: Props) {
     const tabsRef = useRef<TabsRef>(null);
     const props = { 'setFormActiveTab': parameter.setFormActiveTab, tabsRef };
     const [validationRequest, setValidationRequest] = useState<string>('');
+    const [formSubmit, setFormSubmit] = useState<boolean>(false);
     const { setFieldValue, submitForm } = useFormikContext();
     const validations = ['Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
     const context = usePDSContext();
 
+    // useEffect(() => {
+    //     console.log(validationRequest);
+    //     setFieldValue('validation_request', validationRequest);
+    // }, [validationRequest]);
+
+
+    // set active tab for the next and back buttons
     useEffect(() => {
-        setFieldValue('validation_request', validationRequest);
-    }, [validationRequest]);
+        console.log(context.errors);
+        if (context.errors.length === 0) {
+            console.log("no errors");
+            parameter.setFormActiveTab(parameter.formActiveTab + 1); I
+        }
 
-    useEffect(() => {
-        props.tabsRef.current?.setActiveTab(parameter.formActiveTab);
-    }, [parameter.formActiveTab]);
+    }, [context.errors]);
 
 
+
+    // onclick of next button
+    // useEffect(() => {
+
+    // }, [formSubmit]);
+
+
+
+    // tabs
     return (
         <>
             <Tabs.Group
@@ -116,23 +134,11 @@ function index(parameter: Props) {
 
                     <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                         setFieldValue('validation_request', validations[parameter.formActiveTab]);
-                        if (parameter.formActiveTab == (validations.length - 1)) {
-                            setFieldValue('validation', false);
-                            submitForm();
-                        }
-                        else {
-                            setFieldValue('validation', true);
-                            submitForm();
-                        }
+                        console.log(parameter.formActiveTab);
+                        submitForm();
                     }}>
                         {context.process == "Delete" ? "Delete" : parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
                     </Button>
-                    {/* 
-                    <Button className={`py-2 px-4   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} onClick={() =>
-                            
-                        }>
-                        {context.process == "Delete" ? "Delete" : parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
-                    </Button> */}
                 </div>
             </div >
         </>

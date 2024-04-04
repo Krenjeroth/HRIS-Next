@@ -167,10 +167,10 @@ function SalaryGradeTabs() {
         let newArrayFilter = [...filters];
 
         // add year to filter
-        newArrayFilter.push({
-            column: "year",
-            value: String(year)
-        });
+        // newArrayFilter.push({
+        //     column: "year",
+        //     value: String(year)
+        // });
 
 
         async function getData() {
@@ -179,6 +179,7 @@ function SalaryGradeTabs() {
                 activePage: activePage,
                 filters: newArrayFilter,
                 orderBy: orderBy,
+                viewAll:true,
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-lgu-position", postData);
@@ -615,8 +616,8 @@ function SalaryGradeTabs() {
                             reload={reload}
                             setReload={setReload}
                             setProcess={setProcess}
-                            year={year}
-                            setYear={setYear}
+                            // year={year}
+                            // setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >

@@ -93,19 +93,13 @@ function AllRequestsTabs() {
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "item_number", "display": "Position" },
         { "column": "title", "display": "Position" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "division_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
-        { "column": "date_queued", "display": "Date Queued" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" },
+        { "column": "date_queued", "display": "Date Queued" }
     ]);
 
     const [pages, setPages] = useState<number>(0);
@@ -397,6 +391,7 @@ function AllRequestsTabs() {
 
                                 {/* positions */}
                                 <DataList errors={errors} touched={touched}
+                                    className=''
                                     readonly={true}
                                     id="position_id"
                                     setKeyword={setPositionKeyword}

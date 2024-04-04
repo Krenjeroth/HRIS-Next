@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import logo from 'public/logo.png';
+import logo from '../../../../public/logo.png';
 import { Navbar } from 'flowbite-react';
 import { Dropdown } from 'flowbite-react';
 import { Avatar } from 'flowbite-react';

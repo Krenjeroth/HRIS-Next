@@ -146,7 +146,7 @@ function index(parameter: Props) {
                         return (
                             <Table.HeadCell key={item.column} >
 
-                                <div className="mb-0 pb-0 " onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
+                                <div className="mb-0 pb-0 mx-3 " onClick={() => { parameter.setOrderAscending(!parameter.orderAscending); parameter.setOrderBy(item.column) }}>
                                     <span>{item.display.replaceAll("_", " ")}
                                     </span>
                                     {(item.column == parameter.orderBy) ?
@@ -168,25 +168,24 @@ function index(parameter: Props) {
                 <Table.Head>
                     <Table.HeadCell className="pt-0">
                         <span className="sr-only">
-
                         </span>
                     </Table.HeadCell>
                     {parameter.headers.map((item: header, index) => {
                         let strlen = item.column.length;
                         let hiddenLabel = item.column + "here";
                         if (strlen < 7) {
-                            hiddenLabel = "Searchhere"
+                            hiddenLabel = "Search here"
                         }
 
                         return (
-                            <Table.HeadCell key={item.column} className="pt-0">
+                            <Table.HeadCell key={item.column} className="p-1">
                                 <div className="relative mt-0 pt-0">
                                     <span className="invisible">
                                         {hiddenLabel}
                                     </span>
-                                    <input type="text" id={`${item.column}_search`} name={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-2 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
+                                    <input type="text" id={`${item.column}_search`} name={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-0 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
 
-                                    <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal mt-2" >Search</label>
+                                    <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-4 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal mt-2" >Search</label>
                                 </div>
 
                             </Table.HeadCell>
@@ -198,7 +197,7 @@ function index(parameter: Props) {
                         parameter.data.map((item: row, index: number) => {
                             return (
                                 <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-cyan-50' : 'bg-white')} >
-                                    <Table.Cell className="whitespace-nowrap font-medium min-w-0 flex flex-row">
+                                    <Table.Cell className="whitespace-nowrap font-medium min-w-0 flex flex-row p-1">
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
                                                 return (
@@ -230,7 +229,7 @@ function index(parameter: Props) {
                                             }
                                         }
                                         return (
-                                            <Table.Cell className="" key={td_index} onClick={(e) => {
+                                            <Table.Cell className="p-1" key={td_index} onClick={(e) => {
                                                 let newArray = [...selected];
                                                 if (newArray.includes(item.id)) {
                                                     newArray = newArray.filter((str: string) => {
