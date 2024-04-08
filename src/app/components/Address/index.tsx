@@ -122,7 +122,7 @@ function index(parameter: props) {
 
             <FormElement
                 name={`${parameter.name}_province`}
-                label="Province *"
+                label={<>Province <span className=' text-red-700 text-lg'></span></>}
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
@@ -146,10 +146,12 @@ function index(parameter: props) {
 
             <FormElement
                 name={`${parameter.name}_municipality`}
-                label="Municipality/City *"
+                label="Municipality/City"
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
+                required={true}
+
             >
                 <Field
                     onChange={(e: React.FormEvent<HTMLInputElement>) => {
@@ -176,13 +178,14 @@ function index(parameter: props) {
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
+                required={true}
             >
                 <Field
 
                     as="select"
                     id={`${parameter.name}_barangay`}
                     name={`${parameter.name}_barangay`}
-                    placeholder="Barangay *"
+                    placeholder="Barangay "
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Barangay</option>
@@ -197,7 +200,7 @@ function index(parameter: props) {
 
             <FormElement
                 name={`${parameter.name}_house`}
-                label="House/Block/Lot No. *"
+                label="House/Block/Lot No."
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
@@ -243,10 +246,12 @@ function index(parameter: props) {
 
             <FormElement
                 name={`${parameter.name}_zipcode`}
-                label="Zipcode *"
+                label="Zipcode "
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${parameter.sameAddress === true ? 'hidden	' : ''}`}
+                required={true}
+
             >
                 <Field
                     id={`${parameter.name}_zipcode`}

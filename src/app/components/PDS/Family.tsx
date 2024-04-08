@@ -17,12 +17,12 @@ function Family() {
     const context = usePDSContext();
     const [children, setChildren] = useState<child[]>([...context.initialValues.children]);
 
-    useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.children = children;
-    }, [children])
+    // useEffect(() => {
+    // //    context.initialValues.children = children;
+    // }, [children])
 
 
+    // console.log(children);
 
     return (
         <>
@@ -185,6 +185,13 @@ function Family() {
                                         <FormFieldError name={`children.${index}.name`} errors={context.errors} touched={context.touched} />
                                     </div>
                                     <div className="mt-2 mx-2 col-span-4 md:col-span-1">
+                                        {/* <Field
+                                            id={`children.${index}.name`}
+                                            name={`children.${index}.name`}
+                                            placeholder="Name *"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            autoComplete="on"
+                                        /> */}
                                         <DatePicker
                                             initialValues={context.initialValues}
                                             id={`children.${index}.birthday`}
@@ -192,6 +199,7 @@ function Family() {
                                             placeholderText="Birthday *"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         />
+
                                         <FormFieldError name={`children.${index}.birthday`} errors={context.errors} touched={context.touched} />
                                     </div>
                                     <div className="mt-1 col-span-4 md:col-span-1 mx-auto ">
@@ -390,7 +398,7 @@ function Family() {
                     />
                 </FormElement>
 
-                
+
             </div>
         </>
     )

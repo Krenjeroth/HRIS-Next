@@ -36,6 +36,7 @@ type Props = {
     setValues: Function,
     id: string,
     className: string
+    required?: boolean
 }
 
 
@@ -65,7 +66,12 @@ function index(parameter: Props) {
         }
     }, [parameter.data])
 
+    useEffect(() => {
+        setValue(parameter.initialValues[parameter.name]);
+    }, [parameter.initialValues])
+
     return (
+
         <>
             <FormElement
                 name={`${parameter.name}_autosuggest`}
@@ -73,6 +79,7 @@ function index(parameter: Props) {
                 errors={parameter.errors}
                 touched={parameter.touched}
                 className={`${parameter.readonly === true ? "hidden" : ""} ${parameter.className}`}
+                required={parameter.required}
             >
                 <Autosuggest
                     suggestions={parameter.data}

@@ -46,10 +46,11 @@ function EmployeeDetail() {
             </div>
             <FormElement
                 name="employee_id"
-                label="Employee ID *"
+                label="Employee ID"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-2'
+                required={true}
             >
                 <Field
                     id="employee_id"
@@ -61,10 +62,11 @@ function EmployeeDetail() {
 
             <FormElement
                 name="employment_status"
-                label="Employment Status *"
+                label="Employment Status"
                 className='col-span-4 md:col-span-2'
                 errors={context.errors}
                 touched={context.touched}
+                required={true}
             >
                 <Field as="select"
                     id="employment_status"
@@ -88,10 +90,11 @@ function EmployeeDetail() {
                 readonly={context.process === "Delete" ? true : false}
                 id="division_id"
                 setKeyword={setDivisionKeyword}
-                label="Division/Section/Unit *"
+                label="Division/Section/Unit"
                 title="Division/Section/Unit"
                 name="division"
                 className="col-span-4 md:col-span-2"
+                required={true}
                 initialValues={context.initialValues}
                 setValues={context.setValues}
                 data={divisions} />

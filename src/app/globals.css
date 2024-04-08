@@ -4,9 +4,9 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -76,7 +76,6 @@
   }
 }
 
-
 .react-datepicker-wrapper {
   width: 100% !important;
 }
@@ -86,9 +85,16 @@
 }
 
 .react-autosuggest__suggestions-container {
-  border: 2px solid;
+  boder-color: #e5e7eb !important;
+  background-color: white !important;
+  border: 1px solid !important;
   border-color: rgb(243 244 246);
   border-radius: 5px;
+  overflow: hidden !important;
+}
+
+.react-autosuggest__suggestions-container li {
+  margin: 1, 1, 1, 1;
 }
 
 * {
@@ -158,7 +164,7 @@ a {
 
 ::before,
 ::after {
-  --tw-content: "";
+  --tw-content: '';
 }
 
 /*
@@ -179,8 +185,8 @@ html {
   tab-size: 4;
   /* 3 */
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* font-family:"SF Pro Display", "SF Pro Icons", "AOS Icons", "Helvetica Neue", Helvetica, Arial, sans-serif; */
   /* 4 */
@@ -264,7 +270,7 @@ kbd,
 samp,
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+    'Liberation Mono', 'Courier New', monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -390,7 +396,7 @@ Correct the cursor style of increment and decrement buttons in Safari.
 2. Correct the outline style in Safari.
 */
 
-[type="search"] {
+[type='search'] {
   -webkit-appearance: textfield;
   /* 1 */
   outline-offset: -2px;
@@ -504,7 +510,7 @@ Set the default cursor for buttons.
 */
 
 button,
-[role="button"] {
+[role='button'] {
   cursor: pointer;
 }
 
@@ -965,7 +971,7 @@ body {
 }
 
 #cta {
-  background-image: url("/img/bg-simplify-section-desktop.svg");
+  background-image: url('/img/bg-simplify-section-desktop.svg');
   background-repeat: no-repeat;
 }
 
@@ -976,7 +982,7 @@ body {
   }
 
   #cta {
-    background-image: url("/img/bg-simplify-section-mobile.svg");
+    background-image: url('/img/bg-simplify-section-mobile.svg');
   }
 }
 

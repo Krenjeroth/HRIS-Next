@@ -29,7 +29,7 @@ export const FormFieldError: React.FC<Props> = ({ name, errors, touched }) => {
       error.forEach((object, index) => {
         if (objectIndex == index) {
           // if(object.)
-          console.log(object);
+          // console.log(object);
         }
       });
       // console.log(error[0]);

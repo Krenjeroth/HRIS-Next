@@ -24,37 +24,18 @@ type Props = {
 
 function index(parameter: Props) {
 
-    // const [activeTab, setActiveTab] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
     const props = { 'setFormActiveTab': parameter.setFormActiveTab, tabsRef };
-    const [validationRequest, setValidationRequest] = useState<string>('');
-    const [formSubmit, setFormSubmit] = useState<boolean>(false);
     const { setFieldValue, submitForm } = useFormikContext();
     const validations = ['Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
     const context = usePDSContext();
 
-    // useEffect(() => {
-    //     console.log(validationRequest);
-    //     setFieldValue('validation_request', validationRequest);
-    // }, [validationRequest]);
 
 
-    // set active tab for the next and back buttons
     useEffect(() => {
-        console.log(context.errors);
-        if (context.errors.length === 0) {
-            console.log("no errors");
-            parameter.setFormActiveTab(parameter.formActiveTab + 1); I
-        }
-
-    }, [context.errors]);
-
-
-
-    // onclick of next button
-    // useEffect(() => {
-
-    // }, [formSubmit]);
+        props.tabsRef.current?.setActiveTab(parameter.formActiveTab);
+    }, [parameter.formActiveTab]);
 
 
 
@@ -125,7 +106,6 @@ function index(parameter: Props) {
                     {parameter.formActiveTab != 0 ?
                         <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => {
                             parameter.setFormActiveTab(parameter.formActiveTab - 1);
-                            setFieldValue('validation_request', validations[parameter.formActiveTab]);
                         }}>
                             Back
                         </Button>
@@ -133,14 +113,25 @@ function index(parameter: Props) {
                     }
 
                     <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
-                        setFieldValue('validation_request', validations[parameter.formActiveTab]);
-                        console.log(parameter.formActiveTab);
-                        submitForm();
+                        if (parameter.formActiveTab < (validations.length - 1)) {
+                            parameter.setFormActiveTab(parameter.formActiveTab + 1);
+                        }
+                        else {
+                            submitForm();
+                        }
+                        // console.log(parameter.formActiveTab);
                     }}>
                         {context.process == "Delete" ? "Delete" : parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
                     </Button>
                 </div>
             </div >
+
+            <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
+                submitForm();
+                // console.log(parameter.formActiveTab);
+            }}>
+                Submit
+            </Button>
         </>
     )
 }

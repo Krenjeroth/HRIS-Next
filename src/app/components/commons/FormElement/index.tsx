@@ -3,12 +3,13 @@ import { ReactNode } from "react";
 import { FormFieldError } from "../FormFieldError";
 
 interface Props {
-  label: string;
+  label: any;
   name: string;
   children?: ReactNode;
   errors: any;
   touched: any;
   className?: string
+  required?: boolean
 }
 
 export const FormElement: React.FC<Props> = ({
@@ -17,8 +18,17 @@ export const FormElement: React.FC<Props> = ({
   children,
   errors,
   touched,
-  className
+  className,
+  required
+
 }) => {
+
+  if (required) {
+    label = <>{label} <span className=' text-red-700 text-lg'>*</span></>;
+  }
+  else {
+    label = <>{label} <span className=' text-red-700 text-lg'></span></>;
+  }
   return (
 
     <div className={`mt-2 mx-2 ${className}`}>

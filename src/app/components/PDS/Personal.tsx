@@ -58,10 +58,11 @@ function Personal() {
 
             <FormElement
                 name="first_name"
-                label="First Name *"
+                label="First Name"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="first_name"
@@ -90,10 +91,11 @@ function Personal() {
 
             <FormElement
                 name="last_name"
-                label="Last Name *"
+                label="Last Name"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="last_name"
@@ -121,10 +123,11 @@ function Personal() {
 
             <FormElement
                 name="birth_place"
-                label="Birth Place *"
+                label="Birth Place"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-2'
+                required={true}
             >
                 <Field
                     name="birth_place"
@@ -136,10 +139,11 @@ function Personal() {
 
             <FormElement
                 name="birth_date"
-                label="Birthdate *"
+                label="Birthdate"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <DatePicker
                     initialValues={context.initialValues}
@@ -153,10 +157,11 @@ function Personal() {
 
             <FormElement
                 name="age"
-                label="Age *"
+                label="Age"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     type="number"
@@ -169,10 +174,11 @@ function Personal() {
 
             <FormElement
                 name="sex"
-                label="Sex *"
+                label="Sex"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-2'
+                required={true}
             >
                 <Field
                     as="select"
@@ -188,10 +194,11 @@ function Personal() {
 
             <FormElement
                 name="height"
-                label="Height *"
+                label="Height (m)"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     type="number"
@@ -204,10 +211,11 @@ function Personal() {
 
             <FormElement
                 name="weight"
-                label="Weight *"
+                label="Weight (kg)"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     type="number"
@@ -220,10 +228,11 @@ function Personal() {
 
             <FormElement
                 name="citizenship"
-                label="Citizenship *"
+                label="Citizenship"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-2'
+                required={true}
             >
                 <div className='w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                     <label className='p-1 mt-2' htmlFor='citizenship'>
@@ -243,10 +252,11 @@ function Personal() {
 
             <FormElement
                 name="citizenship_type"
-                label="Citizenship Type *"
+                label="Citizenship Type"
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-2 ${dualCitizen ? '' : 'invisible'} `}
+                required={true}
             >
                 <div className='w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500' >
                     <label className='p-1 mt-2' htmlFor='citizenship_type'>
@@ -262,10 +272,11 @@ function Personal() {
 
             <FormElement
                 name="country"
-                label="Country *"
+                label="Country"
                 errors={context.errors}
                 touched={context.touched}
                 className={`col-span-4 md:col-span-1 ${dualCitizen ? '' : 'hidden'} `}
+                required={true}
             >
                 <Field
                     as="select"
@@ -284,10 +295,11 @@ function Personal() {
 
             <FormElement
                 name="blood_type"
-                label="Blood Type *"
+                label="Blood Type"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     as="select"
@@ -309,10 +321,11 @@ function Personal() {
 
             <FormElement
                 name="civil_status"
-                label="Civil Status *"
+                label="Civil Status"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     as="select"
@@ -331,10 +344,11 @@ function Personal() {
 
             <FormElement
                 name="tin"
-                label="Tax Identification Number *"
+                label="Tax Identification Number"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="tin"
@@ -346,10 +360,11 @@ function Personal() {
 
             <FormElement
                 name="gsis"
-                label="GSIS Number *"
+                label="GSIS Number"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="gsis"
@@ -361,10 +376,11 @@ function Personal() {
 
             <FormElement
                 name="pagibig"
-                label="PAGIBIG Number *"
+                label="PAGIBIG Number"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="pagibig"
@@ -376,10 +392,11 @@ function Personal() {
 
             <FormElement
                 name="philhealth"
-                label="Philhealth Number *"
+                label="Philhealth Number"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="philhealth"
@@ -441,10 +458,11 @@ function Personal() {
 
             <FormElement
                 name="mobile"
-                label="Mobile Number *"
+                label="Mobile Number"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
                 <Field
                     id="mobile"
