@@ -32,10 +32,10 @@ function index(parameter: Props) {
 
         <DatePicker
             {...field}
-            // {...parameter}
-            id={parameter.id}
-            name={parameter.name}
-            className={parameter.className}
+            {...parameter}
+            // id={parameter.id}
+            // name={parameter.name}
+            // className={parameter.className}
             selected={(field.value && new Date(field.value)) || null}
             showMonthDropdown
             showYearDropdown

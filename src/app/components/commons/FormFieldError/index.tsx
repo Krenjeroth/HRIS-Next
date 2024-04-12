@@ -12,39 +12,30 @@ interface Props {
 
 
 
-type customError = {
-  name: string
-}
-
 export const FormFieldError: React.FC<Props> = ({ name, errors, touched }) => {
 
-  const [errorDetails, setErrorDetails] = useState<String>("");
-  let namesplit = name.split('.');
-  let error;
-  // if (namesplit.length === 3 && typeof errors[namesplit[0]] != undefined && typeof errors != undefined && touched) {
-  //   let error_name = errors[namesplit[0]];
-  //   let objectIndex = parseInt(namesplit[1]);
-  //   if (Array.isArray(error_name) && objectIndex < error_name.length) {
-  //      error = error_name[objectIndex] as customError;
-  //     // setErrorDetails(error.name);
-  //   }
-  // }
-  // // else {
-  // //   if (typeof errors != undefined && touched && errors[name] != undefined) {
-  // //     if (errors[name] != undefined) {
-  // //       setErrorDetails("");
-  // //     }
-  // //   }
-  // // }
+  console.log(touched);
+
+  // attribute . index .data
+  let index = name.split('.');
+  let detail = "";
+  let error_array = errors[index[0]];
+  if (index.length === 3 && error_array && Array.isArray(error_array) && touched) {
+    let data = error_array[parseInt(index[1])] as any;
+
+    if (data?.[index[2]] !== undefined) {
+      detail = data[index[2]].toString().replace(name, index[2]);
+    }
+
+
+  } else {
+    if (errors[name] != undefined) {
+      detail = errors[name]?.toString() as string;
+    }
+  }
   return (
     <>
-      {namesplit.length === 3 && errors[namesplit[0]] as customError && touched && (
-        <div className="text-red-500 text-sm">{errors[namesplit[0]]?.toString()}</div>
-      )}
-
-      {errors[name] && touched && (
-        <div className="text-red-500 text-sm">{errors[name]?.toString()}</div>
-      )}
+      <div className="text-red-500 text-sm">{detail}</div>
     </>
   );
 };

@@ -35,6 +35,7 @@ export type characterReference = {
 }
 
 export type answer = {
+    id: number,
     number: string,
     answer: string,
     details: string,

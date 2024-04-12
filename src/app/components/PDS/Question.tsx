@@ -21,6 +21,7 @@ function Question() {
     const [answers, setAnswers] = useState<answer[]>([]);
     useEffect(() => {
         answers.forEach((object, index) => {
+            setFieldValue(`answers.${index}.id`, object.id);
             setFieldValue(`answers.${index}.number`, object.number);
             setFieldValue(`answers.${index}.question`, object.question);
             setFieldValue(`answers.${index}.answer`, object.answer);
@@ -39,6 +40,7 @@ function Question() {
             if (resp != null) {
                 setAnswers(resp.data.data.map((object: question) => {
                     return {
+                        id: object.id,
                         number: object.number,
                         question: object.question,
                         answer: '',
@@ -59,6 +61,9 @@ function Question() {
             <div className='col-span-2 md:col-span-2 md:grid-cols-3 grid-col content-start'>
                 <Table>
                     <Table.Head>
+                        <Table.HeadCell>
+                            Id
+                        </Table.HeadCell>
                         <Table.HeadCell>
                             Number
                         </Table.HeadCell>
@@ -83,6 +88,18 @@ function Question() {
                                     {
                                         answers.map((object, index: number) => {
                                             return <Table.Row className="bg-white  dark:bg-gray-800 p-0" key={index}>
+                                                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                                    <Field
+                                                        readOnly={true}
+                                                        value={object.id}
+                                                        id={`answers.${index}.id`}
+                                                        name={`answers.${index}.id`}
+                                                        placeholder="ID"
+                                                        className="w-full p-3  text-sm   rounded-lg "
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`answers.${index}.number`} errors={context.errors} touched={context.touched} />
+                                                </Table.Cell>
                                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                                     <Field
                                                         readOnly={true}

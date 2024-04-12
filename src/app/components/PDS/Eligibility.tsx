@@ -54,7 +54,7 @@ function Eligiblility() {
 
                                     <div className="mt-2 mx-2 col-span-10 md:col-span-2">
                                         <Field
-                                            type="number"
+                                            // type="number"
                                             id={`eligibilities.${index}.rating`}
                                             name={`eligibilities.${index}.rating`}
                                             placeholder="Rating (%) *"
@@ -105,7 +105,6 @@ function Eligiblility() {
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                         />
                                         <FormFieldError name={`eligibilities.${index}.license_date_validity`} errors={context.errors} touched={context.touched} />
-                                        <FormFieldError name={`eligibilities.${index}.license_number`} errors={context.errors} touched={context.touched} />
                                     </div>
 
 
