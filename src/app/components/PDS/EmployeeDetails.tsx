@@ -17,7 +17,8 @@ function EmployeeDetail() {
     const context = usePDSContext();
     const [divisionKeyword, setDivisionKeyword] = useState<string>('');
     const [divisions, setDivisions] = useState<datalist[]>([]);
-
+    const [positionKeyword, setPositionKeyword] = useState<string>("");
+    const [positionData, setPositionData] = useState<datalist[]>([]);
 
     // get divisions
     useEffect(() => {
@@ -37,6 +38,45 @@ function EmployeeDetail() {
 
         getPositions();
     }, [divisionKeyword]);
+
+
+    // Get LGU Positions
+    useEffect(() => {
+        // query
+        async function getPositions() {
+            var keyword = positionKeyword.split("-");
+            var filters = [];
+            if (keyword.length === 2) {
+                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+            }
+            else {
+                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
+            }
+
+            const postData = {
+                activePage: 1,
+                filters: filters,
+                orderBy: 'title',
+                year: '',
+                orderAscending: "asc",
+                positionStatus: ['Permanent', 'Contractual', 'Casual']
+            };
+
+
+            const resp = await HttpService.post("search-lgu-position", postData);
+            if (resp != null) {
+                setPositionData(
+                    resp.data.data.map((data: any) => {
+                        return {
+                            "id": data.id,
+                            "label": data.attributes.label
+                        }
+                    })
+                );
+            }
+        }
+        getPositions();
+    }, [positionKeyword]);
 
     return (
         <div className='grid lg:grid-cols-4 grid-col'>
@@ -98,6 +138,61 @@ function EmployeeDetail() {
                 initialValues={context.initialValues}
                 setValues={context.setValues}
                 data={divisions} />
+
+            {/* Current Position */}
+
+
+
+            <DataList errors={context.errors} touched={context.touched}
+                readonly={context.process === "Delete" ? true : false}
+                id="lgu_position_id"
+                setKeyword={setPositionKeyword}
+                label="Position - Plantilla"
+                title="Position"
+                name="lgu_position"
+                className="col-span-4 md:col-span-1"
+                required={false}
+                initialValues={context.initialValues}
+                setValues={context.setValues}
+                data={positionData} />
+
+            <FormElement
+                name="employee_status"
+                label="Status"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-1 md:col-span-1'
+                required={true}
+            >
+                <Field
+                    as="select"
+                    id="employee_status"
+                    name="employee_status"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                >
+                    <option value="">Select Type </option>
+                    <option value="Female">Active</option>
+                    <option value="Male">Retired</option>
+                    <option value="Male">Terminated</option>
+                </Field>
+            </FormElement>
+
+
+            {/* positions
+            <DataList errors={context.errors} touched={context.touched}
+                className="col-span-4 md:col-span-2"
+                readonly={false}
+                id="position_id"
+                setKeyword={setPositionKeyword}
+                label="Position - Plantilla*"
+                title="Position"
+                name="position"
+                initialValues={context.initialValues}
+                setValues={context.setValues}
+                data={positionData} /> */}
+
+
+
         </div>
     )
 }

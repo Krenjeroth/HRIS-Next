@@ -14,7 +14,7 @@ interface Props {
 
 export const FormFieldError: React.FC<Props> = ({ name, errors, touched }) => {
 
-  console.log(touched);
+  // console.log(touched);
 
   // attribute . index .data
   let index = name.split('.');

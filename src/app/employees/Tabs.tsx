@@ -196,8 +196,8 @@ function AllRequestsTabs() {
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Employee");
-    const [positionKeyword, setPositionKeyword] = useState<string>("");
-    const [positionData, setPositionData] = useState<datalist[]>([]);
+    // const [positionKeyword, setPositionKeyword] = useState<string>("");
+    // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -208,6 +208,10 @@ function AllRequestsTabs() {
         division_id: '',
         division: '',
         division_autosuggest: '',
+        lgu_position_id: '',
+        lgu_position: '',
+        lgu_position_autosuggest: '',
+        employee_status: '',
         first_name: '',
         middle_name: '',
         last_name: '',
@@ -244,7 +248,7 @@ function AllRequestsTabs() {
         permanent_street: '',
         permanent_zipcode: '',
         telephone: '',
-        mobile: '',
+        mobile_number: '',
         email: '',
         spouse_first_name: '',
         spouse_middle_name: '',

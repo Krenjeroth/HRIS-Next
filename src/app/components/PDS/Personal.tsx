@@ -465,8 +465,8 @@ function Personal() {
                 required={true}
             >
                 <Field
-                    id="mobile"
-                    name="mobile"
+                    id="mobile_number"
+                    name="mobile_number"
                     placeholder="09XXXXXXXXX"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
