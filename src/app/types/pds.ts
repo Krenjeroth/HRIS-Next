@@ -162,7 +162,7 @@ export interface IValues {
     permanent_zipcode: string,
     telephone: string,
     mobile_number: string,
-    email: string,
+    email_address: string,
     spouse_first_name: string,
     spouse_middle_name: string,
     spouse_last_name: string,

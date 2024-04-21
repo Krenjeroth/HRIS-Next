@@ -29,7 +29,7 @@ function Skill() {
             <div className='cols-span-2 grid  md:grid-cols-2 grid-col content-start' >
 
                 <div className='col-span-2 md:col-span-2'>
-                    <span className=' text-cyan-600 font-medium text-lg '>Skills/Hobbies</span>
+                    <span className=' text-cyan-600 font-medium text-lg '>SPECIAL SKILLS and HOBBIES</span>
                     {/* <hr className='text-cyan-600 mt-6' /> */}
                 </div>
 
@@ -42,13 +42,13 @@ function Skill() {
 
                                     <div className="mt-2 mx-2 col-span-3 md:col-span-2">
                                         <Field
-                                            id={`skills.${index}.name`}
-                                            name={`skills.${index}.name`}
+                                            id={`skills.${index}.special_skill`}
+                                            name={`skills.${index}.special_skill`}
                                             placeholder=" Skill/Hobby *"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
-                                        <FormFieldError name={`skills.${index}.name`} errors={context.errors} touched={context.touched} />
+                                        <FormFieldError name={`skills.${index}.special_skill`} errors={context.errors} touched={context.touched} />
                                     </div>
 
 

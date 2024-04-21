@@ -151,7 +151,7 @@ function EmployeeDetail() {
                 title="Position"
                 name="lgu_position"
                 className="col-span-4 md:col-span-1"
-                required={false}
+                required={true}
                 initialValues={context.initialValues}
                 setValues={context.setValues}
                 data={positionData} />

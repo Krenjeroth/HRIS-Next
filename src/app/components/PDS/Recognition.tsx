@@ -29,7 +29,7 @@ function Recognition() {
             <div className='cols-span-2 grid  md:grid-cols-2 grid-col content-start' >
 
                 <div className='col-span-2 md:col-span-2'>
-                    <span className=' text-cyan-600 font-medium text-lg '>Recognitions/Hobbies</span>
+                    <span className=' text-cyan-600 font-medium text-lg '>NON-ACADEMIC DISTINCTIONS / RECOGNITION </span>
                     {/* <hr className='text-cyan-600 mt-6' /> */}
                 </div>
 
@@ -42,13 +42,13 @@ function Recognition() {
 
                                     <div className="mt-2 mx-2 col-span-3 md:col-span-2">
                                         <Field
-                                            id={`recognitions.${index}.title`}
-                                            name={`recognitions.${index}.title`}
+                                            id={`recognitions.${index}.recognition_title`}
+                                            name={`recognitions.${index}.recognition_title`}
                                             placeholder=" Recognition *"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
-                                        <FormFieldError name={`recognitions.${index}.title`} errors={context.errors} touched={context.touched} />
+                                        <FormFieldError name={`recognitions.${index}.recognition_title`} errors={context.errors} touched={context.touched} />
                                     </div>
 
 

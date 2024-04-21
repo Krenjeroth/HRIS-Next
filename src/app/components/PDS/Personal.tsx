@@ -457,7 +457,7 @@ function Personal() {
             </FormElement>
 
             <FormElement
-                name="mobile"
+                name="mobile_number"
                 label="Mobile Number"
                 errors={context.errors}
                 touched={context.touched}
@@ -475,15 +475,15 @@ function Personal() {
 
 
             <FormElement
-                name="email"
+                name="email_address"
                 label="Email Address (if any)"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
             >
                 <Field
-                    id="email"
-                    name="email"
+                    id="email_address"
+                    name="email_address"
                     placeholder="juan@gmail.com"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"

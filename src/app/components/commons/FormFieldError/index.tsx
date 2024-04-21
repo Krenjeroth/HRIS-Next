@@ -24,7 +24,7 @@ export const FormFieldError: React.FC<Props> = ({ name, errors, touched }) => {
     let data = error_array[parseInt(index[1])] as any;
 
     if (data?.[index[2]] !== undefined) {
-      detail = data[index[2]].toString().replace(name, index[2]);
+      detail = data[index[2]].toString().replace(name, index[2].replaceAll('_',' '));
     }
 
 
