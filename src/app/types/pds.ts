@@ -66,8 +66,8 @@ export type workExperience = {
 export type voluntaryWork = {
     organization_name: string,
     organization_address: string,
-    period_from: string,
-    period_to: string,
+    date_from: string,
+    date_to: string,
     number_of_hours: number,
     position_nature_of_work: string
 }
@@ -89,15 +89,15 @@ export type question = {
 }
 
 export type skill = {
-    name: string
+    special_skill: string
 }
 
 export type recognition = {
-    title: string
+    recognition_title: string
 }
 
 export type membership = {
-    title: string
+    organization: string
 }
 
 export type school = {

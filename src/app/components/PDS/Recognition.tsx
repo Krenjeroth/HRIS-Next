@@ -51,8 +51,6 @@ function Recognition() {
                                         <FormFieldError name={`recognitions.${index}.recognition_title`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-
-
                                     <div className="mt-1 col-span-3 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
                                             remove(index);
@@ -80,11 +78,11 @@ function Recognition() {
                                         });
 
                                         reinitialize_recognitions.push({
-                                            title: '',
+                                            recognition_title: '',
                                         })
 
                                         push({
-                                            title: '',
+                                            recognition_title: '',
                                         });
 
                                         setrecognitions(reinitialize_recognitions);

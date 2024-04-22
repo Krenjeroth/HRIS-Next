@@ -138,8 +138,8 @@ function VoluntaryWork() {
                                         reinitialize_voluntaryWorks.push({
                                             organization_name: '',
                                             organization_address: '',
-                                            period_from: '',
-                                            period_to: '',
+                                            date_from: '',
+                                            date_to: '',
                                             number_of_hours: 0,
                                             position_nature_of_work: ''
                                         })
@@ -147,8 +147,8 @@ function VoluntaryWork() {
                                         push({
                                             organization_name: '',
                                             organization_address: '',
-                                            period_from: '',
-                                            period_to: '',
+                                            date_from: '',
+                                            date_to: '',
                                             number_of_hours: '',
                                             position_nature_of_work: ''
                                         });

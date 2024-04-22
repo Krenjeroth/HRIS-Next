@@ -131,13 +131,14 @@ function AllRequestsTabs() {
         }
     ]);
     const [skills, setSkills] = useState<skill[]>([{
-        name: ""
+        special_skill: ""
     }]);
+
     const [recognitions, setRecognitions] = useState<recognition[]>([{
-        title: ""
+        recognition_title: ""
     }]);
     const [memberships, setMemberships] = useState<membership[]>([{
-        title: ""
+        organization: ""
     }]);
 
     const [answers, setAnswers] = useState<answer[]>([

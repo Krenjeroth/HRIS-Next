@@ -80,11 +80,11 @@ function Skill() {
                                         });
 
                                         reinitialize_skills.push({
-                                            name: '',
+                                            special_skill: '',
                                         })
 
                                         push({
-                                            name: '',
+                                            special_skill: '',
                                         });
 
                                         setskills(reinitialize_skills);

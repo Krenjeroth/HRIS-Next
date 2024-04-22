@@ -42,13 +42,13 @@ function Membership() {
 
                                     <div className="mt-2 mx-2 col-span-3 md:col-span-2">
                                         <Field
-                                            id={`memberships.${index}.title`}
-                                            name={`memberships.${index}.title`}
+                                            id={`memberships.${index}.organization`}
+                                            name={`memberships.${index}.organization`}
                                             placeholder=" Membership *"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
-                                        <FormFieldError name={`memberships.${index}.title`} errors={context.errors} touched={context.touched} />
+                                        <FormFieldError name={`memberships.${index}.organization`} errors={context.errors} touched={context.touched} />
                                     </div>
 
 
@@ -80,11 +80,11 @@ function Membership() {
                                         });
 
                                         reinitialize_memberships.push({
-                                            title: '',
+                                            organization: '',
                                         })
 
                                         push({
-                                            title: '',
+                                            organization: '',
                                         });
 
                                         setmemberships(reinitialize_memberships);

@@ -86,6 +86,7 @@ function Education() {
                                             id={`schools.${index}.period_from`}
                                             name={`schools.${index}.period_from`}
                                             placeholder="From"
+                                            type="number"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
@@ -97,6 +98,7 @@ function Education() {
                                             id={`schools.${index}.period_to`}
                                             name={`schools.${index}.period_to`}
                                             placeholder="To"
+                                            type="number"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
@@ -129,7 +131,7 @@ function Education() {
                                         <Field
                                             id={`schools.${index}.scholarship_academic_awards`}
                                             name={`schools.${index}.scholarship_academic_awards`}
-                                            placeholder="Scolarship / Academic Honors Received"
+                                            placeholder="Scholarship / Academic Honors Received"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />

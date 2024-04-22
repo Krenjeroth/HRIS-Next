@@ -171,9 +171,9 @@ function EmployeeDetail() {
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
-                    <option value="Female">Active</option>
-                    <option value="Male">Retired</option>
-                    <option value="Male">Terminated</option>
+                    <option value="Active">Active</option>
+                    <option value="Retired">Retired</option>
+                    <option value="Terminated">Terminated</option>
                 </Field>
             </FormElement>
 
