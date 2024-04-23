@@ -102,7 +102,7 @@ export type membership = {
 
 export type school = {
     level: string,
-    name: string,
+    school_name: string,
     degree: string,
     period_from: string,
     period_to: string,

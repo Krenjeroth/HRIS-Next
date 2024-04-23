@@ -5,6 +5,7 @@ import { FormElement } from "../commons/FormElement";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
+import moment from "moment";
 
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
@@ -20,6 +21,7 @@ type Props = {
 
 
 function index(parameter: Props) {
+    const dateFormat = 'yyyy-MM-dd';
     const { setFieldValue } = useFormikContext();
     const [field] = useField(parameter);
     const [startDate, setStartDate] = useState(new Date());
@@ -33,16 +35,16 @@ function index(parameter: Props) {
         <DatePicker
             {...field}
             {...parameter}
-            // id={parameter.id}
-            // name={parameter.name}
-            // className={parameter.className}
             selected={(field.value && new Date(field.value)) || null}
             showMonthDropdown
             showYearDropdown
+            dateFormat={dateFormat}
+            todayButton="Today in Philippines"
             yearDropdownItemNumber={15}
             scrollableYearDropdown
             onChange={val => {
-                setFieldValue(field.name, val);
+                setFieldValue(field.name, moment(val).format("YYYY-MM-DD")
+                );
             }}
         />
 

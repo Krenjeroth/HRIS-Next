@@ -71,7 +71,7 @@ function AllRequestsTabs() {
     const [children, setChildren] = useState<child[]>([]);
     const [schools, setSchools] = useState<school[]>([{
         level: '',
-        name: '',
+        school_name: '',
         degree: '',
         period_from: '',
         period_to: '',
@@ -81,7 +81,7 @@ function AllRequestsTabs() {
     },
     {
         level: '',
-        name: '',
+        school_name: '',
         degree: '',
         period_from: '',
         period_to: '',
@@ -91,7 +91,7 @@ function AllRequestsTabs() {
     },
     {
         level: '',
-        name: '',
+        school_name: '',
         degree: '',
         period_from: '',
         period_to: '',

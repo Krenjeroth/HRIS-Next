@@ -62,13 +62,13 @@ function Education() {
 
                                     <div className="mt-2 mx-2 col-span-8 md:col-span-3">
                                         <Field
-                                            id={`schools.${index}.name`}
-                                            name={`schools.${index}.name`}
+                                            id={`schools.${index}.school_name`}
+                                            name={`schools.${index}.school_name`}
                                             placeholder="School Name"
                                             className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                             autoComplete="on"
                                         />
-                                        <FormFieldError name={`schools.${index}.name`} errors={context.errors} touched={context.touched} />
+                                        <FormFieldError name={`schools.${index}.school_name`} errors={context.errors} touched={context.touched} />
                                     </div>
 
                                     <div className="mt-2 mx-2 col-span-8 md:col-span-3">
@@ -167,7 +167,7 @@ function Education() {
 
                                         reinitialize_schools.push({
                                             level: '',
-                                            name: '',
+                                            school_name: '',
                                             degree: '',
                                             period_from: '',
                                             period_to: '',
@@ -178,7 +178,7 @@ function Education() {
 
                                         push({
                                             level: '',
-                                            name: '',
+                                            school_name: '',
                                             degree: '',
                                             period_from: '',
                                             period_to: '',
