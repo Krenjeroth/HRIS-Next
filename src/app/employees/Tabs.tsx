@@ -188,7 +188,7 @@ function AllRequestsTabs() {
         { "column": "suffix_name", "display": "Suffix" },
         { "column": "title", "display": "Position" },
         { "column": "item_number", "display": "Plantilla" },
-        { "column": "contact_number", "display": "Contact Number" },
+        { "column": "mobile_number", "display": "Mobile Number" },
         { "column": "email_address", "display": "Email" },
         { "column": "employee_status", "display": "Employee Status" }
     ]);
@@ -203,7 +203,6 @@ function AllRequestsTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<IValues>({
-        // personal information
         employee_id: '',
         employment_status: '',
         division_id: '',
@@ -225,7 +224,7 @@ function AllRequestsTabs() {
         weight: 0,
         citizenship: '',
         citizenship_type: '',
-        country: '',
+        country: 'Philippines',
         blood_type: '',
         civil_status: '',
         tin: '',
@@ -278,8 +277,6 @@ function AllRequestsTabs() {
         memberships: memberships,
         answers: answers,
         characterReferences: characterReferences,
-
-        // family
 
     });
     var [initialValues, setValues] = useState<IValues>(
@@ -359,10 +356,101 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("vacancy/" + id);
+            const resp = await HttpService.get("employee/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                setValues(defaultData);
+                console.log(data.schools.map((item: school) => {
+                    return {
+                        'level': (item.level) ? item.level : "",
+                        'school_name': (item.school_name) ? item.school_name : "",
+                        'degree': (item.degree) ? item.degree : "",
+                        'period_from': (item.period_from) ? item.period_from : "",
+                        'period_to': (item.period_to) ? item.period_to : "",
+                        'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
+                        'year_graduated': (item.year_graduated) ? item.year_graduated : "",
+                        'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
+                    };
+                }));
+                resetFormik();
+                setValues(
+                    {
+                        employee_id: '',
+                        employment_status: '',
+                        division_id: '',
+                        division: '',
+                        division_autosuggest: '',
+                        lgu_position_id: '',
+                        lgu_position: '',
+                        lgu_position_autosuggest: '',
+                        employee_status: '',
+                        first_name: '',
+                        middle_name: '',
+                        last_name: '',
+                        suffix: '',
+                        birth_place: '',
+                        birth_date: '',
+                        age: 0,
+                        sex: '',
+                        height: 0,
+                        weight: 0,
+                        citizenship: '',
+                        citizenship_type: '',
+                        country: 'Philippines',
+                        blood_type: '',
+                        civil_status: '',
+                        tin: '',
+                        gsis: '',
+                        pagibig: '',
+                        philhealth: '',
+                        sss: '',
+                        residential_province: '',
+                        residential_municipality: '',
+                        residential_barangay: '',
+                        residential_house: '',
+                        residential_subdivision: '',
+                        residential_street: '',
+                        residential_zipcode: '',
+                        isSameAddress: false,
+                        permanent_province: '',
+                        permanent_municipality: '',
+                        permanent_barangay: '',
+                        permanent_house: '',
+                        permanent_subdivision: '',
+                        permanent_street: '',
+                        permanent_zipcode: '',
+                        telephone: '',
+                        mobile_number: '',
+                        email_address: '',
+                        spouse_first_name: '',
+                        spouse_middle_name: '',
+                        spouse_last_name: '',
+                        spouse_suffix: '',
+                        spouse_occupation: '',
+                        spouse_employer: '',
+                        spouse_employer_address: '',
+                        spouse_employer_telephone: '',
+                        children: children,
+                        father_first_name: '',
+                        father_middle_name: '',
+                        father_last_name: '',
+                        father_suffix: '',
+                        mother_first_name: '',
+                        mother_middle_name: '',
+                        mother_last_name: '',
+                        mother_suffix: '',
+                        schools: schools,
+                        eligibilities: eligibilities,
+                        workExperiences: workExperiences,
+                        voluntaryWorks: voluntaryWorks,
+                        trainings: trainings,
+                        skills: skills,
+                        recognitions: recognitions,
+                        memberships: memberships,
+                        answers: answers,
+                        characterReferences: characterReferences,
+
+                    }
+                );
                 setShowDrawer(true);
             }
         }

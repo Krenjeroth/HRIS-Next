@@ -29,7 +29,7 @@ function Recognition() {
             <div className='cols-span-2 grid  md:grid-cols-2 grid-col content-start' >
 
                 <div className='col-span-2 md:col-span-2'>
-                    <span className=' text-cyan-600 font-medium text-lg '>NON-ACADEMIC DISTINCTIONS / RECOGNITION </span>
+                    <span className=' text-cyan-600 font-medium text-lg '>Non-academic Distinctions / Recognitions </span>
                     {/* <hr className='text-cyan-600 mt-6' /> */}
                 </div>
 

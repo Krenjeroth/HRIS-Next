@@ -19,17 +19,15 @@ function Question() {
     const context = usePDSContext();
     const [questions, setQuestions] = useState<question[]>([]);
     const [answers, setAnswers] = useState<answer[]>([]);
+
     useEffect(() => {
         answers.forEach((object, index) => {
-            setFieldValue(`answers.${index}.id`, object.id);
+            setFieldValue(`answers.${index}.question_id`, object.question_id);
             setFieldValue(`answers.${index}.number`, object.number);
             setFieldValue(`answers.${index}.question`, object.question);
             setFieldValue(`answers.${index}.answer`, object.answer);
             setFieldValue(`answers.${index}.details`, object.details);
         });
-        // context.initialValues.answers = answers;
-        // context.setAnswers(answers);
-
     }, [answers])
 
 
@@ -40,10 +38,10 @@ function Question() {
             if (resp != null) {
                 setAnswers(resp.data.data.map((object: question) => {
                     return {
-                        id: object.id,
+                        question_id: object.id,
                         number: object.number,
                         question: object.question,
-                        answer: '',
+                        answer: 'false',
                         details: ''
                     }
                 }));
@@ -91,7 +89,7 @@ function Question() {
                                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                                     <Field
                                                         readOnly={true}
-                                                        value={object.id}
+                                                        value={object.question_id}
                                                         id={`answers.${index}.id`}
                                                         name={`answers.${index}.id`}
                                                         placeholder="ID"
@@ -116,10 +114,10 @@ function Question() {
                                                     {object.question}
                                                 </Table.Cell>
                                                 <Table.Cell>
-                                                    <Field type="radio" name={`answers.${index}.answer`} checked value="False" />
+                                                    <Field type="radio" name={`answers.${index}.answer`} value="false" />
                                                 </Table.Cell>
                                                 <Table.Cell>
-                                                    <Field type="radio" name={`answers.${index}.answer`} value="True" />
+                                                    <Field type="radio" name={`answers.${index}.answer`} value="true" />
                                                 </Table.Cell>
                                                 <Table.Cell>
                                                     <TableInput

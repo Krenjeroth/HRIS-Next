@@ -39,8 +39,8 @@ function index(parameter: Props) {
             showMonthDropdown
             showYearDropdown
             dateFormat={dateFormat}
-            todayButton="Today in Philippines"
-            yearDropdownItemNumber={15}
+            // todayButton="Today in Philippines"
+            yearDropdownItemNumber={50}
             scrollableYearDropdown
             onChange={val => {
                 setFieldValue(field.name, moment(val).format("YYYY-MM-DD")

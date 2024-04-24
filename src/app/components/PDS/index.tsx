@@ -125,13 +125,13 @@ function index(parameter: Props) {
                     </Button>
                 </div>
             </div >
-
+{/* 
             <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                 submitForm();
                 // console.log(parameter.formActiveTab);
             }}>
                 Submit
-            </Button>
+            </Button> */}
         </>
     )
 }

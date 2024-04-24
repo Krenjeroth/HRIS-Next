@@ -35,10 +35,10 @@ export type characterReference = {
 }
 
 export type answer = {
-    id: number,
-    number: string,
+    question_id: number,
     answer: string,
     details: string,
+    number: string,
     question: string
 }
 
