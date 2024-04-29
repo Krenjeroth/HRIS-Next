@@ -15,12 +15,11 @@ import { initial } from 'lodash';
 function Education() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [schools, setSchools] = useState<school[]>([...context.initialValues.schools]);
+    const [schools, setSchools] = useState<school[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.schools = schools;
-    }, [schools])
+        setSchools([...context.initialValues.schools]);
+    }, [context.initialValues])
 
 
 

@@ -15,12 +15,11 @@ import { initial } from 'lodash';
 function Skill() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [skills, setskills] = useState<skill[]>([...context.initialValues.skills]);
+    const [skills, setskills] = useState<skill[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.skills = skills;
-    }, [skills])
+        setskills([...context.initialValues.skills]);
+    }, [context.initialValues])
 
 
 

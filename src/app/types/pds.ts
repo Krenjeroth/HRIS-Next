@@ -8,10 +8,10 @@ export type formContextType = {
     isEmployee?: boolean,
     initialValues: IValues,
     setValues: Function,
-    setAnswers: Function,
     isLoading: boolean,
     process: string,
     children?: React.ReactNode,
+    id?: number
 
 };
 
@@ -37,9 +37,7 @@ export type characterReference = {
 export type answer = {
     question_id: number,
     answer: string,
-    details: string,
-    number: string,
-    question: string
+    details: string
 }
 
 

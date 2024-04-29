@@ -15,14 +15,11 @@ import { initial } from 'lodash';
 function Eligiblility() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [eligibilities, setEligibilities] = useState<eligibility[]>([...context.initialValues.eligibilities]);
+    const [eligibilities, setEligibilities] = useState<eligibility[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.eligibilities = eligibilities;
-    }, [eligibilities])
-
-
+        setEligibilities([...context.initialValues.eligibilities]);
+    }, [context.initialValues])
 
     return (
         <>

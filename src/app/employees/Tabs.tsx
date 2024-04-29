@@ -15,7 +15,7 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference } from '../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../types/pds';
 import PDSContextProvider from '../contexts/PDSContext';
 // types
 
@@ -73,7 +73,7 @@ function AllRequestsTabs() {
         level: '',
         school_name: '',
         degree: '',
-        period_from: '',
+        period_from: '' ,
         period_to: '',
         highest_unit_earned: '',
         year_graduated: '',
@@ -193,6 +193,7 @@ function AllRequestsTabs() {
         { "column": "employee_status", "display": "Employee Status" }
     ]);
 
+
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
@@ -287,10 +288,10 @@ function AllRequestsTabs() {
         setValues(defaultData);
     }
 
+
     useEffect(() => {
         setFormikData(formikRef);
     }, [formikRef]);
-
 
 
     // Use Effect Hook
@@ -352,6 +353,7 @@ function AllRequestsTabs() {
     }, [process]);
 
 
+
     //    get data by id
     const getDataById = async (id: number) => {
 
@@ -362,131 +364,330 @@ function AllRequestsTabs() {
 
                 resetFormik();
 
-                setValues(
-                    {
-                        employee_id: data.employee.employee_id,
-                        employment_status: data.employee.employment_status,
-                        division_id: data.employee.division_id,
-                        division: data.employee.division,
-                        division_autosuggest: data.employee.division_autosuggest,
-                        lgu_position_id: data.employee.lgu_position_id,
-                        lgu_position: data.employee.lgu_position,
-                        lgu_position_autosuggest: data.employee.lgu_position_autosuggest,
-                        employee_status: data.employee.employee_status,
-                        first_name: data.employee.first_name,
-                        middle_name: data.employee.middle_name,
-                        last_name: data.employee.last_name,
-                        suffix: data.employee.suffix,
-                        birth_place: data.personalInformation.birth_place,
-                        birth_date: data.personalInformation.birth_date,
-                        age: data.personalInformation.age,
-                        sex: data.personalInformation.sex,
-                        height: data.personalInformation.height,
-                        weight: data.personalInformation.weight,
-                        citizenship: data.personalInformation.citizenship,
-                        citizenship_type: data.personalInformation.citizenship_type,
-                        country: data.personalInformation.country,
-                        blood_type: data.personalInformation.blood_type,
-                        civil_status: data.personalInformation.civil_status,
-                        tin: data.personalInformation.tin,
-                        gsis: data.personalInformation.gsis,
-                        pagibig: data.personalInformation.pagibig,
-                        philhealth: data.personalInformation.philhealth,
-                        sss: data.personalInformation.sss,
-                        residential_province: data.personalInformation.residential_province,
-                        residential_municipality: data.personalInformation.residential_municipality,
-                        residential_barangay: data.personalInformation.residential_barangay,
-                        residential_house: data.personalInformation.residential_house,
-                        residential_subdivision: data.personalInformation.residential_subdivision,
-                        residential_street: data.personalInformation.residential_street,
-                        residential_zipcode: data.personalInformation.residential_zipcode,
-                        isSameAddress: data.personalInformation.isSameAddress,
-                        permanent_province: data.personalInformation.permanent_province,
-                        permanent_municipality: data.personalInformation.permanent_municipality,
-                        permanent_barangay: data.personalInformation.permanent_barangay,
-                        permanent_house: data.personalInformation.permanent_house,
-                        permanent_subdivision: data.personalInformation.permanent_subdivision,
-                        permanent_street: data.personalInformation.permanent_street,
-                        permanent_zipcode: data.personalInformation.permanent_zipcode,
-                        telephone: data.personalInformation.telephone,
-                        mobile_number: data.personalInformation.mobile_number,
-                        email_address: data.personalInformation.email_address,
-                        spouse_first_name: data.familyBackground.spouse_first_name,
-                        spouse_middle_name: data.familyBackground.spouse_middle_name,
-                        spouse_last_name: data.familyBackground.spouse_last_name,
-                        spouse_suffix: data.familyBackground.spouse_suffix,
-                        spouse_occupation: data.familyBackground.spouse_occupation,
-                        spouse_employer: data.familyBackground.spouse_employer,
-                        spouse_employer_address: data.familyBackground.spouse_employer_address,
-                        spouse_employer_telephone: data.familyBackground.spouse_employer_telephone,
-                        children: data.childrens.map((item: child) => {
-                            return {
-                                'number': (item.number) ? item.number : "",
-                                'name': (item.name) ? item.name : "",
-                                'birthday': (item.birthday) ? item.birthday : ""
-                            };
-                        }),
-                        father_first_name: data.familyBackground.father_first_name,
-                        father_middle_name: data.familyBackground.father_middle_name,
-                        father_last_name: data.familyBackground.father_last_name,
-                        father_suffix: data.familyBackground.father_suffix,
-                        mother_first_name: data.familyBackground.mother_first_name,
-                        mother_middle_name: data.familyBackground.mother_middle_name,
-                        mother_last_name: data.familyBackground.mother_last_name,
-                        mother_suffix: data.familyBackground.mother_suffix,
-                        schools: data.schools.map((item: school) => {
-                            return {
-                                'level': (item.level) ? item.level : "",
-                                'school_name': (item.school_name) ? item.school_name : "",
-                                'degree': (item.degree) ? item.degree : "",
-                                'period_from': (item.period_from) ? item.period_from : "",
-                                'period_to': (item.period_to) ? item.period_to : "",
-                                'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
-                                'year_graduated': (item.year_graduated) ? item.year_graduated : "",
-                                'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
-                            };
-                        }),
-                        eligibilities: data.eligibilities.map((item: eligibility) => {
-                            return {
-                                eligibility_title: (item.eligibility_title) ? item.eligibility_title : "",
-                                rating: (item.rating) ? item.rating : "",
-                                date_of_examination_conferment: (item.date_of_examination_conferment) ? item.date_of_examination_conferment : "",
-                                place_of_examination_conferment: (item.place_of_examination_conferment) ? item.place_of_examination_conferment : "",
-                                license_number: (item.license_number) ? item.license_number : "",
-                                license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
-                            }
-                        }),
-                        workExperiences: data.workExperiences.map((item: workExperience) => {
-                            return {
-                                date_from: (item.date_from) ? item.date_from : "",
-                                date_to: (item.date_to) ? item.date_to : "",
-                                position_title: (item.position_title) ? item.position_title : "",
-                                office_company: (item.office_company) ? item.office_company : "",
-                                monthly_salary: (item.monthly_salary) ? item.monthly_salary : "",
-                                salary_grade: (item.salary_grade) ? item.salary_grade : "",
-                                status_of_appointment: (item.status_of_appointment) ? item.status_of_appointment : "",
-                                government_service: (item.government_service) ? item.government_service : ""
-                            }
-                        }),
-                        voluntaryWorks: data.voluntaryWorks.map((item: voluntaryWork) => {
-                            return {
-                                organization_name: (item.organization_name) ? item.organization_name : "",
-                                organization_address: (item.organization_address) ? item.organization_address : "",
-                                date_from: (item.date_from) ? item.date_from : "",
-                                date_to: (item.date_to) ? item.date_to : "",
-                                number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
-                                position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
-                            }
-                        }),
-                        trainings: trainings,
-                        skills: skills,
-                        recognitions: recognitions,
-                        memberships: memberships,
-                        answers: answers,
-                        characterReferences: characterReferences,
+                setChildren(data.children.map((item: child) => {
+                    return {
+                        'number': (item.number) ? item.number : "",
+                        'name': (item.name) ? item.name : "",
+                        'birthday': (item.birthday) ? item.birthday : ""
+                    };
+                }));
+                setValues({
+                    employee_id: data.employee.employee_id,
+                    employment_status: data.employee.employment_status,
+                    division_id: data.division.id,
+                    division: data.division.division_code,
+                    division_autosuggest: data.division.division_code,
+                    lgu_position_id: data.employee.lgu_position_id,
+                    lgu_position: data.lguPosition,
+                    lgu_position_autosuggest: data.lguPosition,
+                    employee_status: data.employee.employee_status,
+                    first_name: data.employee.first_name,
+                    middle_name: data.employee.middle_name,
+                    last_name: data.employee.last_name,
+                    suffix: (data.employee.suffix) ? data.employee.suffix : "",
+                    birth_place: data.personalInformation.birth_place,
+                    birth_date: data.personalInformation.birth_date,
+                    age: data.personalInformation.age,
+                    sex: data.personalInformation.sex,
+                    height: data.personalInformation.height,
+                    weight: data.personalInformation.weight,
+                    citizenship: data.personalInformation.citizenship,
+                    citizenship_type: (data.personalInformation.citizenship_type) ? data.personalInformation.citizenship_type : "",
+                    country: (data.personalInformation.country) ? data.personalInformation.country : "Philippines",
+                    blood_type: data.personalInformation.blood_type,
+                    civil_status: data.personalInformation.civil_status,
+                    tin: (data.personalInformation.tin) ? data.personalInformation.tin : "",
+                    gsis: (data.personalInformation.gsis) ? data.personalInformation.gsis : "",
+                    pagibig: (data.personalInformation.pagibig) ? data.personalInformation.pagibig : "",
+                    philhealth: (data.personalInformation.philhealth) ? data.personalInformation.philhealth : "",
+                    sss: (data.personalInformation.sss) ? data.personalInformation.sss : "",
+                    residential_province: data.personalInformation.residential_province,
+                    residential_municipality: data.personalInformation.residential_municipality,
+                    residential_barangay: data.personalInformation.residential_barangay,
+                    residential_house: data.personalInformation.residential_house,
+                    residential_subdivision: (data.personalInformation.residential_subdivision) ? data.personalInformation.residential_subdivision : "",
+                    residential_street: data.personalInformation.residential_street,
+                    residential_zipcode: data.personalInformation.residential_zipcode,
+                    isSameAddress: (data.personalInformation.isSameAddress) ? data.personalInformation.isSameAddress : false,
+                    permanent_province: data.personalInformation.permanent_province,
+                    permanent_municipality: data.personalInformation.permanent_municipality,
+                    permanent_barangay: data.personalInformation.permanent_barangay,
+                    permanent_house: data.personalInformation.permanent_house,
+                    permanent_subdivision: (data.personalInformation.permanent_subdivision) ? data.personalInformation.permanent_subdivision : "",
+                    permanent_street: data.personalInformation.permanent_street,
+                    permanent_zipcode: data.personalInformation.permanent_zipcode,
+                    telephone: (data.personalInformation.telephone) ? data.personalInformation.telephone : "",
+                    mobile_number: data.personalInformation.mobile_number,
+                    email_address: data.personalInformation.email_address,
+                    spouse_first_name: (data.familyBackground.spouse_first_name) ? data.familyBackground.spouse_first_name : "",
+                    spouse_middle_name: (data.familyBackground.spouse_middle_name) ? data.familyBackground.spouse_middle_name : "",
+                    spouse_last_name: (data.familyBackground.spouse_last_name) ? data.familyBackground.spouse_last_name : "",
+                    spouse_suffix: (data.familyBackground.spouse_suffix) ? data.familyBackground.spouse_suffix : "",
+                    spouse_occupation: (data.familyBackground.spouse_occupation) ? data.familyBackground.spouse_occupation : "",
+                    spouse_employer: (data.familyBackground.spouse_employer) ? data.familyBackground.spouse_employer : "",
+                    spouse_employer_address: (data.familyBackground.spouse_employer_address) ? data.familyBackground.spouse_employer_address : "",
+                    spouse_employer_telephone: (data.familyBackground.spouse_employer_telephone) ? data.familyBackground.spouse_employer_telephone : "",
+                    // children: children,
+                    children: data.children.map((item: child) => {
+                        return {
+                            'number': (item.number) ? item.number : "",
+                            'name': (item.name) ? item.name : "",
+                            'birthday': (item.birthday) ? item.birthday : ""
+                        };
+                    }),
+                    father_first_name: data.familyBackground.father_first_name,
+                    father_middle_name: data.familyBackground.father_middle_name,
+                    father_last_name: data.familyBackground.father_last_name,
+                    father_suffix: data.familyBackground.father_suffix,
+                    mother_first_name: data.familyBackground.mother_first_name,
+                    mother_middle_name: data.familyBackground.mother_middle_name,
+                    mother_last_name: data.familyBackground.mother_last_name,
+                    mother_suffix: data.familyBackground.mother_suffix,
+                    schools: data.schools.map((item: school) => {
+                        return {
+                            'level': (item.level) ? item.level : "",
+                            'school_name': (item.school_name) ? item.school_name : "",
+                            'degree': (item.degree) ? item.degree : "",
+                            'period_from': (item.period_from) ? item.period_from : "",
+                            'period_to': (item.period_to) ? item.period_to : "",
+                            'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
+                            'year_graduated': (item.year_graduated) ? item.year_graduated : "",
+                            'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
+                        };
+                    }),
+                    eligibilities: data.eligibilities.map((item: eligibility) => {
+                        return {
+                            eligibility_title: item.eligibility_title,
+                            rating: item.rating,
+                            date_of_examination_conferment: item.date_of_examination_conferment,
+                            place_of_examination_conferment: item.place_of_examination_conferment,
+                            license_number: (item.license_number) ? item.license_number : "",
+                            license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
+                        }
+                    }),
+                    workExperiences: data.workExperiences.map((item: workExperience) => {
+                        return {
+                            date_from: item.date_from,
+                            date_to: item.date_to,
+                            position_title: item.position_title,
+                            office_company: item.office_company,
+                            monthly_salary: item.monthly_salary,
+                            salary_grade: (item.salary_grade) ? item.salary_grade : "",
+                            status_of_appointment: item.status_of_appointment,
+                            government_service: item.government_service
+                        }
+                    }),
+                    voluntaryWorks: data.voluntaryWorks.map((item: voluntaryWork) => {
+                        return {
+                            organization_name: (item.organization_name) ? item.organization_name : "",
+                            organization_address: (item.organization_address) ? item.organization_address : "",
+                            date_from: (item.date_from) ? item.date_from : "",
+                            date_to: (item.date_to) ? item.date_to : "",
+                            number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
+                            position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
+                        }
+                    }),
+                    trainings: data.trainings.map((item: training) => {
 
-                    }
-                );
+                        return {
+                            training_title: item.training_title,
+                            attendance_from: item.attendance_from,
+                            attendance_to: item.attendance_to,
+                            number_of_hours: item.number_of_hours,
+                            training_type: item.training_type,
+                            conducted_sponsored_by: item.conducted_sponsored_by
+                        }
+                    }),
+                    skills: data.skills.map((item: skill) => {
+
+                        return { special_skill: item.special_skill }
+
+                    }),
+                    recognitions: data.recognitions.map((item: recognition) => {
+                        return { recognition_title: item.recognition_title }
+
+                    }),
+                    memberships: data.memberships.map((item: membership) => {
+                        return { organization: item.organization }
+                    }),
+                    answers: data.answers.map((item: answer) => {
+                        return {
+                            question_id: item.question_id,
+                            answer: item.answer,
+                            details: (item.details) ? item.details : ""
+                        }
+                    }),
+                    characterReferences: data.characterReferences.map((item: characterReference) => {
+                        return {
+                            name: item.name,
+                            address: item.address,
+                            number: item.number
+                        }
+                    }),
+                });
+
+
+
+
+                // console.log({
+                //     employee_id: data.employee.employee_id,
+                //     employment_status: data.employee.employment_status,
+                //     division_id: data.division.id,
+                //     division: data.division.division_code,
+                //     division_autosuggest: data.division.division_code,
+                //     lgu_position_id: data.employee.lgu_position_id,
+                //     lgu_position: data.lguPosition,
+                //     lgu_position_autosuggest: data.lguPosition,
+                //     employee_status: data.employee.employee_status,
+                //     first_name: data.employee.first_name,
+                //     middle_name: data.employee.middle_name,
+                //     last_name: data.employee.last_name,
+                //     suffix: (data.employee.suffix) ? data.employee.suffix : "",
+                //     birth_place: data.personalInformation.birth_place,
+                //     birth_date: data.personalInformation.birth_date,
+                //     age: data.personalInformation.age,
+                //     sex: data.personalInformation.sex,
+                //     height: data.personalInformation.height,
+                //     weight: data.personalInformation.weight,
+                //     citizenship: data.personalInformation.citizenship,
+                //     citizenship_type: (data.personalInformation.citizenship_type) ? data.personalInformation.citizenship_type : "",
+                //     country: (data.personalInformation.country) ? data.personalInformation.country : "Philippines",
+                //     blood_type: data.personalInformation.blood_type,
+                //     civil_status: data.personalInformation.civil_status,
+                //     tin: (data.personalInformation.tin) ? data.personalInformation.tin : "",
+                //     gsis: (data.personalInformation.gsis) ? data.personalInformation.gsis : "",
+                //     pagibig: (data.personalInformation.pagibig) ? data.personalInformation.pagibig : "",
+                //     philhealth: (data.personalInformation.philhealth) ? data.personalInformation.philhealth : "",
+                //     sss: (data.personalInformation.sss) ? data.personalInformation.sss : "",
+                //     residential_province: data.personalInformation.residential_province,
+                //     residential_municipality: data.personalInformation.residential_municipality,
+                //     residential_barangay: data.personalInformation.residential_barangay,
+                //     residential_house: data.personalInformation.residential_house,
+                //     residential_subdivision: (data.personalInformation.residential_subdivision) ? data.personalInformation.residential_subdivision : "",
+                //     residential_street: data.personalInformation.residential_street,
+                //     residential_zipcode: data.personalInformation.residential_zipcode,
+                //     isSameAddress: (data.personalInformation.isSameAddress) ? data.personalInformation.isSameAddress : false,
+                //     permanent_province: data.personalInformation.permanent_province,
+                //     permanent_municipality: data.personalInformation.permanent_municipality,
+                //     permanent_barangay: data.personalInformation.permanent_barangay,
+                //     permanent_house: data.personalInformation.permanent_house,
+                //     permanent_subdivision: (data.personalInformation.permanent_subdivision) ? data.personalInformation.permanent_subdivision : "",
+                //     permanent_street: data.personalInformation.permanent_street,
+                //     permanent_zipcode: data.personalInformation.permanent_zipcode,
+                //     telephone: (data.personalInformation.telephone) ? data.personalInformation.telephone : "",
+                //     mobile_number: data.personalInformation.mobile_number,
+                //     email_address: data.personalInformation.email_address,
+                //     spouse_first_name: (data.familyBackground.spouse_first_name) ? data.familyBackground.spouse_first_name : "",
+                //     spouse_middle_name: (data.familyBackground.spouse_middle_name) ? data.familyBackground.spouse_middle_name : "",
+                //     spouse_last_name: (data.familyBackground.spouse_last_name) ? data.familyBackground.spouse_last_name : "",
+                //     spouse_suffix: (data.familyBackground.spouse_suffix) ? data.familyBackground.spouse_suffix : "",
+                //     spouse_occupation: (data.familyBackground.spouse_occupation) ? data.familyBackground.spouse_occupation : "",
+                //     spouse_employer: (data.familyBackground.spouse_employer) ? data.familyBackground.spouse_employer : "",
+                //     spouse_employer_address: (data.familyBackground.spouse_employer_address) ? data.familyBackground.spouse_employer_address : "",
+                //     spouse_employer_telephone: (data.familyBackground.spouse_employer_telephone) ? data.familyBackground.spouse_employer_telephone : "",
+                //     children: data.children.map((item: child) => {
+                //         return {
+                //             'number': (item.number) ? item.number : "",
+                //             'name': (item.name) ? item.name : "",
+                //             'birthday': (item.birthday) ? item.birthday : ""
+                //         };
+                //     }),
+                //     father_first_name: data.familyBackground.father_first_name,
+                //     father_middle_name: data.familyBackground.father_middle_name,
+                //     father_last_name: data.familyBackground.father_last_name,
+                //     father_suffix: data.familyBackground.father_suffix,
+                //     mother_first_name: data.familyBackground.mother_first_name,
+                //     mother_middle_name: data.familyBackground.mother_middle_name,
+                //     mother_last_name: data.familyBackground.mother_last_name,
+                //     mother_suffix: data.familyBackground.mother_suffix,
+                //     schools: data.schools.map((item: school) => {
+                //         return {
+                //             'level': (item.level) ? item.level : "",
+                //             'school_name': (item.school_name) ? item.school_name : "",
+                //             'degree': (item.degree) ? item.degree : "",
+                //             'period_from': (item.period_from) ? item.period_from : "",
+                //             'period_to': (item.period_to) ? item.period_to : "",
+                //             'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
+                //             'year_graduated': (item.year_graduated) ? item.year_graduated : "",
+                //             'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
+                //         };
+                //     }),
+                //     eligibilities: data.eligibilities.map((item: eligibility) => {
+                //         return {
+                //             eligibility_title: item.eligibility_title,
+                //             rating: item.rating,
+                //             date_of_examination_conferment: item.date_of_examination_conferment,
+                //             place_of_examination_conferment: item.place_of_examination_conferment,
+                //             license_number: (item.license_number) ? item.license_number : "",
+                //             license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
+                //         }
+                //     }),
+                //     workExperiences: data.workExperiences.map((item: workExperience) => {
+                //         return {
+                //             date_from: item.date_from,
+                //             date_to: item.date_to,
+                //             position_title: item.position_title,
+                //             office_company: item.office_company,
+                //             monthly_salary: item.monthly_salary,
+                //             salary_grade: (item.salary_grade) ? item.salary_grade : "",
+                //             status_of_appointment: item.status_of_appointment,
+                //             government_service: item.government_service
+                //         }
+                //     }),
+                //     voluntaryWorks: data.voluntaryWorks.map((item: voluntaryWork) => {
+                //         return {
+                //             organization_name: (item.organization_name) ? item.organization_name : "",
+                //             organization_address: (item.organization_address) ? item.organization_address : "",
+                //             date_from: (item.date_from) ? item.date_from : "",
+                //             date_to: (item.date_to) ? item.date_to : "",
+                //             number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
+                //             position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
+                //         }
+                //     }),
+                //     trainings: data.trainings.map((item: training) => {
+
+                //         return {
+                //             training_title: item.training_title,
+                //             attendance_from: item.attendance_from,
+                //             attendance_to: item.attendance_to,
+                //             number_of_hours: item.number_of_hours,
+                //             training_type: item.training_type,
+                //             conducted_sponsored_by: item.conducted_sponsored_by
+                //         }
+                //     }),
+                //     skills: data.skills.map((item: skill) => {
+
+                //         return { special_skill: item.special_skill }
+
+                //     }),
+                //     recognitions: data.recognitions.map((item: recognition) => {
+                //         return { recognition_title: item.recognition_title }
+
+                //     }),
+                //     memberships: data.memberships.map((item: membership) => {
+                //         return { organization: item.organization }
+                //     }),
+                //     answers: data.answers.map((item: answer) => {
+                //         return {
+                //             question_id: item.question_id,
+                //             answer: item.answer,
+                //             details: (item.details) ? item.details : ""
+                //         }
+                //     }),
+                //     characterReferences: data.characterReferences.map((item: characterReference) => {
+                //         return {
+                //             name: item.name,
+                //             address: item.address,
+                //             number: item.number
+                //         }
+                //     }),
+
+                // });
+
+
+
+
+
                 setShowDrawer(true);
             }
         }
@@ -557,11 +758,8 @@ function AllRequestsTabs() {
                             setId(0);
                             setProcess("Add");
                         }
-                        else if (status === "Validation") {
-                        }
 
                         else {
-                            console.log(resp.data);
                             if (typeof resp.data != "undefined") {
                                 alerts.push({ "type": "failure", "message": resp.data.message });
                             }
@@ -679,12 +877,12 @@ function AllRequestsTabs() {
                             <PDSContextProvider
                                 formikData={formikData}
                                 isLoading={isLoading}
-                                setAnswers={setAnswers}
                                 errors={errors}
                                 touched={touched}
                                 initialValues={initialValues}
                                 setValues={setValues}
-                                process={process}>
+                                process={process}
+                                id={id}>
                                 <PDS
                                     formActiveTab={formActiveTab}
                                     setFormActiveTab={setFormActiveTab}

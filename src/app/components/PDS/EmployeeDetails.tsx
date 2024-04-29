@@ -59,7 +59,7 @@ function EmployeeDetail() {
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent', 'Contractual', 'Casual']
+                positionStatus: ['permanent', 'contractual', 'casual']
             };
 
 
@@ -115,11 +115,11 @@ function EmployeeDetail() {
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
                     <option value="">Select Type </option>
-                    <option value="Permanent">Permanent</option>
-                    <option value="Casual">Casual</option>
-                    <option value="Elective">Elective </option>
-                    <option value="Coterminous">Coterminous</option>
-                    <option value="Contractual">Contractual</option>
+                    <option value="permanent">Permanent</option>
+                    <option value="casual">Casual</option>
+                    <option value="elective">Elective </option>
+                    <option value="coterminous">Coterminous</option>
+                    <option value="contractual">Contractual</option>
 
                 </Field>
             </FormElement>

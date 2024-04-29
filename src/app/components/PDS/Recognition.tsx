@@ -15,13 +15,11 @@ import { initial } from 'lodash';
 function Recognition() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [recognitions, setrecognitions] = useState<recognition[]>([...context.initialValues.recognitions]);
+    const [recognitions, setrecognitions] = useState<recognition[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.recognitions = recognitions;
-    }, [recognitions])
-
+        setrecognitions([...context.initialValues.recognitions]);
+    }, [context.initialValues])
 
 
     return (

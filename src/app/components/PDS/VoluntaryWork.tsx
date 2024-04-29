@@ -15,12 +15,11 @@ import { initial } from 'lodash';
 function VoluntaryWork() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [voluntaryWorks, setVoluntaryWorks] = useState<voluntaryWork[]>([...context.initialValues.voluntaryWorks]);
+    const [voluntaryWorks, setVoluntaryWorks] = useState<voluntaryWork[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.voluntaryWorks = voluntaryWorks;
-    }, [voluntaryWorks])
+        setVoluntaryWorks([...context.initialValues.voluntaryWorks]);
+    }, [context.initialValues])
 
 
 

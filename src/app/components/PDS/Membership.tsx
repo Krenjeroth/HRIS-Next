@@ -15,13 +15,11 @@ import { initial } from 'lodash';
 function Membership() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [memberships, setmemberships] = useState<membership[]>([...context.initialValues.memberships]);
+    const [memberships, setmemberships] = useState<membership[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.memberships = memberships;
-    }, [memberships])
-
+        setmemberships([...context.initialValues.memberships]);
+    }, [context.initialValues]);
 
 
     return (
@@ -100,7 +98,7 @@ function Membership() {
                     )}
                 </FieldArray>
                 {/* </div> */}
-                
+
             </div>
         </>
     )

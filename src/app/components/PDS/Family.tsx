@@ -15,14 +15,12 @@ import { initial } from 'lodash';
 function Family() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [children, setChildren] = useState<child[]>([...context.initialValues.children]);
+    const [children, setChildren] = useState<child[]>([]);
 
-    // useEffect(() => {
-    // //    context.initialValues.children = children;
-    // }, [children])
+    useEffect(() => {
+        setChildren([...context.initialValues.children]);
+    }, [context.initialValues])
 
-
-    // console.log(children);
 
     return (
         <>

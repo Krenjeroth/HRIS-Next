@@ -15,12 +15,11 @@ import { initial } from 'lodash';
 function WorkExperience() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [workExperiences, setExperience] = useState<workExperience[]>([...context.initialValues.workExperiences]);
+    const [workExperiences, setExperience] = useState<workExperience[]>([]);
 
     useEffect(() => {
-        let reinitializeValues = context.initialValues;
-        reinitializeValues.workExperiences = workExperiences;
-    }, [workExperiences])
+        setExperience([...context.initialValues.workExperiences]);
+    }, [context.initialValues])
 
 
 
