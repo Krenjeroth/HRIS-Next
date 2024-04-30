@@ -20,6 +20,7 @@ function Question() {
     const [questions, setQuestions] = useState<question[]>([]);
     const [answers, setAnswers] = useState<answer[]>([]);
 
+
     // Get Questions
     useEffect(() => {
         async function getQuestions() {
@@ -33,15 +34,7 @@ function Question() {
                     }
                 }));
 
-                if (answers.length === 0) {
-                    setAnswers(resp.data.data.map((object: question) => {
-                        return {
-                            question_id: object.id,
-                            answer: 'false',
-                            details: ''
-                        }
-                    }));
-                }
+
             }
         }
         getQuestions();
@@ -49,9 +42,39 @@ function Question() {
 
 
     useEffect(() => {
-        setAnswers([...context.initialValues.answers]);
+        setAnswers(questions.map((object: any, index: number) => {
+            return {
+                question_id: parseInt(object.id),
+                answer: 'false',
+                details: ''
+            }
+        }));
+    }, [questions]);
 
+
+
+    useEffect(() => {
+        if (context.initialValues.answers.length > 0) {
+            setAnswers([...context.initialValues.answers]);
+        }
+        else {
+            setAnswers(questions.map((object: any, index: number) => {
+                return {
+                    question_id: parseInt(object.id),
+                    answer: 'false',
+                    details: ''
+                }
+            }));
+        }
     }, [context.initialValues]);
+
+    useEffect(() => {
+        answers.forEach((object: answer, index: number) => {
+            setFieldValue(`answers.${index}.answer`, object.answer);
+        });
+    }, [answers]);
+
+
 
     return (
         <>
@@ -83,23 +106,30 @@ function Question() {
                     </Table.Head>
                     <Table.Body className="divide-y">
                         <FieldArray name="answers">
-
                             {({ insert, remove, push }) => (
                                 <>
                                     {
-                                        questions.map((object, index: number) => {
+                                        answers.map((object: answer, index: number) => {
+
+                                            // push({
+                                            //     question_id: object.question_id,
+                                            //     answer: 'false',
+                                            //     details: ''
+                                            // });
+
                                             return <Table.Row className="bg-white  dark:bg-gray-800 p-0" key={index}>
                                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                                     <Field
-                                                        readOnly={true}
-                                                        value={object.id}
-                                                        id={`answers.${index}.id`}
-                                                        name={`answers.${index}.id`}
-                                                        placeholder="ID"
-                                                        className="w-full p-3  text-sm   rounded-lg "
+                                                        value={object.question_id}
+                                                        id={`answers.${index}.question_id`}
+                                                        name={`answers.${index}.question_id`}
+                                                        placeholder="School Name"
+                                                        className="w-full p-3 pr-12 text-s"
                                                         autoComplete="on"
+                                                        readOnly={true}
                                                     />
-                                                    <FormFieldError name={`answers.${index}.number`} errors={context.errors} touched={context.touched} />
+                                                    <FormFieldError name={`answers.${index}.question_id`} errors={context.errors} touched={context.touched} />
+
                                                 </Table.Cell>
                                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                                     {questions[index].number}
@@ -115,13 +145,19 @@ function Question() {
                                                 </Table.Cell>
                                                 <Table.Cell>
                                                     <TableInput
-                                                        value={answers[index].details}
+                                                        value={(answers[index]) ? answers[index].details : ""}
                                                         id={`answers.${index}.details`}
                                                         name={`answers.${index}.details`}
                                                         placeholder="Details"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500 "
                                                     />
-                                                    <FormFieldError name={`answers.${index}.details`} errors={context.errors} touched={context.touched} />
+                                                    {/* <Field
+                                                        id={`answers.${index}.details`}
+                                                        name={`answers.${index}.details`}
+                                                        placeholder="Details"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500 "
+                                                    />
+                                                    <FormFieldError name={`answers.${index}.details`} errors={context.errors} touched={context.touched} /> */}
                                                 </Table.Cell>
                                             </Table.Row>
                                         })

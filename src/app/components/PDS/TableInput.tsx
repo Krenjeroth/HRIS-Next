@@ -1,7 +1,8 @@
 
 "use client";
+import { usePDSContext } from '@/app/contexts/PDSContext';
 import { Field, FieldArray, useFormikContext } from 'formik';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 type Props = {
     value: string,
@@ -11,9 +12,22 @@ type Props = {
     className: string,
 };
 
+
+
 function TableInput(parameter: Props) {
     const [value, setValue] = useState<string>(parameter.value);
     const { setFieldValue } = useFormikContext();
+    const context = usePDSContext();
+    useEffect(() => {
+        setValue(parameter.value);
+    }, [parameter.value]);
+
+    useEffect(() => {
+        if (parameter.value != "") {
+            setValue("");
+        }
+    }, [context.initialValues])
+
     return (
         <>
             <Field

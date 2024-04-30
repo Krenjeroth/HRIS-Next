@@ -48,6 +48,13 @@ function Personal() {
         }
     }, [sameAddress]);
 
+
+    useEffect(() => {
+        if (sameAddress === false && context.initialValues.isSameAddress === true) {
+            setSameAddress(true);
+        }
+    }, [context.initialValues])
+
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>

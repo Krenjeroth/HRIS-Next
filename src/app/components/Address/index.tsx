@@ -87,6 +87,8 @@ function index(parameter: props) {
         }
     }
 
+
+
     useEffect(() => {
         if (parameter.sameAddress === true) {
             setProvince('');
@@ -98,6 +100,69 @@ function index(parameter: props) {
             setFieldValue(`${parameter.name}_zipcode`, '');
         }
     }, [parameter.sameAddress])
+
+    useEffect(() => {
+        let data = context.initialValues;
+        if (data.residential_province == "") {
+            setProvince('');
+            setMunicipality('');
+            setFieldValue(`${parameter.name}_barangay`, '');
+            setFieldValue(`${parameter.name}_house`, '');
+            setFieldValue(`${parameter.name}_subdivision`, '');
+            setFieldValue(`${parameter.name}_street`, '');
+            setFieldValue(`${parameter.name}_zipcode`, '');
+        }
+        else {
+            const filtered_province = provinces_list.filter(((object: province) => {
+                return object.name == data.residential_province
+            }));
+
+            if (parameter.name == "residential") {
+
+                // insert municipalities and barangay choices
+                const municipalities = getCityMunByProvince(filtered_province[0].prov_code);
+
+                setMunicipalities(municipalities);
+
+                const filtered_municipality = municipalities.filter(((object: municipality) => {
+                    return object.name == data.residential_municipality
+                }));
+                const barangays = getBarangayByMun(filtered_municipality[0].mun_code);
+                setBarangays(barangays);
+
+
+                // set their values
+                setProvince(data.permanent_province);
+                setFieldValue(`${parameter.name}_province`, data.residential_province);
+                setMunicipality(data.residential_municipality);
+                setFieldValue(`${parameter.name}_municipality`, data.residential_municipality);
+                setFieldValue(`${parameter.name}_barangay`, data.residential_barangay);;
+
+            }
+            else {
+                // insert municipalities and barangay choices
+                const municipalities = getCityMunByProvince(filtered_province[0].prov_code);
+
+                setMunicipalities(municipalities);
+
+                const filtered_municipality = municipalities.filter(((object: municipality) => {
+                    return object.name == data.permanent_municipality
+                }));
+                const barangays = getBarangayByMun(filtered_municipality[0].mun_code);
+                setBarangays(barangays);
+
+
+                // set their values
+                setProvince(data.permanent_province);
+                setFieldValue(`${parameter.name}_province`, data.permanent_province);
+                setMunicipality(data.permanent_municipality);
+                setFieldValue(`${parameter.name}_municipality`, data.permanent_municipality);
+                setFieldValue(`${parameter.name}_barangay`, data.permanent_barangay);;
+
+            }
+        }
+    }, [context.initialValues])
+
 
 
     return (
