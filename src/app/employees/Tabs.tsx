@@ -170,7 +170,6 @@ function AllRequestsTabs() {
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
-        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -336,14 +335,6 @@ function AllRequestsTabs() {
     useEffect(() => {
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
-            setReadOnly(true);
-        }
-        else if (process === "Approve") {
-            setAlerts([{ "type": "info", "message": "Approve Request?" }])
-            setReadOnly(true);
-        }
-        else if (process === "Queue") {
-            setAlerts([{ "type": "warning", "message": "Queue Request?" }])
             setReadOnly(true);
         }
         else {
@@ -626,7 +617,8 @@ function AllRequestsTabs() {
                     const resp = await HttpService.patch("employee/" + id, values)
                     if (resp.status === 200) {
                         let status = resp.data.status;
-                        if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+                        console.log(resp.data);
+                        if (status === "Request was Successful") {
                             alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                             setActivePage(1);
                             setFilters([]);
@@ -640,43 +632,10 @@ function AllRequestsTabs() {
                     }
                 }
 
-                // approve and queue
-                else if (process === "Approve" || process === "Queue") {
-                    if (id != 0) {
-                        if (process === "Approve") {
-                            values.status = "Approved";
-                        }
-                        if (process == "Queue") {
-                            values.status = "Queued";
-                        }
-                        const resp = await HttpService.patch("vacancy/" + id, values)
-                        if (resp.status === 200) {
-                            let status = resp.data.status;
-                            if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                                alerts.push({ "type": "success", "message": `Data has been  successfully ${values.status} !` });
-                                resetForm({});
-                                resetFormik();
-                                setActivePage(1);
-                                setFilters([]);
-                                setRefresh(!refresh);
-                                setId(0);
-                            }
-                            else {
-                                if (typeof resp.data != "undefined") {
-                                    alerts.push({ "type": "failure", "message": resp.data.message });
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        setProcess("Add");
-                    }
-                }
-
                 // delete
                 else {
                     if (id != 0) {
-                        const resp = await HttpService.delete("vacancy/" + id);
+                        const resp = await HttpService.delete("employee/" + id);
                         if (resp.status === 200) {
                             let status = resp.data.status;
                             if (status === "Request was Successful") {
@@ -742,14 +701,6 @@ function AllRequestsTabs() {
                                     setFormActiveTab={setFormActiveTab}
                                 />
                             </PDSContextProvider>
-
-                            {/* submit button */}
-
-                            {/* <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
-                                    {(process == "Delete" ? "Delete" : "Submit")}
-                                </button>
-                            </div> */}
                         </Form>
                     )}
                 </Formik>

@@ -37,6 +37,10 @@ function index(parameter: Props) {
         props.tabsRef.current?.setActiveTab(parameter.formActiveTab);
     }, [parameter.formActiveTab]);
 
+    useEffect(() => {
+        parameter.setFormActiveTab(0);
+    }, [context.initialValues]);
+
 
 
     // tabs
@@ -112,26 +116,29 @@ function index(parameter: Props) {
                         : <></>
                     }
 
-                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
+                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                         if (parameter.formActiveTab < (validations.length - 1)) {
                             parameter.setFormActiveTab(parameter.formActiveTab + 1);
                         }
                         else {
                             submitForm();
                         }
-                        // console.log(parameter.formActiveTab);
                     }}>
-                        {context.process == "Delete" ? "Delete" : parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
+                        {parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
                     </Button>
+
+                    {context.process == "Delete" ?
+                        <Button className={`mx-2 btn btn-sm text-white rounded-lg   bg-red-500  hover:scale-90 shadow-sm text`} onClick={() => {
+                            submitForm();
+                        }}>
+                            Delete
+                        </Button>
+                        : ""}
                 </div>
+
+
             </div >
-{/* 
-            <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" ? "bg-red-500" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
-                submitForm();
-                // console.log(parameter.formActiveTab);
-            }}>
-                Submit
-            </Button> */}
+
         </>
     )
 }

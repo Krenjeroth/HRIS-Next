@@ -70,7 +70,9 @@ function Question() {
 
     useEffect(() => {
         answers.forEach((object: answer, index: number) => {
+            setFieldValue(`answers.${index}.question_id`, object.question_id);
             setFieldValue(`answers.${index}.answer`, object.answer);
+            setFieldValue(`answers.${index}.details`, object.details);
         });
     }, [answers]);
 
@@ -151,13 +153,7 @@ function Question() {
                                                         placeholder="Details"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500 "
                                                     />
-                                                    {/* <Field
-                                                        id={`answers.${index}.details`}
-                                                        name={`answers.${index}.details`}
-                                                        placeholder="Details"
-                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500 "
-                                                    />
-                                                    <FormFieldError name={`answers.${index}.details`} errors={context.errors} touched={context.touched} /> */}
+                                                    <FormFieldError name={`answers.${index}.details`} errors={context.errors} touched={context.touched} />
                                                 </Table.Cell>
                                             </Table.Row>
                                         })

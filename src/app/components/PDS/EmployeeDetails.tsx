@@ -127,7 +127,6 @@ function EmployeeDetail() {
             {/*Division*/}
 
             <DataList errors={context.errors} touched={context.touched}
-                readonly={context.process === "Delete" ? true : false}
                 id="division_id"
                 setKeyword={setDivisionKeyword}
                 label="Division/Section/Unit"
@@ -144,7 +143,6 @@ function EmployeeDetail() {
 
 
             <DataList errors={context.errors} touched={context.touched}
-                readonly={context.process === "Delete" ? true : false}
                 id="lgu_position_id"
                 setKeyword={setPositionKeyword}
                 label="Position - Plantilla"
