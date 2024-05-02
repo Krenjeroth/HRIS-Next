@@ -53,6 +53,7 @@ function index(parameter: Props) {
                 onActiveTabChange={(tab) => {
                     parameter.setFormActiveTab(tab);
                 }}
+
             >
                 <Tabs.Item
                     active
@@ -96,6 +97,7 @@ function index(parameter: Props) {
                     </div>
                 </Tabs.Item>
                 <Tabs.Item
+                    id='other_information'
                     icon={HiBookmark}
                     title={`Other Information`}
                 >
@@ -122,6 +124,10 @@ function index(parameter: Props) {
                         }
                         else {
                             submitForm();
+                            const element = document.getElementById('drawer_title');
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
                         }
                     }}>
                         {parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
@@ -130,6 +136,10 @@ function index(parameter: Props) {
                     {context.process == "Delete" ?
                         <Button className={`mx-2 btn btn-sm text-white rounded-lg   bg-red-500  hover:scale-90 shadow-sm text`} onClick={() => {
                             submitForm();
+                            const element = document.getElementById('drawer_title');
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
                         }}>
                             Delete
                         </Button>

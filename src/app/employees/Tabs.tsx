@@ -102,7 +102,7 @@ function AllRequestsTabs() {
     const [eligibilities, setEligibilities] = useState<eligibility[]>([
         {
             eligibility_title: '',
-            rating: 0,
+            rating: null,
             date_of_examination_conferment: '',
             place_of_examination_conferment: '',
             license_number: '',
@@ -114,7 +114,7 @@ function AllRequestsTabs() {
         date_to: '',
         position_title: '',
         office_company: '',
-        monthly_salary: 0,
+        monthly_salary: null,
         salary_grade: '',
         status_of_appointment: '',
         government_service: false,
@@ -125,7 +125,7 @@ function AllRequestsTabs() {
             training_title: '',
             attendance_from: '',
             attendance_to: '',
-            number_of_hours: 0,
+            number_of_hours: null,
             training_type: '',
             conducted_sponsored_by: '',
         }
@@ -191,6 +191,8 @@ function AllRequestsTabs() {
         { "column": "email_address", "display": "Email" },
         { "column": "employee_status", "display": "Employee Status" }
     ]);
+
+
 
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
@@ -338,7 +340,7 @@ function AllRequestsTabs() {
             setReadOnly(true);
         }
         else {
-            setAlerts([]);
+            // setAlerts([]);
             setReadOnly(false);
         }
     }, [process]);
@@ -424,7 +426,7 @@ function AllRequestsTabs() {
                     permanent_zipcode: data.personalInformation.permanent_zipcode,
                     telephone: (data.personalInformation.telephone) ? data.personalInformation.telephone : "",
                     mobile_number: data.personalInformation.mobile_number,
-                    email_address: data.personalInformation.email_address,
+                    email_address: (data.personalInformation.email_address) ? data.personalInformation.email_address : "",
                     spouse_first_name: (data.familyBackground.spouse_first_name) ? data.familyBackground.spouse_first_name : "",
                     spouse_middle_name: (data.familyBackground.spouse_middle_name) ? data.familyBackground.spouse_middle_name : "",
                     spouse_last_name: (data.familyBackground.spouse_last_name) ? data.familyBackground.spouse_last_name : "",
@@ -441,14 +443,14 @@ function AllRequestsTabs() {
                             'birthday': (item.birthday) ? item.birthday : ""
                         };
                     }),
-                    father_first_name: data.familyBackground.father_first_name,
-                    father_middle_name: data.familyBackground.father_middle_name,
-                    father_last_name: data.familyBackground.father_last_name,
-                    father_suffix: data.familyBackground.father_suffix,
-                    mother_first_name: data.familyBackground.mother_first_name,
-                    mother_middle_name: data.familyBackground.mother_middle_name,
-                    mother_last_name: data.familyBackground.mother_last_name,
-                    mother_suffix: data.familyBackground.mother_suffix,
+                    father_first_name: (data.familyBackground.father_first_name) ? data.familyBackground.father_first_name : "",
+                    father_middle_name: (data.familyBackground.father_middle_name) ? data.familyBackground.father_middle_name : "",
+                    father_last_name: (data.familyBackground.father_last_name) ? data.familyBackground.father_last_name : "",
+                    father_suffix: (data.familyBackground.father_suffix) ? data.familyBackground.father_suffix : "",
+                    mother_first_name: (data.familyBackground.mother_first_name) ? data.familyBackground.mother_first_name : "",
+                    mother_middle_name: (data.familyBackground.mother_middle_name) ? data.familyBackground.mother_middle_name : "",
+                    mother_last_name: (data.familyBackground.mother_last_name) ? data.familyBackground.mother_last_name : "",
+                    mother_suffix: (data.familyBackground.mother_suffix) ? data.familyBackground.mother_suffix : "",
                     schools: data.schools.map((item: school) => {
                         return {
                             'level': (item.level) ? item.level : "",
@@ -603,13 +605,13 @@ function AllRequestsTabs() {
                             setId(0);
                             setProcess("Add");
                         }
-
                         else {
                             if (typeof resp.data != "undefined") {
                                 alerts.push({ "type": "failure", "message": resp.data.message });
                             }
                         }
                     }
+
                 }
                 // update
                 else if (process === "Edit") {
@@ -617,7 +619,6 @@ function AllRequestsTabs() {
                     const resp = await HttpService.patch("employee/" + id, values)
                     if (resp.status === 200) {
                         let status = resp.data.status;
-                        console.log(resp.data);
                         if (status === "Request was Successful") {
                             alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                             setActivePage(1);
@@ -644,6 +645,7 @@ function AllRequestsTabs() {
                                 setFilters([]);
                                 setRefresh(!refresh);
                                 setId(0);
+                                setProcess("Add");
 
                             }
                             else {
@@ -655,7 +657,6 @@ function AllRequestsTabs() {
                     }
                     else {
                         setProcess("Add");
-                        // setShowDrawer(false);
                     }
                 }
             }
@@ -674,7 +675,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} 
                 >
                     {({ errors, touched }) => (
 

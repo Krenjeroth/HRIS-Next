@@ -43,7 +43,7 @@ export type answer = {
 
 export type eligibility = {
     eligibility_title: string,
-    rating: number,
+    rating: number | null,
     date_of_examination_conferment: string,
     place_of_examination_conferment: string,
     license_number: string,
@@ -55,7 +55,7 @@ export type workExperience = {
     date_to: string,
     position_title: string,
     office_company: string,
-    monthly_salary: number,
+    monthly_salary: number | null,
     salary_grade: string,
     status_of_appointment: string,
     government_service: boolean,
@@ -75,7 +75,7 @@ export type training = {
     training_title: string,
     attendance_from: string,
     attendance_to: string,
-    number_of_hours: number,
+    number_of_hours: number|null,
     training_type: string,
     conducted_sponsored_by: string
 }
@@ -114,7 +114,7 @@ export type school = {
 
 export interface IValues {
     // personal information
-    employee_id: string,
+    employee_id: string | null,
     employment_status: string,
     division_id: string,
     division: string,

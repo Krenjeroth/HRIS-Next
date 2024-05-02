@@ -278,7 +278,7 @@ function SalaryGradeTabs() {
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
