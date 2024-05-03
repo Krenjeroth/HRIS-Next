@@ -34,8 +34,8 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/vacancy/queued"} label="Queued" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                     </SidebarDropdown>
 
-                    <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Applicants" icon={<UserGroupIcon className='w-6 h-6' />}>
-                        <SidebarDropdownItem href={"/"} label="Master List" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                    <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Applications" icon={<UserGroupIcon className='w-6 h-6' />}>
+                        <SidebarDropdownItem href={"/"} label="Master list" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
