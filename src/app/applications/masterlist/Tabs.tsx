@@ -1,23 +1,23 @@
 "use client";
 import { Button, Tabs, TabsRef } from 'flowbite-react';
-import React, { ReactNode, useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { createContext } from 'vm';
-
-
-
+import PDS from '../../components/PDS';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
+import PDSContextProvider from '../../contexts/PDSContext';
+import ApplicationPDS from '@/app/components/PDS/AppplicationPds';
 // types
 
 type row = {
@@ -46,25 +46,14 @@ type button = {
     process: string,
     class: string
 }
+
 type filter = {
     column: string;
     value: string;
 }
 
 
-// interfaces
 
-interface IValues {
-    date_submitted: string;
-    date_approved: string,
-    position_id: string;
-    position: string;
-    position_autosuggest: string;
-    status: string;
-    posting_date: string,
-    closing_date: string,
-    publication_status: string,
-}
 
 
 //main function
@@ -74,102 +63,250 @@ function AllRequestsTabs() {
 
     // variables
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<number>(1);
+    const formikRef = useRef(null);
+    const [formikData, setFormikData] = useState<any>();
+    const [formActiveTab, setFormActiveTab] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
-    // props.setActiveTab(1);
+    const [children, setChildren] = useState<child[]>([]);
+    const [schools, setSchools] = useState<school[]>([{
+        level: '',
+        school_name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    },
+    {
+        level: '',
+        school_name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    },
+    {
+        level: '',
+        school_name: '',
+        degree: '',
+        period_from: '',
+        period_to: '',
+        highest_unit_earned: '',
+        year_graduated: '',
+        scholarship_academic_awards: ''
+    }]);
+    const [eligibilities, setEligibilities] = useState<eligibility[]>([
+        {
+            eligibility_title: '',
+            rating: 0,
+            date_of_examination_conferment: '',
+            place_of_examination_conferment: '',
+            license_number: '',
+            license_date_validity: ''
+        }
+    ]);
+    const [workExperiences, setWorkExperiences] = useState<workExperience[]>([{
+        date_from: '',
+        date_to: '',
+        position_title: '',
+        office_company: '',
+        monthly_salary: 0,
+        salary_grade: '',
+        status_of_appointment: '',
+        government_service: false,
+    }]);
+    const [voluntaryWorks, setVoluntaryWorks] = useState<voluntaryWork[]>([]);
+    const [trainings, setTrainings] = useState<training[]>([
+        {
+            training_title: '',
+            attendance_from: '',
+            attendance_to: '',
+            number_of_hours: 0,
+            training_type: '',
+            conducted_sponsored_by: '',
+        }
+    ]);
+    const [skills, setSkills] = useState<skill[]>([{
+        special_skill: ""
+    }]);
+
+    const [recognitions, setRecognitions] = useState<recognition[]>([{
+        recognition_title: ""
+    }]);
+    const [memberships, setMemberships] = useState<membership[]>([{
+        organization: ""
+    }]);
+
+    const [answers, setAnswers] = useState<answer[]>([
+    ]);
+
+    const [characterReferences, setCharacterReferences] = useState<characterReference[]>([
+        {
+            name: '',
+            address: '',
+            number: '',
+        },
+        {
+            name: '',
+            address: '',
+            number: '',
+        },
+        {
+            name: '',
+            address: '',
+            number: '',
+        }
+    ]);
+
+
     const [activePage, setActivePage] = useState<number>(1);
-    var [filters, setFilters] = useState<filter[]>([]);
+    const [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <BackspaceIcon className=' w-5 h-5' />, "title": "Reactivate", "process": "Reactivate", "class": "text-indigo-600" }
+        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
-    const [process, setProcess] = useState<string>("Edit");
+    const [process, setProcess] = useState<string>("Add");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
-        { "column": "item_number", "display": "Position" },
+        { "column": "employee_id", "display": "Employee ID" },
+        { "column": "first_name", "display": "First Name" },
+        { "column": "middle_name", "display": "Middle Name" },
+        { "column": "last_name", "display": "Last Name" },
+        { "column": "suffix_name", "display": "Suffix" },
         { "column": "title", "display": "Position" },
-        { "column": "number", "display": "Salary Grade" },
-        { "column": "amount", "display": "Monthly Salary" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "division_name", "display": "Division/Section/Unit" },
-        { "column": "date_approved", "display": "Date Approved" },
-        { "column": "posting_date", "display": "Posting Date" },
-        { "column": "closing_date", "display": "Closing Date" },
-        { "column": "publication_status", "display": "Publication Status" },
+        { "column": "item_number", "display": "Plantilla" },
+        { "column": "mobile_number", "display": "Mobile Number" },
+        { "column": "email_address", "display": "Email" },
+        { "column": "employee_status", "display": "Employee Status" }
     ]);
 
+
+
+
+    const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Approved Request");
-    const [positionKeyword, setPositionKeyword] = useState<string>("");
-    const [positionData, setPositionData] = useState<datalist[]>([]);
+    const [title, setTitle] = useState<string>("Application");
+    // const [positionKeyword, setPositionKeyword] = useState<string>("");
+    // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [defaultData, setDefaultData] = useState<IValues>({
+        employee_id: '',
+        employment_status: '',
+        division_id: '',
+        division: '',
+        division_autosuggest: '',
+        lgu_position_id: '',
+        lgu_position: '',
+        lgu_position_autosuggest: '',
+        employee_status: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        suffix: '',
+        birth_place: '',
+        birth_date: '',
+        age: 0,
+        sex: '',
+        height: 0,
+        weight: 0,
+        citizenship: '',
+        citizenship_type: '',
+        country: 'Philippines',
+        blood_type: '',
+        civil_status: '',
+        tin: '',
+        gsis: '',
+        pagibig: '',
+        philhealth: '',
+        sss: '',
+        residential_province: '',
+        residential_municipality: '',
+        residential_barangay: '',
+        residential_house: '',
+        residential_subdivision: '',
+        residential_street: '',
+        residential_zipcode: '',
+        isSameAddress: false,
+        permanent_province: '',
+        permanent_municipality: '',
+        permanent_barangay: '',
+        permanent_house: '',
+        permanent_subdivision: '',
+        permanent_street: '',
+        permanent_zipcode: '',
+        telephone: '',
+        mobile_number: '',
+        email_address: '',
+        spouse_first_name: '',
+        spouse_middle_name: '',
+        spouse_last_name: '',
+        spouse_suffix: '',
+        spouse_occupation: '',
+        spouse_employer: '',
+        spouse_employer_address: '',
+        spouse_employer_telephone: '',
+        children: children,
+        father_first_name: '',
+        father_middle_name: '',
+        father_last_name: '',
+        father_suffix: '',
+        mother_first_name: '',
+        mother_middle_name: '',
+        mother_last_name: '',
+        mother_suffix: '',
+        schools: schools,
+        eligibilities: eligibilities,
+        workExperiences: workExperiences,
+        voluntaryWorks: voluntaryWorks,
+        trainings: trainings,
+        skills: skills,
+        recognitions: recognitions,
+        memberships: memberships,
+        answers: answers,
+        characterReferences: characterReferences,
+
+    });
     var [initialValues, setValues] = useState<IValues>(
-        {
-            date_submitted: '',
-            position_id: '',
-            position: '',
-            position_autosuggest: '',
-            status: '',
-            date_approved: '',
-            posting_date: '',
-            closing_date: '',
-            publication_status: '',
-        }
+        defaultData
     );
-    const initialValueContext = createContext();
 
     function resetFormik() {
-        setValues({
-            date_submitted: '',
-            position_id: '',
-            position: '',
-            position_autosuggest: '',
-            status: '',
-            date_approved: '',
-            posting_date: '',
-            closing_date: '',
-            publication_status: '',
-        });
+        setValues(defaultData);
     }
-
-    // Use Effect Hook
 
 
     useEffect(() => {
+        setFormikData(formikRef);
+    }, [formikRef]);
+
+
+    // Use Effect Hook
+    useEffect(() => {
         // query
-        let newArrayFilter = [...filters];
-
-        // add year to filter
-        newArrayFilter.push({
-            column: "date_submitted",
-            value: String(year)
-        });
-
-        newArrayFilter.push({
-            column: "vacancies.status",
-            value: 'Approved'
-        });
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: newArrayFilter,
+                filters: filters,
                 orderBy: orderBy,
-                year: year,
-                orderAscending: orderAscending
+                orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-vacancy", postData);
+            const resp = await HttpService.post("search-employee", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -179,47 +316,11 @@ function AllRequestsTabs() {
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
 
-    // Get LGU Positions
-    useEffect(() => {
-        // query
-        async function getLGUPositions() {
-            const postData = {
-                activePage: 1,
-                filters: [{ 'column': 'lgu_positions.status', 'value': 'Active' }],
-                orderBy: 'title',
-                year: '',
-                orderAscending: "asc",
-                positionStatus: ['Permanent']
-            };
-            const resp = await HttpService.post("search-lgu-position", postData);
-            if (resp != null) {
-                setPositionData(
-                    resp.data.data.map((data: any) => {
-                        return {
-                            "id": data.id,
-                            "label": data.attributes.label
-                        }
-                    })
-                );
-            }
-        }
-        getLGUPositions();
-    }, [positionKeyword]);
 
 
     useEffect(() => {
         if (id == 0) {
-            setValues({
-                date_submitted: '',
-                position_id: '',
-                position: '',
-                position_autosuggest: '',
-                status: '',
-                date_approved: '',
-                posting_date: '',
-                closing_date: '',
-                publication_status: '',
-            });
+            setValues(defaultData);
         }
         else {
             resetFormik();
@@ -235,51 +336,206 @@ function AllRequestsTabs() {
     }, [showDrawer]);
 
     useEffect(() => {
-        if (process === "Edit") {
-            setAlerts([{ "type": "info", "message": "Edit Approved Request?" }])
-        }
-        else if (process === "Reactivate") {
-            setAlerts([{ "type": "warning", "message": "Reactivate Request?" }])
+        if (process === "Delete") {
+            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
+            setReadOnly(true);
         }
         else {
-            setAlerts([]);
+            // setAlerts([]);
+            setReadOnly(false);
         }
     }, [process]);
+
 
 
     //    get data by id
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("vacancy/" + id);
+            const resp = await HttpService.get("employee/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                if (process === "Reactivate") {
-                    setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
-                        position_id: data.lgu_position_id,
-                        position: `${data.title} - ${data.item_number}`,
-                        position_autosuggest: `${data.title} - ${data.item_number}`,
-                        status: data.status,
-                        date_approved: '',
-                        posting_date: '',
-                        closing_date: '',
-                        publication_status: '',
-                    });
+
+                resetFormik();
+
+                setChildren(data.children.map((item: child) => {
+                    return {
+                        'number': (item.number) ? item.number : "",
+                        'name': (item.name) ? item.name : "",
+                        'birthday': (item.birthday) ? item.birthday : ""
+                    };
+                }));
+
+                let isSame = false;
+
+                if (data.personalInformation.residential_province == data.personalInformation.permanent_province &&
+                    data.personalInformation.residential_municipality == data.personalInformation.permanent_municipality &&
+                    data.personalInformation.residential_barangay == data.personalInformation.permanent_barangay &&
+                    data.personalInformation.residential_house == data.personalInformation.permanent_house &&
+                    data.personalInformation.residential_subdivision == data.personalInformation.permanent_subdivision &&
+                    data.personalInformation.residential_street == data.personalInformation.permanent_street &&
+                    data.personalInformation.residential_zipcode == data.personalInformation.permanent_zipcode) {
+
+                    isSame = true;
+
                 }
-                else {
-                    setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
-                        position_id: data.lgu_position_id,
-                        position: `${data.title} - ${data.item_number}`,
-                        position_autosuggest: `${data.title} - ${data.item_number}`,
-                        status: data.status,
-                        date_approved: (dayjs(data.date_approved).format('MM/DD/YYYY')),
-                        posting_date: (dayjs(data.posting_date).format('MM/DD/YYYY')),
-                        closing_date: (dayjs(data.closing_date).format('MM/DD/YYYY')),
-                        publication_status: data.publication_status,
-                    });
-                }
+
+                setValues({
+                    employee_id: data.employee.employee_id,
+                    employment_status: data.employee.employment_status,
+                    division_id: data.division.id,
+                    division: data.division.division_code,
+                    division_autosuggest: data.division.division_code,
+                    lgu_position_id: data.employee.lgu_position_id,
+                    lgu_position: data.lguPosition,
+                    lgu_position_autosuggest: data.lguPosition,
+                    employee_status: data.employee.employee_status,
+                    first_name: data.employee.first_name,
+                    middle_name: data.employee.middle_name,
+                    last_name: data.employee.last_name,
+                    suffix: (data.employee.suffix) ? data.employee.suffix : "",
+                    birth_place: data.personalInformation.birth_place,
+                    birth_date: data.personalInformation.birth_date,
+                    age: data.personalInformation.age,
+                    sex: data.personalInformation.sex,
+                    height: data.personalInformation.height,
+                    weight: data.personalInformation.weight,
+                    citizenship: data.personalInformation.citizenship,
+                    citizenship_type: (data.personalInformation.citizenship_type) ? data.personalInformation.citizenship_type : "",
+                    country: (data.personalInformation.country) ? data.personalInformation.country : "Philippines",
+                    blood_type: data.personalInformation.blood_type,
+                    civil_status: data.personalInformation.civil_status,
+                    tin: (data.personalInformation.tin) ? data.personalInformation.tin : "",
+                    gsis: (data.personalInformation.gsis) ? data.personalInformation.gsis : "",
+                    pagibig: (data.personalInformation.pagibig) ? data.personalInformation.pagibig : "",
+                    philhealth: (data.personalInformation.philhealth) ? data.personalInformation.philhealth : "",
+                    sss: (data.personalInformation.sss) ? data.personalInformation.sss : "",
+                    residential_province: data.personalInformation.residential_province,
+                    residential_municipality: data.personalInformation.residential_municipality,
+                    residential_barangay: data.personalInformation.residential_barangay,
+                    residential_house: data.personalInformation.residential_house,
+                    residential_subdivision: (data.personalInformation.residential_subdivision) ? data.personalInformation.residential_subdivision : "",
+                    residential_street: data.personalInformation.residential_street,
+                    residential_zipcode: data.personalInformation.residential_zipcode,
+                    isSameAddress: isSame,
+                    permanent_province: data.personalInformation.permanent_province,
+                    permanent_municipality: data.personalInformation.permanent_municipality,
+                    permanent_barangay: data.personalInformation.permanent_barangay,
+                    permanent_house: data.personalInformation.permanent_house,
+                    permanent_subdivision: (data.personalInformation.permanent_subdivision) ? data.personalInformation.permanent_subdivision : "",
+                    permanent_street: data.personalInformation.permanent_street,
+                    permanent_zipcode: data.personalInformation.permanent_zipcode,
+                    telephone: (data.personalInformation.telephone) ? data.personalInformation.telephone : "",
+                    mobile_number: data.personalInformation.mobile_number,
+                    email_address: (data.personalInformation.email_address) ? data.personalInformation.email_address : "",
+                    spouse_first_name: (data.familyBackground.spouse_first_name) ? data.familyBackground.spouse_first_name : "",
+                    spouse_middle_name: (data.familyBackground.spouse_middle_name) ? data.familyBackground.spouse_middle_name : "",
+                    spouse_last_name: (data.familyBackground.spouse_last_name) ? data.familyBackground.spouse_last_name : "",
+                    spouse_suffix: (data.familyBackground.spouse_suffix) ? data.familyBackground.spouse_suffix : "",
+                    spouse_occupation: (data.familyBackground.spouse_occupation) ? data.familyBackground.spouse_occupation : "",
+                    spouse_employer: (data.familyBackground.spouse_employer) ? data.familyBackground.spouse_employer : "",
+                    spouse_employer_address: (data.familyBackground.spouse_employer_address) ? data.familyBackground.spouse_employer_address : "",
+                    spouse_employer_telephone: (data.familyBackground.spouse_employer_telephone) ? data.familyBackground.spouse_employer_telephone : "",
+                    // children: children,
+                    children: data.children.map((item: child) => {
+                        return {
+                            'number': (item.number) ? item.number : "",
+                            'name': (item.name) ? item.name : "",
+                            'birthday': (item.birthday) ? item.birthday : ""
+                        };
+                    }),
+                    father_first_name: (data.familyBackground.father_first_name) ? data.familyBackground.father_first_name : "",
+                    father_middle_name: (data.familyBackground.father_middle_name) ? data.familyBackground.father_middle_name : "",
+                    father_last_name: (data.familyBackground.father_last_name) ? data.familyBackground.father_last_name : "",
+                    father_suffix: (data.familyBackground.father_suffix) ? data.familyBackground.father_suffix : "",
+                    mother_first_name: (data.familyBackground.mother_first_name) ? data.familyBackground.mother_first_name : "",
+                    mother_middle_name: (data.familyBackground.mother_middle_name) ? data.familyBackground.mother_middle_name : "",
+                    mother_last_name: (data.familyBackground.mother_last_name) ? data.familyBackground.mother_last_name : "",
+                    mother_suffix: (data.familyBackground.mother_suffix) ? data.familyBackground.mother_suffix : "",
+                    schools: data.schools.map((item: school) => {
+                        return {
+                            'level': (item.level) ? item.level : "",
+                            'school_name': (item.school_name) ? item.school_name : "",
+                            'degree': (item.degree) ? item.degree : "",
+                            'period_from': (item.period_from) ? item.period_from : "",
+                            'period_to': (item.period_to) ? item.period_to : "",
+                            'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
+                            'year_graduated': (item.year_graduated) ? item.year_graduated : "",
+                            'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
+                        };
+                    }),
+                    eligibilities: data.eligibilities.map((item: eligibility) => {
+                        return {
+                            eligibility_title: item.eligibility_title,
+                            rating: item.rating,
+                            date_of_examination_conferment: item.date_of_examination_conferment,
+                            place_of_examination_conferment: item.place_of_examination_conferment,
+                            license_number: (item.license_number) ? item.license_number : "",
+                            license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
+                        }
+                    }),
+                    workExperiences: data.workExperiences.map((item: workExperience) => {
+                        return {
+                            date_from: item.date_from,
+                            date_to: item.date_to,
+                            position_title: item.position_title,
+                            office_company: item.office_company,
+                            monthly_salary: item.monthly_salary,
+                            salary_grade: (item.salary_grade) ? item.salary_grade : "",
+                            status_of_appointment: item.status_of_appointment,
+                            government_service: item.government_service
+                        }
+                    }),
+                    voluntaryWorks: data.voluntaryWorks.map((item: voluntaryWork) => {
+                        return {
+                            organization_name: (item.organization_name) ? item.organization_name : "",
+                            organization_address: (item.organization_address) ? item.organization_address : "",
+                            date_from: (item.date_from) ? item.date_from : "",
+                            date_to: (item.date_to) ? item.date_to : "",
+                            number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
+                            position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
+                        }
+                    }),
+                    trainings: data.trainings.map((item: training) => {
+
+                        return {
+                            training_title: item.training_title,
+                            attendance_from: item.attendance_from,
+                            attendance_to: item.attendance_to,
+                            number_of_hours: item.number_of_hours,
+                            training_type: item.training_type,
+                            conducted_sponsored_by: item.conducted_sponsored_by
+                        }
+                    }),
+                    skills: data.skills.map((item: skill) => {
+
+                        return { special_skill: item.special_skill }
+
+                    }),
+                    recognitions: data.recognitions.map((item: recognition) => {
+                        return { recognition_title: item.recognition_title }
+
+                    }),
+                    memberships: data.memberships.map((item: membership) => {
+                        return { organization: item.organization }
+                    }),
+                    answers: data.answers.map((item: answer) => {
+                        return {
+                            question_id: item.question_id,
+                            answer: item.answer,
+                            details: (item.details) ? item.details : ""
+                        }
+                    }),
+                    characterReferences: data.characterReferences.map((item: characterReference) => {
+                        return {
+                            name: item.name,
+                            address: item.address,
+                            number: item.number
+                        }
+                    }),
+                });
+
+
                 setShowDrawer(true);
             }
         }
@@ -302,19 +558,19 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         setLoading(true);
-        const postData = {
-            date_submitted: values.date_submitted,
-            date_approved: values.date_approved,
-            posting_date: values.posting_date,
-            closing_date: values.closing_date,
-            publication_status: values.publication_status,
-            position_id: values.position_id,
-            position: values.position,
-            device_name: "web",
-            process: process,
-            status: "Approved"
-        };
-
+        if (values.isSameAddress) {
+            values.permanent_barangay = values.residential_barangay;
+            values.permanent_house = values.residential_house;
+            values.permanent_municipality = values.residential_municipality;
+            values.permanent_province = values.residential_province;
+            values.permanent_street = values.residential_street;
+            values.permanent_subdivision = values.residential_subdivision;
+            values.permanent_zipcode = values.residential_zipcode;
+        }
+        if (values.citizenship == "Filipino") {
+            values.citizenship_type = "";
+            values.country = "";
+        }
 
         alerts.forEach(element => {
             alerts.pop();
@@ -322,39 +578,86 @@ function AllRequestsTabs() {
 
 
         try {
-            if (process === "Edit") {
-                const resp = await HttpService.patch("vacancy/" + id, postData)
+            // validate
+
+            if (values.validation === true) {
+                const resp = await HttpService.post("employee-validation", values);
                 if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
+                    if (resp.data.data == "true") {
+                        setFormActiveTab(formActiveTab + 1);
                     }
                 }
             }
+            else {
 
-            if (process === "Reactivate") {
-                const resp = await HttpService.patch("vacancy/" + id, postData)
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                        resetFormik();
-                        alerts.push({ "type": "success", "message": "Data has been successfully Reactivated!" });
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
+                // add
+
+                if (process === "Add") {
+                    const resp = await HttpService.post("employee", values);
+                    if (resp.status === 200) {
+                        let status = resp.data.status;
+                        if (status === "Request was Successful") {
+                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                            resetForm({});
+                            resetFormik();
+                            setActivePage(1);
+                            setFilters([]);
+                            setRefresh(!refresh);
+                            setId(0);
+                            setProcess("Add");
+                        }
+                        else {
+                            if (typeof resp.data != "undefined") {
+                                alerts.push({ "type": "failure", "message": resp.data.message });
+                            }
+                        }
+                    }
+
+                }
+                // update
+                else if (process === "Edit") {
+
+                    const resp = await HttpService.patch("employee/" + id, values)
+                    if (resp.status === 200) {
+                        let status = resp.data.status;
+                        if (status === "Request was Successful") {
+                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                            setActivePage(1);
+                            setFilters([]);
+                            setRefresh(!refresh);
+                        }
+                        else {
+                            if (typeof resp.data != "undefined") {
+                                alerts.push({ "type": "failure", "message": resp.data.message });
+                            }
+                        }
+                    }
+                }
+
+                // delete
+                else {
+                    if (id != 0) {
+                        const resp = await HttpService.delete("employee/" + id);
+                        if (resp.status === 200) {
+                            let status = resp.data.status;
+                            if (status === "Request was Successful") {
+                                alerts.push({ "type": "success", "message": resp.data.message });
+                                setActivePage(1);
+                                setFilters([]);
+                                setRefresh(!refresh);
+                                setId(0);
+                                setProcess("Add");
+
+                            }
+                            else {
+                                if (typeof resp.data != "undefined") {
+                                    alerts.push({ "type": "failure", "message": resp.data.message });
+                                }
+                            }
+                        }
                     }
                     else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
+                        setProcess("Add");
                     }
                 }
             }
@@ -364,20 +667,16 @@ function AllRequestsTabs() {
                 setFormikErrors(error.response.data.errors, setFieldError);
             }
         }
-
         setLoading(false);
-
     };
-
-
 
     // tsx
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} 
                 >
                     {({ errors, touched }) => (
 
@@ -390,125 +689,20 @@ function AllRequestsTabs() {
                                     );
                                 })}
                             </div>
-
-                            {/* Date Submitted */}
-                            <div className="">
-                                <FormElement
-                                    name="date_submitted"
-                                    label="Date Submitted *"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-
-                                    <DatePicker
-                                        id="date_submitted"
-                                        readOnly={process === "Reactivate" ? true : false}
-                                        initialValues={initialValues}
-                                        name="date_submitted"
-                                        placeholderText="Enter Date"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-
-                                {/* positions */}
-                                <DataList errors={errors} touched={touched}
-                                    readonly={true}
-                                    id="position_id"
-                                    setKeyword={setPositionKeyword}
-                                    label="Position *"
-                                    title="Position"
-                                    name="position"
-                                    initialValues={initialValues}
-                                    setValues={setValues}
-                                    data={positionData}
-                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                            </div>
-
-
-                            {/* Date Approved */}
-                            <div className={process === "Reactivate" ? "hidden" : ""}>
-                                <FormElement
-                                    name="date_approved"
-                                    label="Date Approved *"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        id="date_approved"
-                                        initialValues={initialValues}
-                                        name="date_approved"
-                                        placeholderText="Enter Date"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                <FormElement
-                                    name="posting_date"
-                                    label="Posting Date*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        id="posting_date"
-                                        initialValues={initialValues}
-                                        name="posting_date"
-                                        placeholderText="Enter Date"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                <FormElement
-                                    name="closing_date"
-                                    label="Closing Date*"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-                                    <DatePicker
-                                        id="closing_date"
-                                        initialValues={initialValues}
-                                       
-                                        name="closing_date"
-                                        placeholderText="Enter Date"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-
-                                {/*Publication Status*/}
-                                <FormElement
-                                    name="publication_status"
-                                    label="Publication Status"
-                                    errors={errors}
-                                    touched={touched}
-                                >
-
-                                    <Field
-                                        as="select"
-                                        id="publication_status"
-                                        name="publication_status"
-                                        placeholder="Select Status"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                        title="Select Salary Grade"
-                                    >
-                                        <option value="Active">Active</option>
-                                        <option value="Closed">Closed</option>
-                                    </Field>
-
-                                </FormElement>
-                            </div>
-
-
-
-
-
-                            {/* submit button */}
-
-                            <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type={(isLoading ? "button" : "submit")} className="py-2 px-4   bg-cyan-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
-                                    Submit
-                                </button>
-                            </div>
+                            <PDSContextProvider
+                                formikData={formikData}
+                                isLoading={isLoading}
+                                errors={errors}
+                                touched={touched}
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                process={process}
+                                id={id}>
+                                <ApplicationPDS
+                                    formActiveTab={formActiveTab}
+                                    setFormActiveTab={setFormActiveTab}
+                                />
+                            </PDSContextProvider>
                         </Form>
                     )}
                 </Formik>
@@ -521,22 +715,26 @@ function AllRequestsTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                     ref={props.tabsRef}
-                    onActiveTabChange={(tab) => {
-                        if (tab == 0) {
-                            router.push('/vacancy/requests');
-                        }
-                        else if (2) {
-                            router.push('/vacancy/queued');
-                        }
+                // onActiveTabChange={(tab) => {
+                //     // if (tab == 1) {
+                //     //     router.push('/vacancy/approved');
+                //     // }
+                //     // else if (2) {
+                //     //     router.push('/vacancy/queued');
+                //     // }
 
-                    }}
+                // }}
 
                 >
 
-                    <Tabs.Item title={"Requests"}>
-                    </Tabs.Item>
-
                     <Tabs.Item title={title + "s"} active>
+
+                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
+                            setShowDrawer(true);
+                            setId(0);
+                            setProcess("Add");
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
+                        </Button>
 
                         {/*Table*/}
                         <Table
@@ -558,14 +756,9 @@ function AllRequestsTabs() {
                             reload={reload}
                             setReload={setReload}
                             setProcess={setProcess}
-                            year={year}
                             setYear={setYear}
                         >
                         </Table>
-
-                    </Tabs.Item>
-
-                    <Tabs.Item title={"Queued Requests"}>
                     </Tabs.Item>
                 </Tabs.Group >
 

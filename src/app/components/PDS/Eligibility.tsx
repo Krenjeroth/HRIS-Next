@@ -51,7 +51,7 @@ function Eligiblility() {
 
                                     <div className="mt-2 mx-2 col-span-10 md:col-span-2">
                                         <Field
-                                            // type="number"
+                                            type="number"
                                             id={`eligibilities.${index}.rating`}
                                             name={`eligibilities.${index}.rating`}
                                             placeholder="Rating (%) *"
@@ -60,6 +60,7 @@ function Eligiblility() {
                                         />
                                         <FormFieldError name={`eligibilities.${index}.rating`} errors={context.errors} touched={context.touched} />
                                     </div>
+
                                     <div className="mt-2 mx-2 col-span-10 md:col-span-4">
                                         <DatePicker
                                             initialValues={context.initialValues}
@@ -103,7 +104,6 @@ function Eligiblility() {
                                         />
                                         <FormFieldError name={`eligibilities.${index}.license_date_validity`} errors={context.errors} touched={context.touched} />
                                     </div>
-
 
 
                                     <div className="mt-1 col-span-10 md:col-span-1 mx-auto ">

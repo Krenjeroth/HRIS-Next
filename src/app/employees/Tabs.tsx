@@ -102,7 +102,7 @@ function AllRequestsTabs() {
     const [eligibilities, setEligibilities] = useState<eligibility[]>([
         {
             eligibility_title: '',
-            rating: null,
+            rating: 0,
             date_of_examination_conferment: '',
             place_of_examination_conferment: '',
             license_number: '',
@@ -114,7 +114,7 @@ function AllRequestsTabs() {
         date_to: '',
         position_title: '',
         office_company: '',
-        monthly_salary: null,
+        monthly_salary: 0,
         salary_grade: '',
         status_of_appointment: '',
         government_service: false,
@@ -125,7 +125,7 @@ function AllRequestsTabs() {
             training_title: '',
             attendance_from: '',
             attendance_to: '',
-            number_of_hours: null,
+            number_of_hours: 0,
             training_type: '',
             conducted_sponsored_by: '',
         }
@@ -675,7 +675,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} 
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
                 >
                     {({ errors, touched }) => (
 

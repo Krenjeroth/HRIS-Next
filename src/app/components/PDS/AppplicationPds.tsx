@@ -2,7 +2,7 @@
 import { Button, Tabs, TabsRef, ToggleSwitch } from 'flowbite-react';
 import React, { useContext, useState, useMemo, useRef, useEffect } from 'react'
 import { FormElement } from '../commons/FormElement';
-import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark, HiAcademicCap } from 'react-icons/hi';
+import { HiUser, HiUserGroup, HiUserCircle, HiIdentification, HiCollection, HiBookmark, HiAcademicCap, HiBriefcase } from 'react-icons/hi';
 import Personal from './Personal';
 import Family from './Family';
 import Education from './Education';
@@ -16,13 +16,14 @@ import { FormFieldError } from '../commons/FormFieldError';
 import { usePDSContext } from '@/app/contexts/PDSContext';
 import CharacterReference from './CharacterReference';
 import EmployeeDetail from './EmployeeDetails';
+import Position from './Position';
 
 type Props = {
     formActiveTab: number,
     setFormActiveTab: Function,
 }
 
-function index(parameter: Props) {
+function ApplicationPDS(parameter: Props) {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
@@ -83,14 +84,15 @@ function index(parameter: Props) {
                     title={`CS Eligibility and Experience`}
                 >
                     <Eligiblility />
-                    {/* <WorkExperience /> */}
+                    <WorkExperience />
                 </ Tabs.Item>
                 <Tabs.Item
                     icon={HiCollection}
                     title={`Voluntary Work, and Learning and Development`}
                 >
-                    {/* <VoluntaryWork /> */}
-                    {/* <LearningAndDevelopment /> */}
+                    <VoluntaryWork />
+                    {/* <hr className='text-cyan-600 col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4' /> */}
+                    <LearningAndDevelopment />
                     <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                         <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     </div>
@@ -100,8 +102,16 @@ function index(parameter: Props) {
                     icon={HiBookmark}
                     title={`Other Information`}
                 >
-                    {/* <OtherInformation /> */}
-                    {/* <CharacterReference /> */}
+                    <OtherInformation />
+                    <CharacterReference />
+
+                </Tabs.Item>
+                <Tabs.Item
+                    id='position'
+                    icon={HiBriefcase}
+                    title={`Position`}
+                >
+                    <Position />
 
                 </Tabs.Item>
             </Tabs.Group >
@@ -152,4 +162,4 @@ function index(parameter: Props) {
     )
 }
 
-export default index
+export default ApplicationPDS

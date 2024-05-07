@@ -27,6 +27,16 @@ export type child = {
     birthday: string,
 }
 
+export type vacancy = {
+    vacancy_id: number,
+    item_number: number,
+    name: string,
+    position_id: number,
+    position: string,
+    position_autosuggest: string
+}
+
+
 
 export type characterReference = {
     name: string,
@@ -43,7 +53,7 @@ export type answer = {
 
 export type eligibility = {
     eligibility_title: string,
-    rating: number | null,
+    rating?: number,
     date_of_examination_conferment: string,
     place_of_examination_conferment: string,
     license_number: string,
@@ -75,7 +85,7 @@ export type training = {
     training_title: string,
     attendance_from: string,
     attendance_to: string,
-    number_of_hours: number|null,
+    number_of_hours: number | null,
     training_type: string,
     conducted_sponsored_by: string
 }

@@ -34,12 +34,14 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/vacancy/queued"} label="Queued" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                     </SidebarDropdown>
 
+                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Applicants" icon={<ChartPieIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Applications" icon={<UserGroupIcon className='w-6 h-6' />}>
-                        <SidebarDropdownItem href={"/"} label="Master list" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/"} label="Appointed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/masterlist"} label="Master list" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/shortlisted"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/disqualified"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/interviewed"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/appointed"} label="Appointed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                     </SidebarDropdown>
 
                     {/* SideBarItem  */}
