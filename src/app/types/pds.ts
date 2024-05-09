@@ -11,7 +11,8 @@ export type formContextType = {
     isLoading: boolean,
     process: string,
     children?: React.ReactNode,
-    id?: number
+    id?: number,
+    submitSearchPerson?: Function
 
 };
 
@@ -124,15 +125,20 @@ export type school = {
 
 export interface IValues {
     // personal information
-    employee_id: string | null,
-    employment_status: string,
-    division_id: string,
-    division: string,
-    division_autosuggest: string,
-    lgu_position_id: string,
-    lgu_position: string,
-    lgu_position_autosuggest: string,
-    employee_status: string,
+    search_employee_id?: string,
+    search_first_name?: string,
+    search_middle_name?: string,
+    search_last_name?: string,
+    search_suffix?: string,
+    employee_id?: string,
+    employment_status?: string,
+    division_id?: string,
+    division?: string,
+    division_autosuggest?: string,
+    lgu_position_id?: string,
+    lgu_position?: string,
+    lgu_position_autosuggest?: string,
+    employee_status?: string,
     first_name: string,
     middle_name: string,
     last_name: string,

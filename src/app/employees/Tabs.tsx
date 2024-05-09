@@ -12,7 +12,7 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../components/PDS';
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../types/pds';
@@ -168,8 +168,8 @@ function AllRequestsTabs() {
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
+        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View", "process": "View", "class": "text-green-500" },
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -184,7 +184,7 @@ function AllRequestsTabs() {
         { "column": "first_name", "display": "First Name" },
         { "column": "middle_name", "display": "Middle Name" },
         { "column": "last_name", "display": "Last Name" },
-        { "column": "suffix_name", "display": "Suffix" },
+        { "column": "suffix", "display": "Suffix" },
         { "column": "title", "display": "Position" },
         { "column": "item_number", "display": "Plantilla" },
         { "column": "mobile_number", "display": "Mobile Number" },
@@ -675,7 +675,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -714,15 +714,6 @@ function AllRequestsTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                     ref={props.tabsRef}
-                // onActiveTabChange={(tab) => {
-                //     // if (tab == 1) {
-                //     //     router.push('/vacancy/approved');
-                //     // }
-                //     // else if (2) {
-                //     //     router.push('/vacancy/queued');
-                //     // }
-
-                // }}
 
                 >
 

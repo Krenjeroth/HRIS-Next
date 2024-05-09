@@ -2,22 +2,23 @@
 import { Button, Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import Drawer from '../components/Drawer';
 import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
-import { setFormikErrors } from '../../../../lib/utils.service';
+import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
-import DatePicker from '../../components/DatePicker'
+import DatePicker from '../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import PDS from '../../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
-import PDSContextProvider from '../../contexts/PDSContext';
-import ApplicationPDS from '@/app/components/PDS/ApplicationPds';
+import PDS from '../components/PDS';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../types/pds';
+import PDSContextProvider from '../contexts/PDSContext';
+import ApplicationPDS from '../components/PDS/ApplicantPDS';
+import ApplicantPDS from '../components/PDS/ApplicantPDS';
 // types
 
 type row = {
@@ -170,7 +171,6 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -181,19 +181,14 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "employee_id", "display": "Employee ID" },
         { "column": "first_name", "display": "First Name" },
         { "column": "middle_name", "display": "Middle Name" },
         { "column": "last_name", "display": "Last Name" },
         { "column": "suffix", "display": "Suffix" },
         { "column": "title", "display": "Position" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "mobile_number", "display": "Mobile Number" },
         { "column": "email_address", "display": "Email" },
-        { "column": "employee_status", "display": "Employee Status" }
     ]);
-
-
 
 
 
@@ -201,27 +196,13 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Application");
+    const [title, setTitle] = useState<string>("Applicant");
     // const [positionKeyword, setPositionKeyword] = useState<string>("");
     // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<IValues>({
-        search_employee_id: '',
-        search_first_name: '',
-        search_middle_name: '',
-        search_last_name: '',
-        search_suffix: '',
-        employee_id: '',
-        employment_status: '',
-        division_id: '',
-        division: '',
-        division_autosuggest: '',
-        lgu_position_id: '',
-        lgu_position: '',
-        lgu_position_autosuggest: '',
-        employee_status: '',
         first_name: '',
         middle_name: '',
         last_name: '',
@@ -313,7 +294,7 @@ function AllRequestsTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-employee", postData);
+            const resp = await HttpService.post("search-applicant", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -354,216 +335,12 @@ function AllRequestsTabs() {
     }, [process]);
 
 
-    //    search Person
-    const submitSearchPerson = async () => {
-        try {
-            let current_values = formikData.current.values;
-            let request = {
-                employee_id: current_values.search_employee_id ? current_values.search_employee_id : "",
-                fist_name: current_values.search_fist_name ? current_values.search_fist_name : "",
-                middle_name: current_values.search_middle_name ? current_values.search_middle_name : "",
-                last_name: current_values.search_last_name ? current_values.search_last_name : "",
-                suffix: current_values.search_suffix ? formikData.current.values.search_suffix : "",
-            };
-
-            const resp = await HttpService.post("search-person", request);
-
-            if (resp.status === 200) {
-                let data = resp.data;
-
-                // resetFormik();
-
-                // setChildren(data.children.map((item: child) => {
-                //     return {
-                //         'number': (item.number) ? item.number : "",
-                //         'name': (item.name) ? item.name : "",
-                //         'birthday': (item.birthday) ? item.birthday : ""
-                //     };
-                // }));
-
-                // let isSame = false;
-
-                // if (data.personalInformation.residential_province == data.personalInformation.permanent_province &&
-                //     data.personalInformation.residential_municipality == data.personalInformation.permanent_municipality &&
-                //     data.personalInformation.residential_barangay == data.personalInformation.permanent_barangay &&
-                //     data.personalInformation.residential_house == data.personalInformation.permanent_house &&
-                //     data.personalInformation.residential_subdivision == data.personalInformation.permanent_subdivision &&
-                //     data.personalInformation.residential_street == data.personalInformation.permanent_street &&
-                //     data.personalInformation.residential_zipcode == data.personalInformation.permanent_zipcode) {
-
-                //     isSame = true;
-
-                // }
-                // setValues({
-                //     employee_id: data.employee.employee_id,
-                //     employment_status: data.employee.employment_status,
-                //     division_id: data.division.id,
-                //     division: data.division.division_code,
-                //     division_autosuggest: data.division.division_code,
-                //     lgu_position_id: data.employee.lgu_position_id,
-                //     lgu_position: data.lguPosition,
-                //     lgu_position_autosuggest: data.lguPosition,
-                //     employee_status: data.employee.employee_status,
-                //     first_name: data.employee.first_name,
-                //     middle_name: data.employee.middle_name,
-                //     last_name: data.employee.last_name,
-                //     suffix: (data.employee.suffix) ? data.employee.suffix : "",
-                //     birth_place: data.personalInformation.birth_place,
-                //     birth_date: data.personalInformation.birth_date,
-                //     age: data.personalInformation.age,
-                //     sex: data.personalInformation.sex,
-                //     height: data.personalInformation.height,
-                //     weight: data.personalInformation.weight,
-                //     citizenship: data.personalInformation.citizenship,
-                //     citizenship_type: (data.personalInformation.citizenship_type) ? data.personalInformation.citizenship_type : "",
-                //     country: (data.personalInformation.country) ? data.personalInformation.country : "Philippines",
-                //     blood_type: data.personalInformation.blood_type,
-                //     civil_status: data.personalInformation.civil_status,
-                //     tin: (data.personalInformation.tin) ? data.personalInformation.tin : "",
-                //     gsis: (data.personalInformation.gsis) ? data.personalInformation.gsis : "",
-                //     pagibig: (data.personalInformation.pagibig) ? data.personalInformation.pagibig : "",
-                //     philhealth: (data.personalInformation.philhealth) ? data.personalInformation.philhealth : "",
-                //     sss: (data.personalInformation.sss) ? data.personalInformation.sss : "",
-                //     residential_province: data.personalInformation.residential_province,
-                //     residential_municipality: data.personalInformation.residential_municipality,
-                //     residential_barangay: data.personalInformation.residential_barangay,
-                //     residential_house: data.personalInformation.residential_house,
-                //     residential_subdivision: (data.personalInformation.residential_subdivision) ? data.personalInformation.residential_subdivision : "",
-                //     residential_street: data.personalInformation.residential_street,
-                //     residential_zipcode: data.personalInformation.residential_zipcode,
-                //     isSameAddress: isSame,
-                //     permanent_province: data.personalInformation.permanent_province,
-                //     permanent_municipality: data.personalInformation.permanent_municipality,
-                //     permanent_barangay: data.personalInformation.permanent_barangay,
-                //     permanent_house: data.personalInformation.permanent_house,
-                //     permanent_subdivision: (data.personalInformation.permanent_subdivision) ? data.personalInformation.permanent_subdivision : "",
-                //     permanent_street: data.personalInformation.permanent_street,
-                //     permanent_zipcode: data.personalInformation.permanent_zipcode,
-                //     telephone: (data.personalInformation.telephone) ? data.personalInformation.telephone : "",
-                //     mobile_number: data.personalInformation.mobile_number,
-                //     email_address: (data.personalInformation.email_address) ? data.personalInformation.email_address : "",
-                //     spouse_first_name: (data.familyBackground.spouse_first_name) ? data.familyBackground.spouse_first_name : "",
-                //     spouse_middle_name: (data.familyBackground.spouse_middle_name) ? data.familyBackground.spouse_middle_name : "",
-                //     spouse_last_name: (data.familyBackground.spouse_last_name) ? data.familyBackground.spouse_last_name : "",
-                //     spouse_suffix: (data.familyBackground.spouse_suffix) ? data.familyBackground.spouse_suffix : "",
-                //     spouse_occupation: (data.familyBackground.spouse_occupation) ? data.familyBackground.spouse_occupation : "",
-                //     spouse_employer: (data.familyBackground.spouse_employer) ? data.familyBackground.spouse_employer : "",
-                //     spouse_employer_address: (data.familyBackground.spouse_employer_address) ? data.familyBackground.spouse_employer_address : "",
-                //     spouse_employer_telephone: (data.familyBackground.spouse_employer_telephone) ? data.familyBackground.spouse_employer_telephone : "",
-                //     // children: children,
-                //     children: data.children.map((item: child) => {
-                //         return {
-                //             'number': (item.number) ? item.number : "",
-                //             'name': (item.name) ? item.name : "",
-                //             'birthday': (item.birthday) ? item.birthday : ""
-                //         };
-                //     }),
-                //     father_first_name: (data.familyBackground.father_first_name) ? data.familyBackground.father_first_name : "",
-                //     father_middle_name: (data.familyBackground.father_middle_name) ? data.familyBackground.father_middle_name : "",
-                //     father_last_name: (data.familyBackground.father_last_name) ? data.familyBackground.father_last_name : "",
-                //     father_suffix: (data.familyBackground.father_suffix) ? data.familyBackground.father_suffix : "",
-                //     mother_first_name: (data.familyBackground.mother_first_name) ? data.familyBackground.mother_first_name : "",
-                //     mother_middle_name: (data.familyBackground.mother_middle_name) ? data.familyBackground.mother_middle_name : "",
-                //     mother_last_name: (data.familyBackground.mother_last_name) ? data.familyBackground.mother_last_name : "",
-                //     mother_suffix: (data.familyBackground.mother_suffix) ? data.familyBackground.mother_suffix : "",
-                //     schools: data.schools.map((item: school) => {
-                //         return {
-                //             'level': (item.level) ? item.level : "",
-                //             'school_name': (item.school_name) ? item.school_name : "",
-                //             'degree': (item.degree) ? item.degree : "",
-                //             'period_from': (item.period_from) ? item.period_from : "",
-                //             'period_to': (item.period_to) ? item.period_to : "",
-                //             'highest_unit_earned': (item.highest_unit_earned) ? item.highest_unit_earned : "",
-                //             'year_graduated': (item.year_graduated) ? item.year_graduated : "",
-                //             'scholarship_academic_awards': (item.scholarship_academic_awards) ? item.scholarship_academic_awards : "",
-                //         };
-                //     }),
-                //     eligibilities: data.eligibilities.map((item: eligibility) => {
-                //         return {
-                //             eligibility_title: item.eligibility_title,
-                //             rating: item.rating,
-                //             date_of_examination_conferment: item.date_of_examination_conferment,
-                //             place_of_examination_conferment: item.place_of_examination_conferment,
-                //             license_number: (item.license_number) ? item.license_number : "",
-                //             license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
-                //         }
-                //     }),
-                //     workExperiences: data.workExperiences.map((item: workExperience) => {
-                //         return {
-                //             date_from: item.date_from,
-                //             date_to: item.date_to,
-                //             position_title: item.position_title,
-                //             office_company: item.office_company,
-                //             monthly_salary: item.monthly_salary,
-                //             salary_grade: (item.salary_grade) ? item.salary_grade : "",
-                //             status_of_appointment: item.status_of_appointment,
-                //             government_service: item.government_service
-                //         }
-                //     }),
-                //     voluntaryWorks: data.voluntaryWorks.map((item: voluntaryWork) => {
-                //         return {
-                //             organization_name: (item.organization_name) ? item.organization_name : "",
-                //             organization_address: (item.organization_address) ? item.organization_address : "",
-                //             date_from: (item.date_from) ? item.date_from : "",
-                //             date_to: (item.date_to) ? item.date_to : "",
-                //             number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
-                //             position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
-                //         }
-                //     }),
-                //     trainings: data.trainings.map((item: training) => {
-
-                //         return {
-                //             training_title: item.training_title,
-                //             attendance_from: item.attendance_from,
-                //             attendance_to: item.attendance_to,
-                //             number_of_hours: item.number_of_hours,
-                //             training_type: item.training_type,
-                //             conducted_sponsored_by: item.conducted_sponsored_by
-                //         }
-                //     }),
-                //     skills: data.skills.map((item: skill) => {
-
-                //         return { special_skill: item.special_skill }
-
-                //     }),
-                //     recognitions: data.recognitions.map((item: recognition) => {
-                //         return { recognition_title: item.recognition_title }
-
-                //     }),
-                //     memberships: data.memberships.map((item: membership) => {
-                //         return { organization: item.organization }
-                //     }),
-                //     answers: data.answers.map((item: answer) => {
-                //         return {
-                //             question_id: item.question_id,
-                //             answer: item.answer,
-                //             details: (item.details) ? item.details : ""
-                //         }
-                //     }),
-                //     characterReferences: data.characterReferences.map((item: characterReference) => {
-                //         return {
-                //             name: item.name,
-                //             address: item.address,
-                //             number: item.number
-                //         }
-                //     }),
-                // });
-                // setShowDrawer(true);
-            }
-        }
-        catch (error: any) {
-            console.log(error);
-        }
-
-    };
-
-
 
     //    get data by id
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("employee/" + id);
+            const resp = await HttpService.get("applicant/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
 
@@ -592,19 +369,10 @@ function AllRequestsTabs() {
                 }
 
                 setValues({
-                    employee_id: data.employee.employee_id,
-                    employment_status: data.employee.employment_status,
-                    division_id: data.division.id,
-                    division: data.division.division_code,
-                    division_autosuggest: data.division.division_code,
-                    lgu_position_id: data.employee.lgu_position_id,
-                    lgu_position: data.lguPosition,
-                    lgu_position_autosuggest: data.lguPosition,
-                    employee_status: data.employee.employee_status,
-                    first_name: data.employee.first_name,
-                    middle_name: data.employee.middle_name,
-                    last_name: data.employee.last_name,
-                    suffix: (data.employee.suffix) ? data.employee.suffix : "",
+                    first_name: data.applicant.first_name,
+                    middle_name: data.applicant.middle_name,
+                    last_name: data.applicant.last_name,
+                    suffix: (data.applicant.suffix) ? data.applicant.suffix : "",
                     birth_place: data.personalInformation.birth_place,
                     birth_date: data.personalInformation.birth_date,
                     age: data.personalInformation.age,
@@ -792,7 +560,7 @@ function AllRequestsTabs() {
             // validate
 
             if (values.validation === true) {
-                const resp = await HttpService.post("employee-validation", values);
+                const resp = await HttpService.post("applicant-validation", values);
                 if (resp.status === 200) {
                     if (resp.data.data == "true") {
                         setFormActiveTab(formActiveTab + 1);
@@ -804,7 +572,7 @@ function AllRequestsTabs() {
                 // add
 
                 if (process === "Add") {
-                    const resp = await HttpService.post("employee", values);
+                    const resp = await HttpService.post("applicant", values);
                     if (resp.status === 200) {
                         let status = resp.data.status;
                         if (status === "Request was Successful") {
@@ -828,7 +596,7 @@ function AllRequestsTabs() {
                 // update
                 else if (process === "Edit") {
 
-                    const resp = await HttpService.patch("employee/" + id, values)
+                    const resp = await HttpService.patch("applicant/" + id, values)
                     if (resp.status === 200) {
                         let status = resp.data.status;
                         if (status === "Request was Successful") {
@@ -848,7 +616,7 @@ function AllRequestsTabs() {
                 // delete
                 else {
                     if (id != 0) {
-                        const resp = await HttpService.delete("employee/" + id);
+                        const resp = await HttpService.delete("applicant/" + id);
                         if (resp.status === 200) {
                             let status = resp.data.status;
                             if (status === "Request was Successful") {
@@ -887,7 +655,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -908,9 +676,8 @@ function AllRequestsTabs() {
                                 initialValues={initialValues}
                                 setValues={setValues}
                                 process={process}
-                                submitSearchPerson={submitSearchPerson}
                                 id={id}>
-                                <ApplicationPDS
+                                <ApplicantPDS
                                     formActiveTab={formActiveTab}
                                     setFormActiveTab={setFormActiveTab}
                                 />
@@ -927,15 +694,6 @@ function AllRequestsTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                     ref={props.tabsRef}
-                // onActiveTabChange={(tab) => {
-                //     // if (tab == 1) {
-                //     //     router.push('/vacancy/approved');
-                //     // }
-                //     // else if (2) {
-                //     //     router.push('/vacancy/queued');
-                //     // }
-
-                // }}
 
                 >
 

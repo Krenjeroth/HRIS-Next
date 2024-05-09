@@ -17,6 +17,7 @@ import { usePDSContext } from '@/app/contexts/PDSContext';
 import CharacterReference from './CharacterReference';
 import EmployeeDetail from './EmployeeDetails';
 import Position from './Position';
+import SearchPerson from './SearchPerson';
 
 type Props = {
     formActiveTab: number,
@@ -56,6 +57,14 @@ function ApplicationPDS(parameter: Props) {
                 }}
 
             >
+                <Tabs.Item
+                    active
+                    icon={HiUserCircle}
+                    title={`Search Person`}
+                >
+                    <SearchPerson />
+                </Tabs.Item>
+
                 <Tabs.Item
                     active
                     icon={HiUser}
@@ -123,6 +132,17 @@ function ApplicationPDS(parameter: Props) {
                             parameter.setFormActiveTab(parameter.formActiveTab - 1);
                         }}>
                             Back
+                        </Button>
+                        : <></>
+                    }
+
+                    {parameter.formActiveTab == 0 ?
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-green-400  hover:scale-90 shadow-sm text' onClick={() => {
+                            if (context.submitSearchPerson) {
+                                context.submitSearchPerson();
+                            }
+                        }}>
+                            Search and Fill Form
                         </Button>
                         : <></>
                     }

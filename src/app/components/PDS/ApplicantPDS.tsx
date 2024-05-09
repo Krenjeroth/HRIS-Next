@@ -22,7 +22,7 @@ type Props = {
     setFormActiveTab: Function,
 }
 
-function index(parameter: Props) {
+function ApplicantPDS(parameter: Props) {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
@@ -60,7 +60,6 @@ function index(parameter: Props) {
                     icon={HiUser}
                     title={`Personal`}
                 >
-                    <EmployeeDetail />
                     <Personal />
 
                 </Tabs.Item>
@@ -117,7 +116,7 @@ function index(parameter: Props) {
                         : <></>
                     }
 
-                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text  `} onClick={() => {
+                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                         if (parameter.formActiveTab < (validations.length - 1)) {
                             parameter.setFormActiveTab(parameter.formActiveTab + 1);
                         }
@@ -152,4 +151,4 @@ function index(parameter: Props) {
     )
 }
 
-export default index
+export default ApplicantPDS
