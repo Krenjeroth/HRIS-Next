@@ -30,7 +30,7 @@ function ApplicationPDS(parameter: Props) {
     const tabsRef = useRef<TabsRef>(null);
     const props = { 'setFormActiveTab': parameter.setFormActiveTab, tabsRef };
     const { setFieldValue, submitForm } = useFormikContext();
-    const validations = ['Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
+    const validations = ['Search Personal','Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information','Position'];
     const context = usePDSContext();
 
 
