@@ -16,8 +16,8 @@ import { FormFieldError } from '../commons/FormFieldError';
 import { usePDSContext } from '@/app/contexts/PDSContext';
 import CharacterReference from './CharacterReference';
 import EmployeeDetail from './EmployeeDetails';
-import Position from './Position';
 import SearchPerson from './SearchPerson';
+import ApplicationDetails from './ApplicationDetails';
 
 type Props = {
     formActiveTab: number,
@@ -30,7 +30,7 @@ function ApplicationPDS(parameter: Props) {
     const tabsRef = useRef<TabsRef>(null);
     const props = { 'setFormActiveTab': parameter.setFormActiveTab, tabsRef };
     const { setFieldValue, submitForm } = useFormikContext();
-    const validations = ['Search Personal','Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information','Position'];
+    const validations = ['Search Personal','Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
     const context = usePDSContext();
 
 
@@ -113,16 +113,10 @@ function ApplicationPDS(parameter: Props) {
                 >
                     <OtherInformation />
                     <CharacterReference />
+                    <ApplicationDetails />
 
                 </Tabs.Item>
-                <Tabs.Item
-                    id='position'
-                    icon={HiBriefcase}
-                    title={`Position`}
-                >
-                    <Position />
-
-                </Tabs.Item>
+                
             </Tabs.Group >
             <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                 <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />

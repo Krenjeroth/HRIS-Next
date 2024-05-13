@@ -120,6 +120,15 @@ export type school = {
     scholarship_academic_awards: string
 }
 
+export type datalist = {
+    id: string,
+    label: any
+}
+
+export type file = {
+    name: any
+}
+
 
 // interfaces
 
@@ -204,4 +213,8 @@ export interface IValues {
     memberships: membership[]
     answers: answer[],
     characterReferences: characterReference[]
+    vacancy_id?: string,
+    vacancy?: string,
+    vacancy_autosuggest?: string,
+    attachments?: string[]
 }
