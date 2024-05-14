@@ -45,7 +45,6 @@ function ApplicationDetails() {
 
             const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
-                console.log(resp);
                 setVacancies(
                     resp.data.data.map((data: any) => {
                         return {

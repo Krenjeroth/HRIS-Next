@@ -595,6 +595,7 @@ function AllRequestsTabs() {
                     <Tabs.Item title={title + "s"} active>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                             setValues(defaultData);
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

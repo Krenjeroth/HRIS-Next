@@ -290,16 +290,13 @@ function AllRequestsTabs() {
         vacancy_id: '',
         vacancy: '',
         vacancy_autosuggest: '',
-        attachments:[]
+        attachments: []
 
     });
     var [initialValues, setValues] = useState<IValues>(
         defaultData
     );
 
-    function resetFormik() {
-        setValues(defaultData);
-    }
 
 
     useEffect(() => {
@@ -334,7 +331,7 @@ function AllRequestsTabs() {
             setValues(defaultData);
         }
         else {
-            resetFormik();
+            setValues(defaultData);
             getDataById(id);
         }
     }, [id, reload]);
@@ -367,13 +364,15 @@ function AllRequestsTabs() {
             current_values.search_middle_name === "" &&
             current_values.search_last_name === "" &&
             current_values.search_suffix === "") {
-
             setAlerts([{ "type": "failure", "message": "Please fill inputs before searching" }]);
+            setValues(defaultData);
 
         }
 
         else {
+            setAlerts([]);
             try {
+                console.log("true");
                 let request = {
                     employee_id: current_values.search_employee_id ? current_values.search_employee_id : "",
                     first_name: current_values.search_first_name ? current_values.search_first_name : "",
@@ -387,9 +386,7 @@ function AllRequestsTabs() {
 
                 if (resp.status === 200) {
                     let data = resp.data;
-
-                    resetFormik();
-
+                    setValues(defaultData);
                     setChildren(data.children.map((item: child) => {
                         return {
                             'number': (item.number) ? item.number : "",
@@ -572,7 +569,7 @@ function AllRequestsTabs() {
                         vacancy_id: '',
                         vacancy: '',
                         vacancy_autosuggest: '',
-                        attachments:[]
+                        attachments: []
                     });
                 }
             }
@@ -592,7 +589,7 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
 
-                resetFormik();
+                setValues(defaultData);
 
                 setChildren(data.children.map((item: child) => {
                     return {
@@ -772,7 +769,7 @@ function AllRequestsTabs() {
                     vacancy_id: '',
                     vacancy: '',
                     vacancy_autosuggest: '',
-                    attachments:[],
+                    attachments: [],
 
                 });
 
@@ -840,7 +837,7 @@ function AllRequestsTabs() {
                         if (status === "Request was Successful") {
                             alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                             resetForm({});
-                            resetFormik();
+                            setValues(defaultData);
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
@@ -972,6 +969,7 @@ function AllRequestsTabs() {
                     <Tabs.Item title={title + "s"} active>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
+                            setValues(defaultData);
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
