@@ -557,53 +557,66 @@ function AllRequestsTabs() {
 
 
         try {
-            // validate
 
-            if (values.validation === true) {
-                const resp = await HttpService.post("applicant-validation", values);
+
+            // add
+
+            if (process === "Add") {
+                const resp = await HttpService.post("applicant", values);
                 if (resp.status === 200) {
-                    if (resp.data.data == "true") {
-                        setFormActiveTab(formActiveTab + 1);
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        resetForm({});
+                        resetFormik();
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                        setId(0);
+                        setProcess("Add");
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+
+            }
+            // update
+            else if (process === "Edit") {
+
+                const resp = await HttpService.patch("applicant/" + id, values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
                     }
                 }
             }
+
+            // delete
             else {
-
-                // add
-
-                if (process === "Add") {
-                    const resp = await HttpService.post("applicant", values);
+                if (id != 0) {
+                    const resp = await HttpService.delete("applicant/" + id);
                     if (resp.status === 200) {
                         let status = resp.data.status;
                         if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                            resetForm({});
-                            resetFormik();
+                            alerts.push({ "type": "success", "message": resp.data.message });
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
                             setId(0);
                             setProcess("Add");
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
-                        }
-                    }
 
-                }
-                // update
-                else if (process === "Edit") {
-
-                    const resp = await HttpService.patch("applicant/" + id, values)
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                            setActivePage(1);
-                            setFilters([]);
-                            setRefresh(!refresh);
                         }
                         else {
                             if (typeof resp.data != "undefined") {
@@ -612,32 +625,8 @@ function AllRequestsTabs() {
                         }
                     }
                 }
-
-                // delete
                 else {
-                    if (id != 0) {
-                        const resp = await HttpService.delete("applicant/" + id);
-                        if (resp.status === 200) {
-                            let status = resp.data.status;
-                            if (status === "Request was Successful") {
-                                alerts.push({ "type": "success", "message": resp.data.message });
-                                setActivePage(1);
-                                setFilters([]);
-                                setRefresh(!refresh);
-                                setId(0);
-                                setProcess("Add");
-
-                            }
-                            else {
-                                if (typeof resp.data != "undefined") {
-                                    alerts.push({ "type": "failure", "message": resp.data.message });
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        setProcess("Add");
-                    }
+                    setProcess("Add");
                 }
             }
         }
@@ -700,7 +689,7 @@ function AllRequestsTabs() {
                     <Tabs.Item title={title + "s"} active>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                            setValues(defaultData);
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

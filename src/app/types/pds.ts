@@ -216,5 +216,5 @@ export interface IValues {
     vacancy_id?: string,
     vacancy?: string,
     vacancy_autosuggest?: string,
-    attachments?: string[]
+    attachments?:any
 }

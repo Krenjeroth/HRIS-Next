@@ -15,85 +15,42 @@ import { initial } from 'lodash';
 function FileUpload() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
-    const [attachments, setAttachments] = useState<string[]>([]);
-
-    useEffect(() => {
-
-        if (context.initialValues.attachments) {
-            setAttachments([...context.initialValues.attachments]);
-        }
-    }, [context.initialValues])
+    const [attachments, setAttachments] = useState<File>();
+    const [files, setFiles] = useState<string[]>([]);
 
     return (
         <>
 
+            <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col'>
+                <label className='text-sm font-medium ml-2 mt-2'>Attachments<span className=' text-red-600'> *</span></label>
+                <div className="mt-4 mx-2 col-span-10 md:col-span-10">
+                    <input
+                        type="file"
+                        id={`attachments`}
+                        name={`attachments`}
+                        placeholder="Attachments"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        accept="application/pdf"
+                        onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                            if (event.currentTarget.files) {
+                                const file = event.currentTarget.files[0];
+                                const reader = new FileReader();
+                                reader.onload = (e: any) => {
+                                    const base64 = e.target.result.split(',')[1];
+                                    setFieldValue('attachments', base64);
+                                };
 
-            <div
-                className='col-span-4 md:col-span-4 ml-2 mt-2'
-            >
-                <label className='text-sm font-medium'>Attachments<span className=' text-red-600'> *</span></label>
-                <FieldArray name="attachments">
-                    {({ insert, remove, push }) => (
-                        <>
-                            {attachments.map((object, index: number) => {
-                                return <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col' key={index}>
-                                    <div className="mt-1 mx-2 col-span-10 md:col-span-9">
-                                        <Field
-                                            type="file"
-                                            id={`attachments.${index}`}
-                                            name={`attachments.${index}`}
-                                            placeholder="Attachment"
-                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                            accept="application/pdf"
-                                        // autoComplete="on"
-                                        />
-                                        <FormFieldError name={`attachments.${index}`} errors={context.errors} touched={context.touched} />
-                                    </div>
-                                    <div className="mt-1 col-span-10 md:col-span-1 mx-auto ">
-                                        <Button className='mt-2 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
-                                            remove(index);
-                                            let reinitialize_attachments = [...attachments].filter((object, filterIndedx: number) => {
-                                                return index != filterIndedx;
-                                            });
+                                reader.onerror = (error) => {
+                                    console.error('Error reading file:', error);
+                                };
 
-                                            setAttachments(reinitialize_attachments);
-                                        }
-                                        }>
-                                            <Tooltip content="Remove Data">
-                                                <HiDocumentRemove />
-                                            </Tooltip>
-                                        </Button>
-                                    </div>
-                                    <hr className='text-cyan-600 mt-2
-                                     col-span-10' />
-                                </div>
-                            })}
-                            <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col'>
-                                <div className="mt-2 mx-2 md:col-start-9 col-span-10 md:col-span-1">
+                                reader.readAsDataURL(file);
 
-                                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
-
-                                        let reinitialize_attachments = [...attachments].map((object: string, index: number) => {
-                                            return object;
-                                        });
-
-                                        reinitialize_attachments.push('')
-
-                                        push('');
-
-                                        setAttachments(reinitialize_attachments);
-
-                                    }}>
-                                        <Tooltip content="Add Attachment">
-                                            <HiDocumentAdd className='' />
-                                        </Tooltip>
-                                    </Button>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </FieldArray>
-
+                            }
+                        }}
+                    />
+                    <FormFieldError name={`attachments`} errors={context.errors} touched={context.touched} />
+                </div>
             </div>
 
         </>

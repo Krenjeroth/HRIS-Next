@@ -163,6 +163,8 @@ function AllRequestsTabs() {
         }
     ]);
 
+    const [attachments, setAttachments] = useState<string>("");
+
 
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
@@ -290,7 +292,7 @@ function AllRequestsTabs() {
         vacancy_id: '',
         vacancy: '',
         vacancy_autosuggest: '',
-        attachments: []
+        attachments: ''
 
     });
     var [initialValues, setValues] = useState<IValues>(
@@ -372,7 +374,6 @@ function AllRequestsTabs() {
         else {
             setAlerts([]);
             try {
-                console.log("true");
                 let request = {
                     employee_id: current_values.search_employee_id ? current_values.search_employee_id : "",
                     first_name: current_values.search_first_name ? current_values.search_first_name : "",
@@ -569,7 +570,7 @@ function AllRequestsTabs() {
                         vacancy_id: '',
                         vacancy: '',
                         vacancy_autosuggest: '',
-                        attachments: []
+                        attachments: ''
                     });
                 }
             }
@@ -769,7 +770,7 @@ function AllRequestsTabs() {
                     vacancy_id: '',
                     vacancy: '',
                     vacancy_autosuggest: '',
-                    attachments: [],
+                    attachments: ''
 
                 });
 
@@ -795,6 +796,7 @@ function AllRequestsTabs() {
         values: any,
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
+
         setLoading(true);
         if (values.isSameAddress) {
             values.permanent_barangay = values.residential_barangay;
@@ -810,59 +812,70 @@ function AllRequestsTabs() {
             values.country = "";
         }
 
+
+        // console.log(values.attachments);
         alerts.forEach(element => {
             alerts.pop();
         });
 
 
         try {
-            // validate
-
-            if (values.validation === true) {
-                const resp = await HttpService.post("employee-validation", values);
+            if (process === "Add") {
+                const resp = await HttpService.post("application", values);
                 if (resp.status === 200) {
-                    if (resp.data.data == "true") {
-                        setFormActiveTab(formActiveTab + 1);
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        resetForm({});
+                        setValues(defaultData);
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                        setId(0);
+                        setProcess("Add");
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+
+            }
+            // update
+            else if (process === "Edit") {
+
+                const resp = await HttpService.patch("application/" + id, values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
                     }
                 }
             }
+
+            // delete
             else {
-
-                // add
-
-                if (process === "Add") {
-                    const resp = await HttpService.post("employee", values);
+                if (id != 0) {
+                    const resp = await HttpService.delete("application/" + id);
                     if (resp.status === 200) {
                         let status = resp.data.status;
                         if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                            resetForm({});
-                            setValues(defaultData);
+                            alerts.push({ "type": "success", "message": resp.data.message });
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
                             setId(0);
                             setProcess("Add");
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
-                        }
-                    }
 
-                }
-                // update
-                else if (process === "Edit") {
-
-                    const resp = await HttpService.patch("employee/" + id, values)
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                            setActivePage(1);
-                            setFilters([]);
-                            setRefresh(!refresh);
                         }
                         else {
                             if (typeof resp.data != "undefined") {
@@ -871,34 +884,11 @@ function AllRequestsTabs() {
                         }
                     }
                 }
-
-                // delete
                 else {
-                    if (id != 0) {
-                        const resp = await HttpService.delete("employee/" + id);
-                        if (resp.status === 200) {
-                            let status = resp.data.status;
-                            if (status === "Request was Successful") {
-                                alerts.push({ "type": "success", "message": resp.data.message });
-                                setActivePage(1);
-                                setFilters([]);
-                                setRefresh(!refresh);
-                                setId(0);
-                                setProcess("Add");
-
-                            }
-                            else {
-                                if (typeof resp.data != "undefined") {
-                                    alerts.push({ "type": "failure", "message": resp.data.message });
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        setProcess("Add");
-                    }
+                    setProcess("Add");
                 }
             }
+
         }
         catch (error: any) {
             if (error.response.status === 422) {
@@ -976,7 +966,8 @@ function AllRequestsTabs() {
                         }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
-                        {/*Table*/}
+                        {/*Table*/}.
+
                         <Table
                             buttons={buttons}
                             filters={filters}
