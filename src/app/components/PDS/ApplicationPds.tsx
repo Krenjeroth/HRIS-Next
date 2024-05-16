@@ -30,7 +30,7 @@ function ApplicationPDS(parameter: Props) {
     const tabsRef = useRef<TabsRef>(null);
     const props = { 'setFormActiveTab': parameter.setFormActiveTab, tabsRef };
     const { setFieldValue, submitForm } = useFormikContext();
-    const validations = ['Search Personal','Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
+    const validations = ['Search Personal', 'Personal', 'Family', 'Education', 'CS Eligibility', 'Learning and Development', 'Other Information'];
     const context = usePDSContext();
 
 
@@ -60,9 +60,21 @@ function ApplicationPDS(parameter: Props) {
                 <Tabs.Item
                     active
                     icon={HiUserCircle}
-                    title={`Search Person`}
+                    title={`Application Details`}
                 >
                     <SearchPerson />
+                    <div className="col-span-2 md:col-span-2 flex mx-auto mt-5">
+                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-green-400  hover:scale-90 shadow-sm text' onClick={() => {
+                            if (context.submitSearchPerson) {
+                                context.submitSearchPerson();
+                            }
+                        }}>
+                            Search and Fill Form
+                        </Button>
+                    </div>
+                    <ApplicationDetails />
+
+
                 </Tabs.Item>
 
                 <Tabs.Item
@@ -113,10 +125,10 @@ function ApplicationPDS(parameter: Props) {
                 >
                     <OtherInformation />
                     <CharacterReference />
-                    <ApplicationDetails />
+
 
                 </Tabs.Item>
-                
+
             </Tabs.Group >
             <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
                 <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
@@ -130,16 +142,7 @@ function ApplicationPDS(parameter: Props) {
                         : <></>
                     }
 
-                    {parameter.formActiveTab == 0 ?
-                        <Button className='mx-2 btn btn-sm text-white rounded-lg bg-green-400  hover:scale-90 shadow-sm text' onClick={() => {
-                            if (context.submitSearchPerson) {
-                                context.submitSearchPerson();
-                            }
-                        }}>
-                            Search and Fill Form
-                        </Button>
-                        : <></>
-                    }
+
 
                     <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                         if (parameter.formActiveTab < (validations.length - 1)) {

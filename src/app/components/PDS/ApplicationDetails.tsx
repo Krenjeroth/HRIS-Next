@@ -68,7 +68,28 @@ function ApplicationDetails() {
                 <span className=' text-cyan-600 font-medium text-lg '>Application Details</span>
                 <hr className='text-cyan-600 mt-6' />
             </div>
-            <div className='col-span-4 md:col-span-4' >
+
+            <div className='col-span-2 md:col-span-2' >
+                <FormElement
+                    name="date_submitted"
+                    label="Date submitted"
+                    errors={context.errors}
+                    touched={context.touched}
+                    className='col-span-4 md:col-span-1'
+                    required={true}
+                >
+                    <DatePicker
+                        initialValues={context.initialValues}
+
+                        id="date_submitted"
+                        name="date_submitted"
+                        placeholderText="Enter Date"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    />
+                </FormElement>
+            </div>
+
+            <div className='col-span-2 md:col-span-2' >
                 <DataList errors={context.errors} touched={context.touched}
                     required={true}
                     className=''
@@ -84,7 +105,7 @@ function ApplicationDetails() {
             </div>
 
             <FileUpload />
-        </div>
+        </div >
     )
 }
 

@@ -22,8 +22,9 @@ function FileUpload() {
         <>
 
             <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col'>
-                <label className='text-sm font-medium ml-2 mt-2'>Attachments<span className=' text-red-600'> *</span></label>
+
                 <div className="mt-4 mx-2 col-span-10 md:col-span-10">
+                    <label className='text-sm font-medium ml-2 mt-2'>Attachments<span className=' text-red-600'> *</span></label>
                     <input
                         type="file"
                         id={`attachments`}
