@@ -8,7 +8,8 @@ import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
 import CustomRow from "./CustomRow";
 import debounce from 'lodash/debounce';
-
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type row = {
     id: string,
@@ -25,6 +26,7 @@ type button = {
     title: string,
     process: string,
     class: string
+    link?: string
 }
 
 type filter = {
@@ -65,7 +67,7 @@ function index(parameter: Props) {
 
 
 
-
+    const router = useRouter();
     const [startDate, setStartDate] = useState(new Date());
     const [selected, setSelected] = useState<string[]>([]);
     const [numberFormats] = useState<string[]>(['amount']);
@@ -200,18 +202,32 @@ function index(parameter: Props) {
                                     <Table.Cell className="whitespace-nowrap font-medium min-w-0 flex flex-row p-1">
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
-                                                return (
-                                                    <Tooltip content={button.title} key={i}>
-                                                        <button title="Edit"
-                                                            className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
-                                                                parameter.setReload(!parameter.reload);
-                                                                parameter.setId(item.id);
-                                                                parameter.setProcess(button.process);
-                                                            }}
-                                                        >
-                                                            {button.icon} </button>
-                                                    </Tooltip>
-                                                );
+                                                if (button.link) {
+                                                    return (
+                                                        <Tooltip content={button.title} key={i}>
+                                                            <Link title="" href={`${button.link}${item.id}`} > 
+                                                                <button title=""
+                                                                    className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} >
+                                                                    {button.icon}
+                                                                </button>
+                                                            </Link>
+                                                        </Tooltip>
+                                                    )
+                                                }
+                                                else {
+                                                    return (
+                                                        <Tooltip content={button.title} key={i}>
+                                                            <button title=""
+                                                                className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
+                                                                    parameter.setReload(!parameter.reload);
+                                                                    parameter.setId(item.id);
+                                                                    parameter.setProcess(button.process);
+                                                                }}
+                                                            >
+                                                                {button.icon} </button>
+                                                        </Tooltip>
+                                                    );
+                                                }
                                             })
                                             : ""
                                         }

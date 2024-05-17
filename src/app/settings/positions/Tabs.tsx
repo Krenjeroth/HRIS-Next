@@ -333,7 +333,7 @@ function positionTabs() {
             <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
@@ -546,7 +546,16 @@ function positionTabs() {
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                            setValues({
+                                code: '',
+                                title: '',
+                                salary_grade_id: '',
+                                education: '',
+                                training: '',
+                                experience: '',
+                                eligibility: '',
+                                competency: ''
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

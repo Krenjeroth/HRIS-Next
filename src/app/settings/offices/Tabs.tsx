@@ -202,7 +202,7 @@ function SalaryGradeTabs() {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -220,7 +220,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -238,7 +238,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
                     }
@@ -266,7 +266,7 @@ setRefresh(!refresh);
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -339,7 +339,10 @@ setRefresh(!refresh);
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                            setValues({
+                                office_code: '',
+                                office_name: ''
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

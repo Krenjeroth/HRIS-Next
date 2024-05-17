@@ -219,3 +219,8 @@ export interface IValues {
     attachments?: any,
     date_submitted?: string,
 }
+
+export type file_attachment = {
+    id: string,
+    link: string
+}

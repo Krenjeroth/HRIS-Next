@@ -179,7 +179,7 @@ function SalaryGradeTabs() {
                 activePage: activePage,
                 filters: newArrayFilter,
                 orderBy: orderBy,
-                viewAll:true,
+                viewAll: true,
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-lgu-position", postData);
@@ -419,7 +419,7 @@ function SalaryGradeTabs() {
             <Drawer width='w-4/12' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
@@ -589,7 +589,20 @@ function SalaryGradeTabs() {
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                            setValues({
+                                item_number: "",
+                                division_id: "",
+                                division: "",
+                                division_autosuggest: "",
+                                position_id: "",
+                                position: "",
+                                position_autosuggest: "",
+                                year: parseInt(dayjs().format('YYYY')),
+                                description: "",
+                                place_of_assignment: "",
+                                status: "",
+                                position_status: "Permanent",
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
@@ -617,8 +630,8 @@ function SalaryGradeTabs() {
                             reload={reload}
                             setReload={setReload}
                             setProcess={setProcess}
-                            // year={year}
-                            // setYear={setYear}
+                        // year={year}
+                        // setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >

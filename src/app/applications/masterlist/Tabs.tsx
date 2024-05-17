@@ -12,7 +12,7 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../../components/PDS';
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
@@ -44,7 +44,8 @@ type button = {
     icon: ReactNode,
     title: string,
     process: string,
-    class: string
+    class: string,
+    link?: string
 }
 
 type filter = {
@@ -172,7 +173,7 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
+        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "view_attachment", "class": "text-green-500","link":"/applications/" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -347,6 +348,7 @@ function AllRequestsTabs() {
     }, [showDrawer]);
 
     useEffect(() => {
+        console.log(process);
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
             setReadOnly(true);
