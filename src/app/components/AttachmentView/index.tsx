@@ -53,9 +53,12 @@ function index(props: file_attachment) {
                         router.back();
                     }} >Return to previous page
                     </Button>
-                    {(base64) ?
-                        <iframe src="data:application/pdf;base64," height="100%" width="100%"></iframe>
-                        : ""}
+                    <div className=''>
+                        {(base64) ?
+                            <iframe src={`data:application/pdf;headers=application_attachment_${props.id};base64,${base64}`} className='w-full h-[300px] sm:h-[450px] md:h-[600px] lg:h-[450px] xl:h-[600px]' height="100%" width="100%"></iframe>
+                            : ""}
+                    </div>
+                  
                 </Tabs.Item>
             </Tabs.Group >
         </div >

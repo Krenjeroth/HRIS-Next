@@ -3,7 +3,7 @@ import { Button, Tabs } from 'flowbite-react';
 import React from 'react'
 
 export const metadata = {
-    title: 'HRIS - Queued Requests',
+    title: 'HRIS - Application Attachment',
 };
 
 

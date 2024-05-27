@@ -183,7 +183,7 @@ function AllRequestsTabs() {
         // query
         async function getPositions() {
             var keyword = positionKeyword.split("-");
-            var filters =[];
+            var filters = [];
             if (keyword.length === 2) {
                 filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
             }
@@ -444,7 +444,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -595,7 +595,17 @@ function AllRequestsTabs() {
                     <Tabs.Item title={title + "s"} active>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                            setValues({
+                                date_submitted: '',
+                                position_id: '',
+                                position: '',
+                                position_autosuggest: '',
+                                status: '',
+                                date_approved: '',
+                                date_queued: '',
+                                posting_date: '',
+                                closing_date: '',
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

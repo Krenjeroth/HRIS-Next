@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
+import AttachmentDrawer from '../../components/AttachmentDrawer';
 import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
@@ -173,7 +174,7 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "view_attachment", "class": "text-green-500","link":"/applications/" },
+        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "view_attachment", "class": "text-green-500","link":"/applications/view/" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -210,6 +211,7 @@ function AllRequestsTabs() {
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<IValues>({
         search_employee_id: '',
         search_first_name: '',
@@ -348,7 +350,6 @@ function AllRequestsTabs() {
     }, [showDrawer]);
 
     useEffect(() => {
-        console.log(process);
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
             setReadOnly(true);
@@ -913,6 +914,8 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
+            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>hh</AttachmentDrawer>
+            
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
