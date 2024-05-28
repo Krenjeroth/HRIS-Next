@@ -6,6 +6,7 @@ import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
 import AttachmentDrawer from '../../components/AttachmentDrawer';
+import AttachmentView from '../../components/AttachmentView';
 import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
@@ -13,7 +14,7 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, ClipboardIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../../components/PDS';
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
@@ -174,7 +175,7 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "view_attachment", "class": "text-green-500","link":"/applications/view/" },
+        { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -185,6 +186,7 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
+        { "column": "date_submitted", "display": "Date Submitted" },
         { "column": "first_name", "display": "first_name" },
         { "column": "middle_name", "display": "middle_name" },
         { "column": "last_name", "display": "last_name" },
@@ -337,15 +339,28 @@ function AllRequestsTabs() {
             setValues(defaultData);
         }
         else {
-            setValues(defaultData);
-            getDataById(id);
+
+            if (process == "View") {
+                setShowDrawer(false);
+                setShowAttachmentDrawer(true);
+            }
+            else {
+                setValues(defaultData);
+                getDataById(id);
+                setShowDrawer(true);
+            }
         }
     }, [id, reload]);
 
 
     useEffect(() => {
         if (!showDrawer) {
-            setId(0);
+            if (!showAttachmentDrawer) {
+                setId(0);
+            }
+        }
+        else {
+            setShowAttachmentDrawer(false);
         }
     }, [showDrawer]);
 
@@ -355,7 +370,7 @@ function AllRequestsTabs() {
             setReadOnly(true);
         }
         else {
-            // setAlerts([]);
+            setAlerts([]);
             setReadOnly(false);
         }
     }, [process]);
@@ -391,7 +406,6 @@ function AllRequestsTabs() {
 
                 if (resp.status === 200) {
                     let data = resp.data;
-                    console.log(data);
 
                     if (data.length == 0) {
                         setAlerts([{ "type": "failure", "message": "Sorry we cannot find employee/appplicant with the same details." }]);
@@ -597,12 +611,10 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("employee/" + id);
+            const resp = await HttpService.get("application/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-
                 setValues(defaultData);
-
                 setChildren(data.children.map((item: child) => {
                     return {
                         'number': (item.number) ? item.number : "",
@@ -620,23 +632,25 @@ function AllRequestsTabs() {
                     data.personalInformation.residential_subdivision == data.personalInformation.permanent_subdivision &&
                     data.personalInformation.residential_street == data.personalInformation.permanent_street &&
                     data.personalInformation.residential_zipcode == data.personalInformation.permanent_zipcode) {
-
                     isSame = true;
-
                 }
-
                 setValues({
-                    employee_id: data.details.employee_id,
-                    employment_status: data.details.employment_status,
-                    division_id: data.division.id,
-                    division: data.division.division_code,
-                    division_autosuggest: data.division.division_code,
-                    lgu_position_id: data.details.lgu_position_id,
-                    lgu_position: data.lguPosition,
-                    lgu_position_autosuggest: data.lguPosition,
-                    employee_status: data.details.employee_status,
+                    search_employee_id: (data.details.employee_id) ? data.details.employee_id : "",
+                    search_first_name: data.details.first_name,
+                    search_middle_name: (data.details.middle_name) ? data.details.middle_name : "",
+                    search_last_name: data.details.last_name,
+                    search_suffix: (data.details.suffix) ? data.details.suffix : "",
+                    employee_id: (data.details.employee_id) ? data.details.employee_id : "",
+                    employment_status: (data.details.employment_status) ? data.details.employment_status : "",
+                    division_id: (data.division.id) ? data.division.id : "",
+                    division: (data.division.division_code) ? data.division.division_code : "",
+                    division_autosuggest: (data.division.division_code) ? data.division.division_code : "",
+                    lgu_position_id: (data.details.lgu_position_id) ? data.details.lgu_position_id : "",
+                    lgu_position: (data.lguPosition) ? data.lguPosition : "",
+                    lgu_position_autosuggest: (data.lguPosition) ? data.lguPosition : "",
+                    employee_status: (data.details.employee_status) ? data.details.employee_status : "",
                     first_name: data.details.first_name,
-                    middle_name: data.details.middle_name,
+                    middle_name: (data.details.middle_name) ? data.details.middle_name : "",
                     last_name: data.details.last_name,
                     suffix: (data.details.suffix) ? data.details.suffix : "",
                     birth_place: data.personalInformation.birth_place,
@@ -778,16 +792,12 @@ function AllRequestsTabs() {
                             number: item.number
                         }
                     }),
-                    date_submitted: '',
-                    vacancy_id: '',
-                    vacancy: '',
-                    vacancy_autosuggest: '',
+                    date_submitted: data.application.date_submitted,
+                    vacancy_id: data.application.vacancy_id,
+                    vacancy: data.vacancy,
+                    vacancy_autosuggest: data.vacancy,
                     attachments: ''
-
                 });
-
-
-                setShowDrawer(true);
             }
         }
         catch (error: any) {
@@ -914,11 +924,13 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>hh</AttachmentDrawer>
-            
+            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>
+                <AttachmentView id={id} link={"/view-application-attachments"} />
+            </AttachmentDrawer>
+
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -950,7 +962,7 @@ function AllRequestsTabs() {
                     )}
                 </Formik>
             </Drawer>
-            <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
+            <div className={`${(showDrawer || showAttachmentDrawer) ? "blur-[1px]" : ""}`}>
 
 
                 {/*  Tabs */}

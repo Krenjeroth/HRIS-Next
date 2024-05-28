@@ -221,6 +221,6 @@ export interface IValues {
 }
 
 export type file_attachment = {
-    id: string,
+    id: number,
     link: string
 }
