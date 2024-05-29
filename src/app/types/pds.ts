@@ -218,6 +218,7 @@ export interface IValues {
     vacancy_autosuggest?: string,
     attachments?: any,
     date_submitted?: string,
+    reason?: string,
 }
 
 export type file_attachment = {

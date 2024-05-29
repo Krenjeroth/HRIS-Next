@@ -14,12 +14,13 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, ClipboardIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, ClipboardIcon, ExclamationCircleIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../../components/PDS';
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
 import ApplicationPDS from '@/app/components/PDS/ApplicationPds';
+import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 // types
 
 type row = {
@@ -176,6 +177,7 @@ function AllRequestsTabs() {
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
+        { "icon": <ExclamationCircleIcon className=' w-5 h-5' />, "title": "Disqualify", "process": "Disqualify", "class": "text-orange-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -387,7 +389,6 @@ function AllRequestsTabs() {
             current_values.search_suffix === "") {
             setAlerts([{ "type": "failure", "message": "Please fill inputs before searching" }]);
             setValues(defaultData);
-
         }
 
         else {
@@ -796,7 +797,8 @@ function AllRequestsTabs() {
                     vacancy_id: data.application.vacancy_id,
                     vacancy: data.vacancy,
                     vacancy_autosuggest: data.vacancy,
-                    attachments: ''
+                    attachments: '',
+                    reason: ''
                 });
             }
         }
@@ -884,6 +886,25 @@ function AllRequestsTabs() {
                 }
             }
 
+            else if (process === "Disqualify") {
+
+                const resp = await HttpService.patch("application/" + id, values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
             // delete
             else {
                 if (id != 0) {
@@ -953,10 +974,15 @@ function AllRequestsTabs() {
                                 process={process}
                                 submitSearchPerson={submitSearchPerson}
                                 id={id}>
-                                <ApplicationPDS
-                                    formActiveTab={formActiveTab}
-                                    setFormActiveTab={setFormActiveTab}
-                                />
+                                {(process == "Disqualify") ?
+                                    <DisqualifyForm />
+                                    :
+                                    <ApplicationPDS
+                                        formActiveTab={formActiveTab}
+                                        setFormActiveTab={setFormActiveTab}
+                                    />
+                                }
+
                             </PDSContextProvider>
                         </Form>
                     )}
