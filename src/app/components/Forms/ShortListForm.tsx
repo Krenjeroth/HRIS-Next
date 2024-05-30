@@ -2,6 +2,8 @@ import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import { usePDSContext } from "@/app/contexts/PDSContext";
 import { Button } from "flowbite-react";
+import AppropriateEligibility from "../PDS/AppropriateEligibility";
+import Trainings from "../PDS/Trainings";
 
 
 
@@ -13,7 +15,7 @@ interface IValues {
 
 
 // Main function
-export const DisqualifyForm = () => {
+export const ShortListForm = () => {
 
     const context = usePDSContext();
     const { setFieldValue, submitForm } = useFormikContext();
@@ -130,23 +132,80 @@ export const DisqualifyForm = () => {
                 />
             </FormElement>
 
+
+            <div className="col-span-4 mt-5"><AppropriateEligibility /></div>
+
             <FormElement
-                name="reason"
-                label="Reason/Remarks"
+                name="shortlist_trainings"
+                label="Trainings"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-4'
+                className='col-span-1 md:col-span-1'
                 required={true}
             >
                 <Field
-                    as="textarea"
-                    id="reason"
-                    name="reason"
-                    placeholder="Reason/Remarks"
+                    id="shortlist_trainings"
+                    name="shortlist_trainings"
+                    placeholder="Details"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
                 />
             </FormElement>
+
+            <FormElement
+                name="performance"
+                label="Performance(20)"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-1 md:col-span-1'
+                required={true}
+            >
+                <Field
+                    id="performance"
+                    name="performance"
+                    placeholder="Up to 20 points"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    autoComplete="on"
+                    type="number"
+                />
+            </FormElement>
+
+            <FormElement
+                name="education"
+                label="Education(20)"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-1 md:col-span-1'
+                required={true}
+            >
+                <Field
+                    id="education"
+                    name="education"
+                    placeholder="Up to 20 points"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    autoComplete="on"
+                    type="number"
+                />
+            </FormElement>
+            <FormElement
+                name="experience"
+                label="Experience(25)"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-1 md:col-span-1'
+                required={true}
+            >
+                <Field
+                    id="experience"
+                    name="experience"
+                    placeholder="Up to 25 points"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    autoComplete="on"
+                    type="number"
+                />
+            </FormElement>
+
+
             <div className="col-span-4 mt-5">
                 <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
                     submitForm();

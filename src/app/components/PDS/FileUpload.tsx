@@ -30,7 +30,7 @@ function FileUpload() {
                         id={`attachments`}
                         name={`attachments`}
                         placeholder="Attachments"
-                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                        className="w-full p-3 pr-12 text-sm  rounded-lg shadow-sm focus:border-sky-500"
                         accept="application/pdf"
                         onChange={(event: React.FormEvent<HTMLInputElement>) => {
                             if (event.currentTarget.files) {

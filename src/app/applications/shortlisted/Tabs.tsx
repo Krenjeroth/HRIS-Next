@@ -215,7 +215,7 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Application");
+    const [title, setTitle] = useState<string>("Short listed Application");
     // const [positionKeyword, setPositionKeyword] = useState<string>("");
     // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
@@ -308,7 +308,7 @@ function AllRequestsTabs() {
         vacancy_autosuggest: '',
         attachments: '',
         reason: '',
-        shortlist_trainings:'',
+        shortlist_trainings: '',
         performance: 0,
         education: 0,
         experience: 0,
@@ -331,7 +331,7 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: filters,
+                filters: [...filters, { column: 'shortlisted', value: 1 }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -608,7 +608,7 @@ function AllRequestsTabs() {
                             vacancy_autosuggest: '',
                             attachments: '',
                             reason: '',
-                            shortlist_trainings:'',
+                            shortlist_trainings: '',
                             performance: 0,
                             education: 0,
                             experience: 0,
@@ -815,7 +815,7 @@ function AllRequestsTabs() {
                     vacancy_autosuggest: data.vacancy,
                     attachments: '',
                     reason: '',
-                    shortlist_trainings:'',
+                    shortlist_trainings: '',
                     performance: 0,
                     education: 0,
                     experience: 0,
@@ -1053,14 +1053,14 @@ function AllRequestsTabs() {
                 >
 
                     <Tabs.Item title={title + "s"} active>
-
+                        {/* 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
                             setValues(defaultData);
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
                         }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
-                        </Button>
+                        </Button> */}
 
                         {/*Table*/}.
 

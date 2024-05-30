@@ -219,6 +219,10 @@ export interface IValues {
     attachments?: any,
     date_submitted?: string,
     reason?: string,
+    shortlist_trainings?: string,
+    performance?: number,
+    education?: number,
+    experience?: number
 }
 
 export type file_attachment = {

@@ -12,7 +12,7 @@ import { child, training } from '@/app/types/pds';
 import { initial } from 'lodash';
 
 
-function LearningAndDevelopment() {
+function Trainings() {
     const { setFieldValue } = useFormikContext();
     const context = usePDSContext();
     const [trainings, setTrainings] = useState<training[]>([]);
@@ -28,7 +28,7 @@ function LearningAndDevelopment() {
             <div className='grid lg:grid-cols-4 grid-col' >
 
                 <div className='col-span-4 md:col-span-4'>
-                    <span className=' text-cyan-600 font-medium text-lg '>VII.  Learning and Development (L&D) Interventions/Training Programs Attended</span>
+                    <span className=' text-cyan-600 font-medium text-lg '>Trainings</span>
                     <hr className='text-cyan-600 mt-6' />
                 </div>
 
@@ -73,7 +73,6 @@ function LearningAndDevelopment() {
                                         <FormFieldError name={`trainings.${index}.attendance_to`} errors={context.errors} touched={context.touched} />
                                     </div>
 
-
                                     <div className="mt-2 mx-2 col-span-10 md:col-span-2">
                                         <Field
                                             type="number"
@@ -107,8 +106,6 @@ function LearningAndDevelopment() {
                                         />
                                         <FormFieldError name={`trainings.${index}.conducted_sponsored_by`} errors={context.errors} touched={context.touched} />
                                     </div>
-
-
 
                                     <div className="mt-1 col-span-10 md:col-span-1 mx-auto ">
                                         <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
@@ -174,4 +171,4 @@ function LearningAndDevelopment() {
     )
 }
 
-export default LearningAndDevelopment
+export default Trainings
