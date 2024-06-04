@@ -13,7 +13,7 @@ interface IValues {
 
 
 // Main function
-export const DisqualifyForm = () => {
+export const RevertForm = () => {
 
     const context = usePDSContext();
     const { setFieldValue, submitForm } = useFormikContext();
@@ -145,11 +145,27 @@ export const DisqualifyForm = () => {
                     placeholder="Reason/Remarks"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                     autoComplete="on"
+                    readOnly={true}
                 />
             </FormElement>
 
-
-            
+            <FormElement
+                name="remarks"
+                label="Revert Remarks"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-4 md:col-span-4'
+                required={true}
+            >
+                <Field
+                    as="textarea"
+                    id="remarks"
+                    name="remarks"
+                    placeholder="Revert Remarks"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    autoComplete="on"
+                />
+            </FormElement>
             <div className="col-span-4 mt-5">
                 <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
                     submitForm();

@@ -222,7 +222,8 @@ export interface IValues {
     shortlist_trainings?: string,
     performance?: number,
     education?: number,
-    experience?: number
+    experience?: number,
+    remarks?: string
 }
 
 export type file_attachment = {

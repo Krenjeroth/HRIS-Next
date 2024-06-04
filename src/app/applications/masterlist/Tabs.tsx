@@ -308,7 +308,7 @@ function AllRequestsTabs() {
         vacancy_autosuggest: '',
         attachments: '',
         reason: '',
-        shortlist_trainings:'',
+        shortlist_trainings: '',
         performance: 0,
         education: 0,
         experience: 0,
@@ -608,7 +608,7 @@ function AllRequestsTabs() {
                             vacancy_autosuggest: '',
                             attachments: '',
                             reason: '',
-                            shortlist_trainings:'',
+                            shortlist_trainings: '',
                             performance: 0,
                             education: 0,
                             experience: 0,
@@ -815,7 +815,7 @@ function AllRequestsTabs() {
                     vacancy_autosuggest: data.vacancy,
                     attachments: '',
                     reason: '',
-                    shortlist_trainings:'',
+                    shortlist_trainings: '',
                     performance: 0,
                     education: 0,
                     experience: 0,
@@ -894,6 +894,7 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
@@ -913,6 +914,7 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
@@ -932,6 +934,7 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
@@ -952,6 +955,7 @@ function AllRequestsTabs() {
                         let status = resp.data.status;
                         if (status === "Request was Successful") {
                             alerts.push({ "type": "success", "message": resp.data.message });
+                            setValues(defaultData);
                             setActivePage(1);
                             setFilters([]);
                             setRefresh(!refresh);
