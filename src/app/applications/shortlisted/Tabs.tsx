@@ -17,6 +17,7 @@ import { IValues, formContextType, child, school, workExperience, eligibility, v
 import PDSContextProvider from '../../contexts/PDSContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
+import { ShortListForm } from '@/app/components/Forms/ShortListForm';
 // types
 
 type row = {
@@ -208,7 +209,7 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Shotrlisted Application");
+    const [title, setTitle] = useState<string>("Shortlisted Application");
     // const [positionKeyword, setPositionKeyword] = useState<string>("");
     // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
@@ -300,7 +301,10 @@ function AllRequestsTabs() {
         vacancy: '',
         vacancy_autosuggest: '',
         attachments: '',
-        reason: '',
+        shortlist_trainings: '',
+        performance: 0,
+        education: 0,
+        experience: 0,
         remarks: '',
 
     });
@@ -396,6 +400,8 @@ function AllRequestsTabs() {
                         'birthday': (item.birthday) ? item.birthday : ""
                     };
                 }));
+
+
 
                 let isSame = false;
 
@@ -571,11 +577,10 @@ function AllRequestsTabs() {
                     vacancy: data.vacancy,
                     vacancy_autosuggest: data.vacancy,
                     attachments: '',
-                    reason: (data.disqualification) ? data.disqualification.reason : '',
-                    shortlist_trainings: '',
-                    performance: 0,
-                    education: 0,
-                    experience: 0,
+                    shortlist_trainings: data.assessment.training,
+                    performance: data.assessment.performance,
+                    education: data.assessment.education,
+                    experience: data.assessment.experience,
                     remarks: ''
                 });
             }
@@ -623,12 +628,12 @@ function AllRequestsTabs() {
 
         try {
             if (process === "Edit") {
-                const resp = await HttpService.post("disqualify-application/" + id, values)
+                const resp = await HttpService.post("shortlist-application/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        setValues(defaultData);
+                        // setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
@@ -703,7 +708,7 @@ function AllRequestsTabs() {
                                 process={process}
                                 id={id}>
 
-                                {(process === "Revert") ? <RevertForm /> : <DisqualifyForm />}
+                                {(process === "Revert") ? <RevertForm /> : <ShortListForm />}
 
 
                             </PDSContextProvider>

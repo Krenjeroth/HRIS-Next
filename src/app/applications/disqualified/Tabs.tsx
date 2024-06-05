@@ -624,7 +624,7 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        setValues(defaultData);
+                        // setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
@@ -643,7 +643,7 @@ function AllRequestsTabs() {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully reverted!" });
-                        setValues(defaultData);
+                        // setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);

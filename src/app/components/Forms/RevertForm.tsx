@@ -130,7 +130,7 @@ export const RevertForm = () => {
                 />
             </FormElement>
 
-            <FormElement
+            {/* <FormElement
                 name="reason"
                 label="Reason"
                 errors={context.errors}
@@ -147,7 +147,7 @@ export const RevertForm = () => {
                     autoComplete="on"
                     readOnly={true}
                 />
-            </FormElement>
+            </FormElement> */}
 
             <FormElement
                 name="remarks"
