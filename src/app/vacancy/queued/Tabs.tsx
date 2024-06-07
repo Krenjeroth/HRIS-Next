@@ -243,7 +243,7 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 if (process === "Reactivate") {
                     setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                        date_submitted: data.date_submitted,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -253,12 +253,12 @@ function AllRequestsTabs() {
                 }
                 else {
                     setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                        date_submitted: data.date_submitted,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
                         status: data.status,
-                        date_queued: (dayjs(data.date_queued).format('MM/DD/YYYY')),
+                        date_queued: data.date_queued,
                     });
                 }
                 setShowDrawer(true);
@@ -355,7 +355,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 

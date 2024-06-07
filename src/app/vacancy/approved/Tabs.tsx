@@ -256,7 +256,7 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 if (process === "Reactivate") {
                     setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                        date_submitted: data.date_submitted,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -269,14 +269,14 @@ function AllRequestsTabs() {
                 }
                 else {
                     setValues({
-                        date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                        date_submitted: data.date_submitted,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
                         status: data.status,
-                        date_approved: (dayjs(data.date_approved).format('MM/DD/YYYY')),
-                        posting_date: (dayjs(data.posting_date).format('MM/DD/YYYY')),
-                        closing_date: (dayjs(data.closing_date).format('MM/DD/YYYY')),
+                        date_approved: data.date_approved,
+                        posting_date: data.posting_date,
+                        closing_date: data.closing_date,
                         publication_status: data.publication_status,
                     });
                 }
@@ -377,7 +377,7 @@ function AllRequestsTabs() {
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
@@ -423,7 +423,7 @@ function AllRequestsTabs() {
                                     setValues={setValues}
                                     data={positionData}
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
+                                />
                             </div>
 
 
@@ -468,7 +468,7 @@ function AllRequestsTabs() {
                                     <DatePicker
                                         id="closing_date"
                                         initialValues={initialValues}
-                                       
+
                                         name="closing_date"
                                         placeholderText="Enter Date"
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"

@@ -272,7 +272,7 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues({
-                    date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                    date_submitted: data.date_submitted,
                     position_id: data.lgu_position_id,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
