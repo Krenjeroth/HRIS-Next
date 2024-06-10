@@ -210,7 +210,7 @@ function index(parameter: Props) {
 
                                                     return (
                                                         <Tooltip content={button.title} key={i}>
-                                                            <Link title="" href={`${button.link}${item.id}`} >
+                                                            <Link title="" href={`${button.link}/${item.id}`} >
                                                                 <button title=""
                                                                     className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} >
                                                                     {button.icon}
