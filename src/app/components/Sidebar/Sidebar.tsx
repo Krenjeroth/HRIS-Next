@@ -65,6 +65,7 @@ function index(parameter: Props) {
                     </SidebarDropdown>
 
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Settings" icon={<CogIcon className='w-6 h-6' />}>
+                        <SidebarDropdownItem href={"/settings/governors"} label="Governors" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/offices"} label="Offices" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/divisions"} label="Divisions/Sections/Units" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/"} label="PSB" activeLink={activeLink} SetActiveLink={SetActiveLink} />
