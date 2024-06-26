@@ -17,7 +17,7 @@ import { IValues, formContextType, child, school, workExperience, eligibility, v
 import PDSContextProvider from '../../contexts/PDSContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
-import { HiCloudDownload, HiDownload } from 'react-icons/hi';
+import { HiCloudDownload, HiDownload, HiMail } from 'react-icons/hi';
 // types
 
 type row = {
@@ -179,6 +179,7 @@ function AllRequestsTabs() {
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
         { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
+        { "icon": <HiMail className=' w-5 h-5' />, "title": "Email", "process": "Email", "class": "text-purple-600" },
         { "icon": <ArrowLeftEndOnRectangleIcon className=' w-5 h-5' />, "title": "Revert", "process": "Revert", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -364,10 +365,59 @@ function AllRequestsTabs() {
                         // Create a link element, set its href attribute, and trigger download
                         var a = document.createElement('a');
                         a.href = url;
-                        a.download = filename +'.docx'; // Specify desired file name with .docx extension
+                        a.download = filename + '.docx'; // Specify desired file name with .docx extension
                         document.body.appendChild(a); // Append anchor to body
                         a.click(); // Programmatically click the anchor element to trigger the download
                         document.body.removeChild(a); // Clean up anchor element afterwards
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+        }
+        catch (error: any) {
+            if (error.response.status === 422) {
+
+            }
+        }
+    };
+
+    const sendEmail = async (id: number) => {
+        try {
+            if (process === "Email") {
+                const resp = await HttpService.get("send-disqualification-email/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+
+                    if (status === "Request was Successful") {
+                        console.log(resp.status);
+                        // let base64String = resp.data.data.base64;
+                        // let filename = resp.data.data.filename;
+                        // var binaryString = atob(base64String);
+
+                        // // Convert binary to ArrayBuffer
+                        // var binaryData = new ArrayBuffer(binaryString.length);
+                        // var byteArray = new Uint8Array(binaryData);
+                        // for (var i = 0; i < binaryString.length; i++) {
+                        //     byteArray[i] = binaryString.charCodeAt(i);
+                        // }
+
+                        // // Create Blob object
+                        // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+                        // // Create object URL
+                        // var url = URL.createObjectURL(blob);
+
+                        // // Create a link element, set its href attribute, and trigger download
+                        // var a = document.createElement('a');
+                        // a.href = url;
+                        // a.download = filename + '.docx'; // Specify desired file name with .docx extension
+                        // document.body.appendChild(a); // Append anchor to body
+                        // a.click(); // Programmatically click the anchor element to trigger the download
+                        // document.body.removeChild(a); // Clean up anchor element afterwards
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -399,22 +449,9 @@ function AllRequestsTabs() {
             }
             else if (process == "Download") {
                 downloadLetter(id);
-                // const resp = await HttpService.post("disqualify-application/" + id, values)
-                // if (resp.status === 200) {
-                //     let status = resp.data.status;
-                //     if (status === "Request was Successful") {
-                //         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                //         // setValues(defaultData);
-                //         setActivePage(1);
-                //         setFilters([]);
-                //         setRefresh(!refresh);
-                //     }
-                //     else {
-                //         if (typeof resp.data != "undefined") {
-                //             alerts.push({ "type": "failure", "message": resp.data.message });
-                //         }
-                //     }
-                // }
+            }
+            else if (process == "Email") {
+                sendEmail(id);
             }
             else {
                 setValues(defaultData);
