@@ -16,6 +16,37 @@ export type formContextType = {
 
 };
 
+export type emailContextType = {
+    formikData: any,
+    readonly?: boolean,
+    errors: any,
+    touched: any,
+    isEmployee?: boolean,
+    initialValues: email,
+    setValues: Function,
+    isLoading: boolean,
+    process: string,
+    children?: React.ReactNode,
+    id?: number
+
+};
+
+export type disqualifiedContextType = {
+    formikData: any,
+    readonly?: boolean,
+    errors: any,
+    touched: any,
+    isEmployee?: boolean,
+    initialValues: DisqualifiedIValues,
+    setValues: Function,
+    isLoading: boolean,
+    process: string,
+    children?: React.ReactNode,
+    id?: number,
+    submitSearchPerson?: Function
+
+};
+
 export type country = {
     value: string,
     label: string,
@@ -132,6 +163,20 @@ export type file = {
 
 // interfaces
 
+export interface DisqualifiedIValues {
+    // personal information
+    first_name: string,
+    middle_name: string,
+    last_name: string,
+    suffix: string,
+    vacancy_id?: string,
+    vacancy?: string,
+    vacancy_autosuggest?: string,
+    date_submitted?: string,
+    reason?: string
+    remarks?: string
+}
+
 export interface IValues {
     // personal information
     search_employee_id?: string,
@@ -229,4 +274,10 @@ export interface IValues {
 export type file_attachment = {
     id: number,
     link: string
+}
+
+export type email = {
+    recipient: string,
+    subject: string,
+    body: string
 }

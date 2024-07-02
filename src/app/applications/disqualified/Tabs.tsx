@@ -6,6 +6,7 @@ import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
 import AttachmentDrawer from '../../components/AttachmentDrawer';
+import EmailDrawer from '../../components/EmailDrawer';
 import AttachmentView from '../../components/AttachmentView';
 import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
 import { setFormikErrors } from '../../../../lib/utils.service';
@@ -13,11 +14,13 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import { ArrowDownCircleIcon, ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, ExclamationCircleIcon, EyeIcon, FlagIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
+import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question, email } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
+import EmailContextProvider from '../../contexts/EmailContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { HiCloudDownload, HiDownload, HiMail } from 'react-icons/hi';
+import { EmailForm } from '@/app/components/Forms/EmailForm';
 // types
 
 type row = {
@@ -168,9 +171,6 @@ function AllRequestsTabs() {
         }
     ]);
 
-    const [attachments, setAttachments] = useState<string>("");
-
-
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
@@ -198,26 +198,21 @@ function AllRequestsTabs() {
         { "column": "application_type", "display": "application_type" },
         { "column": "title", "display": "title" },
         { "column": "item_number", "display": "item_number" },
-        // { "column": "office_name", "display": "office_name" },
         { "column": "division_name", "display": "division_name" },
         { "column": "status", "display": "status" },
+        { "column": "reason", "display": "Disqualification Reason" },
     ]);
-
-
-
-
 
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Disqualified Application");
-    // const [positionKeyword, setPositionKeyword] = useState<string>("");
-    // const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
+    const [showEmailDrawer, setShowEmailDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<IValues>({
         search_employee_id: '',
         search_first_name: '',
@@ -311,6 +306,11 @@ function AllRequestsTabs() {
         defaultData
     );
 
+    var [newEmail, setEmail] = useState<email>({
+        recipient: "",
+        subject: "",
+        body: ""
+    });
 
 
     useEffect(() => {
@@ -385,54 +385,54 @@ function AllRequestsTabs() {
         }
     };
 
-    const sendEmail = async (id: number) => {
-        try {
-            if (process === "Email") {
-                const resp = await HttpService.get("send-disqualification-email/" + id);
-                if (resp.status === 200) {
-                    let status = resp.data.status;
+    // const sendEmail = async (id: number) => {
+    //     try {
+    //         if (process === "Email") {
+    //             const resp = await HttpService.get("send-disqualification-email/" + id);
+    //             if (resp.status === 200) {
+    //                 let status = resp.data.status;
 
-                    if (status === "Request was Successful") {
-                        console.log(resp.status);
-                        // let base64String = resp.data.data.base64;
-                        // let filename = resp.data.data.filename;
-                        // var binaryString = atob(base64String);
+    //                 if (status === "Request was Successful") {
+    //                     console.log(resp.status);
+    //                     // let base64String = resp.data.data.base64;
+    //                     // let filename = resp.data.data.filename;
+    //                     // var binaryString = atob(base64String);
 
-                        // // Convert binary to ArrayBuffer
-                        // var binaryData = new ArrayBuffer(binaryString.length);
-                        // var byteArray = new Uint8Array(binaryData);
-                        // for (var i = 0; i < binaryString.length; i++) {
-                        //     byteArray[i] = binaryString.charCodeAt(i);
-                        // }
+    //                     // // Convert binary to ArrayBuffer
+    //                     // var binaryData = new ArrayBuffer(binaryString.length);
+    //                     // var byteArray = new Uint8Array(binaryData);
+    //                     // for (var i = 0; i < binaryString.length; i++) {
+    //                     //     byteArray[i] = binaryString.charCodeAt(i);
+    //                     // }
 
-                        // // Create Blob object
-                        // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    //                     // // Create Blob object
+    //                     // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 
-                        // // Create object URL
-                        // var url = URL.createObjectURL(blob);
+    //                     // // Create object URL
+    //                     // var url = URL.createObjectURL(blob);
 
-                        // // Create a link element, set its href attribute, and trigger download
-                        // var a = document.createElement('a');
-                        // a.href = url;
-                        // a.download = filename + '.docx'; // Specify desired file name with .docx extension
-                        // document.body.appendChild(a); // Append anchor to body
-                        // a.click(); // Programmatically click the anchor element to trigger the download
-                        // document.body.removeChild(a); // Clean up anchor element afterwards
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
-            }
-        }
-        catch (error: any) {
-            if (error.response.status === 422) {
+    //                     // // Create a link element, set its href attribute, and trigger download
+    //                     // var a = document.createElement('a');
+    //                     // a.href = url;
+    //                     // a.download = filename + '.docx'; // Specify desired file name with .docx extension
+    //                     // document.body.appendChild(a); // Append anchor to body
+    //                     // a.click(); // Programmatically click the anchor element to trigger the download
+    //                     // document.body.removeChild(a); // Clean up anchor element afterwards
+    //                 }
+    //                 else {
+    //                     if (typeof resp.data != "undefined") {
+    //                         alerts.push({ "type": "failure", "message": resp.data.message });
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     catch (error: any) {
+    //         if (error.response.status === 422) {
 
-            }
-        }
-    };
+    //         }
+    //     }
+    // };
 
 
 
@@ -446,17 +446,22 @@ function AllRequestsTabs() {
             if (process == "View") {
                 setShowDrawer(false);
                 setShowAttachmentDrawer(true);
+                setShowEmailDrawer(false);
             }
             else if (process == "Download") {
                 downloadLetter(id);
             }
             else if (process == "Email") {
-                sendEmail(id);
+                setShowDrawer(false);
+                setShowAttachmentDrawer(false);
+                setShowEmailDrawer(true);
             }
             else {
                 setValues(defaultData);
                 getDataById(id);
                 setShowDrawer(true);
+                setShowAttachmentDrawer(false);
+                setShowEmailDrawer(false);
             }
         }
     }, [id, reload]);
@@ -701,22 +706,6 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
 
-        setLoading(true);
-        if (values.isSameAddress) {
-            values.permanent_barangay = values.residential_barangay;
-            values.permanent_house = values.residential_house;
-            values.permanent_municipality = values.residential_municipality;
-            values.permanent_province = values.residential_province;
-            values.permanent_street = values.residential_street;
-            values.permanent_subdivision = values.residential_subdivision;
-            values.permanent_zipcode = values.residential_zipcode;
-        }
-        if (values.citizenship == "Filipino") {
-            values.citizenship_type = "";
-            values.country = "";
-        }
-
-
         // console.log(values.attachments);
         alerts.forEach(element => {
             alerts.pop();
@@ -780,6 +769,36 @@ function AllRequestsTabs() {
             <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>
                 <AttachmentView id={id} link={"/view-application-attachments"} />
             </AttachmentDrawer>
+
+            <EmailDrawer width='w-3/4' setShowDrawer={setShowEmailDrawer} showDrawer={showEmailDrawer} title={`Compose Email`}>
+                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
+                >
+                    {({ errors, touched }) => (
+
+                        // forms
+                        <Form className='p-2' id="formik">
+                            <div className='alert-container mb-2' id="alert-container">
+                                {alerts.map((item, index) => {
+                                    return (
+                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
+                                    );
+                                })}
+                            </div>
+                            <EmailContextProvider
+                                formikData={formikData}
+                                isLoading={isLoading}
+                                errors={errors}
+                                touched={touched}
+                                initialValues={newEmail}
+                                setValues={setValues}
+                                process={process}
+                                id={id}>
+                                <EmailForm />
+                            </EmailContextProvider>
+                        </Form>
+                    )}
+                </Formik>
+            </EmailDrawer>
 
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
