@@ -6,14 +6,6 @@ import AppropriateEligibility from "../PDS/AppropriateEligibility";
 import Trainings from "../PDS/Trainings";
 
 
-
-// Typescript Interface
-interface IValues {
-    email: string;
-    password: string;
-}
-
-
 // Main function
 export const ShortListForm = () => {
 

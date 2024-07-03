@@ -31,6 +31,7 @@ export type emailContextType = {
 
 };
 
+
 export type disqualifiedContextType = {
     formikData: any,
     readonly?: boolean,
@@ -173,8 +174,11 @@ export interface DisqualifiedIValues {
     vacancy?: string,
     vacancy_autosuggest?: string,
     date_submitted?: string,
-    reason?: string
-    remarks?: string
+    reason?: string,
+    remarks?: string,
+    recipient: string,
+    subject: string,
+    body: string
 }
 
 export interface IValues {

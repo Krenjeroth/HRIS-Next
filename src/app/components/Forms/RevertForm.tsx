@@ -1,21 +1,14 @@
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
-import { usePDSContext } from "@/app/contexts/PDSContext";
 import { Button } from "flowbite-react";
+import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
 
-
-
-// Typescript Interface
-interface IValues {
-    email: string;
-    password: string;
-}
 
 
 // Main function
 export const RevertForm = () => {
 
-    const context = usePDSContext();
+    const context = useDisqualifiedContext();
     const { setFieldValue, submitForm } = useFormikContext();
 
     return (
