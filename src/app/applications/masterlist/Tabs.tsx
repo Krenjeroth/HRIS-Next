@@ -20,7 +20,7 @@ import PDS from '../../components/PDS';
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
 import ApplicationPDS from '@/app/components/PDS/ApplicationPds';
-import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
+import { MasterlistDisqualifyForm } from '@/app/components/Forms/MasterlistDisqualifyForm';
 import { ShortListForm } from '@/app/components/Forms/ShortListForm';
 // types
 
@@ -1018,7 +1018,7 @@ function AllRequestsTabs() {
                                 submitSearchPerson={submitSearchPerson}
                                 id={id}>
                                 {(process == "Disqualify") ?
-                                    (<DisqualifyForm />)
+                                    (<MasterlistDisqualifyForm />)
                                     :
                                     (
                                         (process == "Shortlist") ?

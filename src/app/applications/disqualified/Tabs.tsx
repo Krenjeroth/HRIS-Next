@@ -137,11 +137,6 @@ function AllRequestsTabs() {
         defaultData
     );
 
-    const [newEmail, setEmail] = useState<email>({
-        recipient: "durieltims@gmail.com",
-        subject: "teh",
-        body: ""
-    });
 
 
     useEffect(() => {
@@ -216,57 +211,6 @@ function AllRequestsTabs() {
         }
     };
 
-    // const sendEmail = async (id: number) => {
-    //     try {
-    //         if (process === "Email") {
-    //             const resp = await HttpService.get("send-disqualification-email/" + id);
-    //             if (resp.status === 200) {
-    //                 let status = resp.data.status;
-
-    //                 if (status === "Request was Successful") {
-    //                     console.log(resp.status);
-    //                     // let base64String = resp.data.data.base64;
-    //                     // let filename = resp.data.data.filename;
-    //                     // var binaryString = atob(base64String);
-
-    //                     // // Convert binary to ArrayBuffer
-    //                     // var binaryData = new ArrayBuffer(binaryString.length);
-    //                     // var byteArray = new Uint8Array(binaryData);
-    //                     // for (var i = 0; i < binaryString.length; i++) {
-    //                     //     byteArray[i] = binaryString.charCodeAt(i);
-    //                     // }
-
-    //                     // // Create Blob object
-    //                     // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-
-    //                     // // Create object URL
-    //                     // var url = URL.createObjectURL(blob);
-
-    //                     // // Create a link element, set its href attribute, and trigger download
-    //                     // var a = document.createElement('a');
-    //                     // a.href = url;
-    //                     // a.download = filename + '.docx'; // Specify desired file name with .docx extension
-    //                     // document.body.appendChild(a); // Append anchor to body
-    //                     // a.click(); // Programmatically click the anchor element to trigger the download
-    //                     // document.body.removeChild(a); // Clean up anchor element afterwards
-    //                 }
-    //                 else {
-    //                     if (typeof resp.data != "undefined") {
-    //                         alerts.push({ "type": "failure", "message": resp.data.message });
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     catch (error: any) {
-    //         if (error.response.status === 422) {
-
-    //         }
-    //     }
-    // };
-
-
-
 
     useEffect(() => {
         if (id == 0) {
@@ -324,6 +268,53 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("application/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+                var body = `<p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Dear <strong>Applicant</strong>:&nbsp;</span>
+                            </p>
+                            <p>
+                                &nbsp;
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancy_office.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
+                            </p>
+                            <p>
+                                &nbsp;
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">We regret to inform that based on the evaluation of your qualifications as submitted, vis - a’-vis the qualification standards(QS) of the position, ${data.disqualification.reason} .&nbsp;</span>
+                            </p>
+                            <p>
+                                &nbsp;
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Nonetheless, we thank you for your interest to join the Provincial Government of Benguet.</span>
+                            </p>
+                            <p>
+                                &nbsp;
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Very truly yours,</span>
+                            </p>
+                            <p>
+                                &nbsp;
+                            </p>
+                            <p class="MsoNormal">
+                                <span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;"><strong>PROVINCIAL HUMAN RESOURCE MANAGEMENT AND DEVELOPMENT OFFICE</strong></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><o:p></o:p></span>
+                            </p>
+                            <p>
+                                <span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;font-size:14px;">PROVINCE OF BENGUET</span>
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Poblacion, La Trinidad, Benguet 2601</span>
+                            </p>
+                            <p>
+                                <span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>(074) 422-6475</i></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i> | </i></span><span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>http://www.benguet.gov.ph&nbsp;</i></span>
+                            </p>
+                            <p>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i><strong>EMAIL ADDRESS</strong>: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com</i></span>
+                            </p>`;
+
+
                 setValues(defaultData);
                 setValues({
                     first_name: data.details.first_name,
@@ -338,16 +329,7 @@ function AllRequestsTabs() {
                     remarks: '',
                     recipient: data.details.email_address,
                     subject: "Notice of Disqualification",
-                    body: "Dear ${prefix} ${last_name}:"
-                        + "/n This refers to your application for the position of ${ position } at the ${ office }, Capitol, Poblacion, La Trinidad, Benguet."
-                        + "/n We regret to inform that based on the evaluation of your qualifications as submitted, vis - a’-vis the qualification standards(QS) of the position, ${ reason }."
-                        + "/n Nonetheless, we thank you for your interest to join the Provincial Government of Benguet."
-                        + "/n Very truly yours,"
-                        + "/n Benguet Provincial Human Resource Management and Development Office"
-                        + "/n PROVINCE OF BENGUET"
-                        + "/n Poblacion, La Trinidad, Benguet 2601"
-                        + "/n PHRMDO: (074) 422-6475 | WEBSITE: http://www.benguet.gov.ph"
-                        + "/n EMAIL ADDRESS: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com"
+                    body: body
                 });
             }
         }
@@ -387,6 +369,21 @@ function AllRequestsTabs() {
                         setActivePage(1);
                         setFilters([]);
                         setRefresh(!refresh);
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
+            if (process === "Email") {
+                const resp = await HttpService.post("send-disqualification-email/" + id, values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": resp.data.message });
                     }
                     else {
                         if (typeof resp.data != "undefined") {

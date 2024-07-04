@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
-import { RevertForm } from '@/app/components/Forms/RevertForm';
+import { RevertForm } from '@/app/components/Forms/RevertFormShortlisted';
 import { ShortListForm } from '@/app/components/Forms/ShortListForm';
 // types
 

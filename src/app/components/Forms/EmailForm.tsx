@@ -3,9 +3,8 @@ import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import { Button } from "flowbite-react";
 import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
-
 import CKEditorComponent from '../CKEditorComponent';
-import CustomCKEditorComponent from "../CKEditorComponent/CustomCKEditorComponent";
+
 
 // Main function
 export const EmailForm = () => {
@@ -72,10 +71,11 @@ export const EmailForm = () => {
                 />
             </FormElement> */}
 
-            {/* <CKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
-            <CustomCKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' />
+            <CKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' />
+            {/* <CustomCKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
+        
 
-
+            {/* <TestEditor/> */}
 
             <div className="col-span-4 mt-5">
                 <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
