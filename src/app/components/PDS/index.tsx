@@ -116,21 +116,21 @@ function index(parameter: Props) {
                         </Button>
                         : <></>
                     }
-
-                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text  `} onClick={() => {
-                        if (parameter.formActiveTab < (validations.length - 1)) {
-                            parameter.setFormActiveTab(parameter.formActiveTab + 1);
-                        }
-                        else {
-                            submitForm();
-                            const element = document.getElementById('drawer_title');
-                            if (element) {
-                                element.scrollIntoView({ behavior: 'smooth' });
+                    {(context.process == "View" && parameter.formActiveTab == (validations.length - 1)) ? <></> :
+                        <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text  `} onClick={() => {
+                            if (parameter.formActiveTab < (validations.length - 1)) {
+                                parameter.setFormActiveTab(parameter.formActiveTab + 1);
                             }
-                        }
-                    }}>
-                        {parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
-                    </Button>
+                            else {
+                                submitForm();
+                                const element = document.getElementById('drawer_title');
+                                if (element) {
+                                    element.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }
+                        }}>
+                            {parameter.formActiveTab == (validations.length - 1) ? "Submit" : "Next"}
+                        </Button>}
 
                     {context.process == "Delete" ?
                         <Button className={`mx-2 btn btn-sm text-white rounded-lg   bg-red-500  hover:scale-90 shadow-sm text`} onClick={() => {

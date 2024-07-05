@@ -1,26 +1,24 @@
 "use client";
 import { Button, Tabs, TabsRef } from 'flowbite-react';
-import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
-import AttachmentDrawer from '../../components/AttachmentDrawer';
-import EmailDrawer from '../../components/EmailDrawer';
-import AttachmentView from '../../components/AttachmentView';
-import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
-import { setFormikErrors } from '../../../../lib/utils.service';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import Drawer from '../components/Drawer';
+import AttachmentDrawer from '../components/AttachmentDrawer';
+import AttachmentView from '../components/AttachmentView';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
-import { ArrowDownCircleIcon, ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, ExclamationCircleIcon, EyeIcon, FlagIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { DisqualifiedIValues, formContextType, email } from '../../types/pds';
-import DisqualifiedContextProvider from '../../contexts/DisqualifiedContext';
-import EmailContextProvider from '../../contexts/EmailContext';
+import { DisqualifiedIValues, formContextType, email } from '../types/pds';
+import DisqualifiedContextProvider from '../contexts/DisqualifiedContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
-import { HiCloudDownload, HiDownload, HiMail } from 'react-icons/hi';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
+import { HiDownload, HiMail } from 'react-icons/hi';
 // types
 
 type row = {
@@ -107,14 +105,13 @@ function AllRequestsTabs() {
         { "column": "division_name", "display": "division_name" },
         { "column": "status", "display": "status" },
         { "column": "reason", "display": "Disqualification Reason" },
-        { "column": "email_date", "display": "Date Emailed" },
     ]);
 
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Disqualified Application");
+    const [title, setTitle] = useState<string>("Interview Schedule");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -484,6 +481,14 @@ function AllRequestsTabs() {
                 >
 
                     <Tabs.Item title={title + "s"} active>
+                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
+                            setValues(defaultData);
+                            setShowDrawer(true);
+                            setId(0);
+                            setProcess("Add");
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
+                        </Button>
+
                         <Table
                             buttons={buttons}
                             filters={filters}

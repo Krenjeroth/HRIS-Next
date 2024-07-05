@@ -29,7 +29,7 @@ function index(parameter: Props) {
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Dashboard" icon={<ChartPieIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
                     {/* Sidebar Dropdown */}
-                    <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Vacancy / Opening" icon={<BriefcaseIcon className='w-6 h-6' />}>
+                    <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Vacancies" icon={<BriefcaseIcon className='w-6 h-6' />}>
                         <SidebarDropdownItem href={"/vacancy/requests"} label="Requests" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/vacancy/approved"} label="Approved" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/vacancy/queued"} label="Queued" activeLink={activeLink} SetActiveLink={SetActiveLink} />
@@ -46,7 +46,7 @@ function index(parameter: Props) {
                     </SidebarDropdown>
 
                     {/* SideBarItem  */}
-                    <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Interview" icon={<StarIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                    <SideBarItem isMinimized={parameter.isMinimized} href={"/interview"} label="Interview Schedules" icon={<StarIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Oath Taking" icon={<HandRaisedIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
