@@ -1,42 +1,20 @@
 "use client";
-
 import { Tooltip, Button, Table, Label } from "flowbite-react";
 import Pagination from "../Pagination";
 import { useRef, useState, ReactNode, useMemo, useCallback, useEffect } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
-import CustomRow from "./CustomRow";
 import debounce from 'lodash/debounce';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { button, filter, header, row } from "@/app/types/pds";
 
-type row = {
-    id: string,
-    attributes: any
-}
 
-type header = {
-    column: string,
-    display: string
-}
 
-type button = {
-    icon: ReactNode,
-    title: string,
-    process: string,
-    class: string,
-    link?: string,
-    filter?: {
-        column: string,
-        value: string
-    }
-}
 
-type filter = {
-    column: string,
-    value: string,
-}
+
+
 
 
 type Props = {
@@ -61,6 +39,7 @@ type Props = {
     reload: boolean,
     setProcess: Function,
     children?: ReactNode,
+    checkBox?: boolean,
 }
 
 
@@ -218,13 +197,11 @@ function index(parameter: Props) {
                                                             </Link>
                                                         </Tooltip>
                                                     )
-
-
                                                 }
                                                 else {
-
                                                     if (button.filter) {
-                                                        if (item.attributes[button.filter.column] == button.filter.value) {
+
+                                                        if (item.attributes[button.filter.column] == button.filter.value || (button.filter.isNull && (item.attributes[button.filter.column] == null || item.attributes[button.filter.column] == ""))) {
                                                             return (
                                                                 <Tooltip content={button.title} key={i}>
                                                                     <button title=""

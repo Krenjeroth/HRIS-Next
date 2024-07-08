@@ -1,3 +1,4 @@
+"use client";
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import { Button } from "flowbite-react";
@@ -149,7 +150,7 @@ export const MasterlistDisqualifyForm = () => {
             </FormElement>
 
 
-            
+
             <div className="col-span-4 mt-5">
                 <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
                     submitForm();

@@ -1,3 +1,4 @@
+"use client";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import AuthService from "../../../../lib/auth.service";
 import HttpService from "../../../../lib/http.services";

@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs, TabsRef } from 'flowbite-react';
-import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -8,58 +8,20 @@ import Drawer from '../../components/Drawer';
 import AttachmentDrawer from '../../components/AttachmentDrawer';
 import AttachmentView from '../../components/AttachmentView';
 import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
-import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
-import DatePicker from '../../components/DatePicker'
-import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, ClipboardIcon, ExclamationCircleIcon, EyeIcon, FlagIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ClipboardIcon, ExclamationCircleIcon, FlagIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import PDS from '../../components/PDS';
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
+import { IValues, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, filter, alert, button, row, header } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
 import ApplicationPDS from '@/app/components/PDS/ApplicationPds';
 import { MasterlistDisqualifyForm } from '@/app/components/Forms/MasterlistDisqualifyForm';
 import { ShortListForm } from '@/app/components/Forms/ShortListForm';
 // types
 
-type row = {
-    id: string,
-    attributes: object[]
-}
 
-type alert = {
-    type: string,
-    message: string
-}
-
-type header = {
-    column: string,
-    display: string
-}
-
-type datalist = {
-    id: string,
-    label: any
-}
-
-type button = {
-    icon: ReactNode,
-    title: string,
-    process: string,
-    class: string,
-    link?: string,
-    filter?: {
-        column: string,
-        value: string
-    }
-}
-
-type filter = {
-    column: string;
-    value: string;
-}
 
 
 
@@ -331,7 +293,7 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: filters,
+                filters: [...filters,{ column: "applications.date_submitted", value: String(year) }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -1066,7 +1028,7 @@ function AllRequestsTabs() {
                         }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
                         </Button>
 
-                        {/*Table*/}.
+                        {/*Table*/}
 
                         <Table
                             buttons={buttons}
@@ -1088,6 +1050,7 @@ function AllRequestsTabs() {
                             setReload={setReload}
                             setProcess={setProcess}
                             setYear={setYear}
+                            year={year}
                         >
                         </Table>
                     </Tabs.Item>

@@ -1,5 +1,5 @@
 
-"use client"
+"use client";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "flowbite-react"
 import { ReactNode, useState } from "react"

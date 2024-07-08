@@ -13,51 +13,13 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { DisqualifiedIValues, formContextType, email } from '../types/pds';
+import { DisqualifiedIValues, formContextType, email, filter, alert, button, header, row } from '../types/pds';
 import DisqualifiedContextProvider from '../contexts/DisqualifiedContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
 import { HiDownload, HiMail } from 'react-icons/hi';
-// types
-
-type row = {
-    id: string,
-    attributes: object[]
-}
-
-type alert = {
-    type: string,
-    message: string
-}
-
-type header = {
-    column: string,
-    display: string
-}
-
-type datalist = {
-    id: string,
-    label: any
-}
-
-type button = {
-    icon: ReactNode,
-    title: string,
-    process: string,
-    class: string,
-    link?: string,
-    filter?: {
-        column: string,
-        value: string
-    }
-}
-
-type filter = {
-    column: string;
-    value: string;
-}
-
+import { InterviewForm } from '../components/Forms/InterviewForm';
 
 
 
@@ -106,7 +68,6 @@ function AllRequestsTabs() {
         { "column": "status", "display": "status" },
         { "column": "reason", "display": "Disqualification Reason" },
     ]);
-
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
@@ -444,6 +405,7 @@ function AllRequestsTabs() {
                                     );
                                 })}
                             </div>
+
                             <DisqualifiedContextProvider
                                 formikData={formikData}
                                 isLoading={isLoading}
@@ -453,8 +415,7 @@ function AllRequestsTabs() {
                                 setValues={setValues}
                                 process={process}
                                 id={id}>
-
-                                {(process === "Revert") ? <RevertForm /> : ((process === "Email") ? <EmailForm /> : <DisqualifyForm />)}
+                                <InterviewForm />
                             </DisqualifiedContextProvider>
                         </Form>
                     )}

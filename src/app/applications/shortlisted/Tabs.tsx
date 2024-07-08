@@ -1,65 +1,22 @@
 "use client";
-import { Button, Tabs, TabsRef } from 'flowbite-react';
-import React, { ReactNode, useEffect, useRef, createContext, useContext } from 'react';
+import { Tabs, TabsRef } from 'flowbite-react';
+import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
 import AttachmentDrawer from '../../components/AttachmentDrawer';
 import AttachmentView from '../../components/AttachmentView';
-import { Form, Formik, FormikContext, FormikHelpers, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
-import { ArrowDownCircleIcon, ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, ExclamationCircleIcon, EyeIcon, FlagIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { IValues, formContextType, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question } from '../../types/pds';
+import { IValues, child, school, workExperience, eligibility, voluntaryWork, training, skill, recognition, membership, answer, characterReference, question, filter, alert, button, row, header } from '../../types/pds';
 import PDSContextProvider from '../../contexts/PDSContext';
-import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertFormShortlisted';
 import { ShortListForm } from '@/app/components/Forms/ShortListForm';
-// types
-
-type row = {
-    id: string,
-    attributes: object[]
-}
-
-type alert = {
-    type: string,
-    message: string
-}
-
-type header = {
-    column: string,
-    display: string
-}
-
-type datalist = {
-    id: string,
-    label: any
-}
-
-type button = {
-    icon: ReactNode,
-    title: string,
-    process: string,
-    class: string,
-    link?: string,
-    filter?: {
-        column: string,
-        value: string
-    }
-}
-
-type filter = {
-    column: string;
-    value: string;
-}
-
-
-
-
 
 //main function
 
@@ -322,10 +279,11 @@ function AllRequestsTabs() {
     // Use Effect Hook
     useEffect(() => {
         // query
+        
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters, { column: 'status', value: 'Shortlisted' }],
+                filters: [...filters,{ column: "applications.date_submitted", value: String(year) }, { column: 'status', value: 'Shortlisted' }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -757,6 +715,7 @@ function AllRequestsTabs() {
                             setReload={setReload}
                             setProcess={setProcess}
                             setYear={setYear}
+                            year={year}
                         >
                         </Table>
                     </Tabs.Item>

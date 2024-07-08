@@ -1,5 +1,6 @@
 "use client";
 
+import { ReactNode } from "react";
 import { ReactElement } from "react-imask/dist/mixin";
 
 export type formContextType = {
@@ -286,4 +287,40 @@ export type email = {
     recipient: string,
     subject: string,
     body: string
+}
+
+
+export type row = {
+    id: string,
+    attributes: any
+}
+
+
+
+export type alert = {
+    type: string,
+    message: string
+}
+
+export type header = {
+    column: string,
+    display: string
+}
+
+export type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+    link?: string,
+    filter?: {
+        column: string,
+        value: string,
+        isNull?: boolean
+    }
+}
+
+export type filter = {
+    column: string;
+    value: string;
 }
