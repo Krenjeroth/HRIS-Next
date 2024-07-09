@@ -14,6 +14,7 @@ import { useSelector, useDispatch, Provider } from 'react-redux';
 import { setName, setToken, setEmail } from '@/app/redux/reducers/userReducer';
 import AuthService from '../../../../lib/auth.service';
 import { useRouter } from 'next/navigation';
+import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
     isMinimized: boolean,

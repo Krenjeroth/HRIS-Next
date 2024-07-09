@@ -1,5 +1,5 @@
 "use client";
-import { Tooltip, Button, Table, Label } from "flowbite-react";
+import { Tooltip, Button, Table, Label, Checkbox } from "flowbite-react";
 import Pagination from "../Pagination";
 import { useRef, useState, ReactNode, useMemo, useCallback, useEffect } from "react";
 import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -39,7 +39,8 @@ type Props = {
     reload: boolean,
     setProcess: Function,
     children?: ReactNode,
-    checkBox?: boolean,
+    checkbox?: boolean,
+    hideTotal?: boolean,
 }
 
 
@@ -112,16 +113,25 @@ function index(parameter: Props) {
 
                     }
                 </div>
-                <div className="flex items-center justify-center text-center my-2">
-                    <div className=" font-medium">Total Records:{parameter.pages}</div>
-                </div>
+
+                {parameter.hideTotal ? <></> :
+                    <div className="flex items-center justify-center text-center my-2">
+                        <div className=" font-medium">Total Records:{parameter.pages}</div>
+                    </div>
+                }
                 <div className="">
-
-
                 </div>
             </div>
             <Table className="shadow-md rounded-md w-full text-sm min-h-min">
                 <Table.Head>
+                    {parameter.checkbox ?
+                        <Table.HeadCell>
+                            <span className="sr-only  mb-0 pb-0 ">
+
+                            </span>
+                        </Table.HeadCell>
+                        : <></>
+                    }
                     <Table.HeadCell>
                         <span className="sr-only  mb-0 pb-0 ">
 
@@ -151,6 +161,13 @@ function index(parameter: Props) {
                     })}
                 </Table.Head>
                 <Table.Head>
+                    {parameter.checkbox ?
+                        <Table.HeadCell className="pt-0">
+                            <span className="sr-only">
+                            </span>
+                        </Table.HeadCell>
+                        : <></>
+                    }
                     <Table.HeadCell className="pt-0">
                         <span className="sr-only">
                         </span>
@@ -182,6 +199,25 @@ function index(parameter: Props) {
                         parameter.data.map((item: row, index: number) => {
                             return (
                                 <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-cyan-50' : 'bg-white')} >
+                                    {parameter.checkbox ?
+                                        <Table.Cell onClick={(e) => {
+                                            let newArray = [...selected];
+                                            if (newArray.includes(item.id)) {
+                                                newArray = newArray.filter((str: string) => {
+                                                    return str !== item.id
+                                                })
+                                            }
+                                            else {
+                                                newArray.push(item.id);
+                                            }
+                                            setSelected(newArray);
+                                        }}>
+
+                                            {selected.includes(item.id) ? <Checkbox checked /> : <Checkbox />}
+
+                                        </Table.Cell>
+                                        : <></>
+                                    }
                                     <Table.Cell className="whitespace-nowrap font-medium min-w-0 flex flex-row p-1 my-auto">
                                         {parameter.buttons != undefined ?
                                             parameter.buttons.map((button: button, i: number) => {
@@ -248,18 +284,7 @@ function index(parameter: Props) {
                                             }
                                         }
                                         return (
-                                            <Table.Cell className="p-1" key={td_index} onClick={(e) => {
-                                                let newArray = [...selected];
-                                                if (newArray.includes(item.id)) {
-                                                    newArray = newArray.filter((str: string) => {
-                                                        return str !== item.id
-                                                    })
-                                                }
-                                                else {
-                                                    newArray.push(item.id);
-                                                }
-                                                setSelected(newArray);
-                                            }}>
+                                            <Table.Cell className="p-1" key={td_index}>
                                                 {value}
                                             </Table.Cell>
                                         );

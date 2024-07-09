@@ -202,6 +202,8 @@ export const InterviewForm = () => {
                     setReload={setReload}
                     setProcess={setProcess}
                     setYear={setYear}
+                    checkbox={true}
+                    hideTotal={true}
                 >
                 </Table>
             </div>
