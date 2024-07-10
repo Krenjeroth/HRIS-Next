@@ -2,17 +2,14 @@
 import { Tooltip, Button, Table, Label, Checkbox } from "flowbite-react";
 import Pagination from "../Pagination";
 import { useRef, useState, ReactNode, useMemo, useCallback, useEffect } from "react";
-import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { Bars4Icon, BarsArrowDownIcon, BarsArrowUpIcon, CheckBadgeIcon, CheckCircleIcon, InformationCircleIcon, MinusCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DatePicker from "react-datepicker";
 import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { button, filter, header, row } from "@/app/types/pds";
-
-
-
-
+import { StyledCheckboxMask } from "@nextui-org/react";
 
 
 
@@ -41,6 +38,7 @@ type Props = {
     children?: ReactNode,
     checkbox?: boolean,
     hideTotal?: boolean,
+    setSelected?: Function,
 }
 
 
@@ -65,6 +63,15 @@ function index(parameter: Props) {
         parameter.setActivePage(1);
         parameter.setFilters(filters);
     }, [filters])
+
+
+
+
+    useEffect(() => {
+        if (parameter.setSelected != null) {
+            parameter.setSelected(selected);
+        }
+    }, [selected])
 
 
     const search = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -213,7 +220,11 @@ function index(parameter: Props) {
                                             setSelected(newArray);
                                         }}>
 
-                                            {selected.includes(item.id) ? <Checkbox checked /> : <Checkbox />}
+                                            {selected.includes(item.id) ?
+                                                <CheckCircleIcon className=' text-green-500 w-5 h-5' />
+                                                :
+                                                <CheckCircleIcon className=' text-slate-300 w-5 h-5' />
+                                            }
 
                                         </Table.Cell>
                                         : <></>

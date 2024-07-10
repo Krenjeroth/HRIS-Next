@@ -316,8 +316,29 @@ function AllRequestsTabs() {
             alerts.pop();
         });
 
+        console.log(values);
+
 
         try {
+            if (process === "Add") {
+                const resp = await HttpService.post("interview", values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
+                        // setValues(defaultData);
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
             if (process === "Edit") {
                 const resp = await HttpService.post("disqualify-application/" + id, values)
                 if (resp.status === 200) {

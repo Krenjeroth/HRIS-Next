@@ -1,11 +1,12 @@
 "use client";
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
+import DatePicker from "../DatePicker";
 import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
 import { Button } from "flowbite-react";
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Table from "../../components/Table";
-import { DisqualifiedIValues, button, filter, header, row } from "@/app/types/pds";
+import { DisqualifiedIValues, button, datalist, filter, header, row } from "@/app/types/pds";
 import { ClipboardIcon, PencilIcon } from "@heroicons/react/24/solid";
 import dayjs from "dayjs";
 import HttpService from "../../../../lib/http.services";
@@ -39,6 +40,8 @@ export const InterviewForm = () => {
         { "column": "posting_date", "display": "Posting Date" },
         { "column": "closing_date", "display": "Closing Date" }
     ]);
+    const [selected, setSelected] = useState<string[]>([]);
+    const [venues, setVenues] = useState<datalist[]>([]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
@@ -69,6 +72,23 @@ export const InterviewForm = () => {
 
 
     // use effect hooks
+
+    useEffect(() => {
+
+        async function getVenues() {
+            const resp = await HttpService.get("venues");
+            if (resp != null) {
+                setVenues(resp.data.data.map((item: any) => {
+                    return { "id": item.id, "label": item.attributes.name }
+                }));
+            }
+        }
+        getVenues();
+    }, []);
+
+    useEffect(() => {
+        console.log(selected);
+    }, [selected]);
 
     useEffect(() => {
         // query
@@ -149,11 +169,14 @@ export const InterviewForm = () => {
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
+                required={true}
             >
-                <Field
+
+                <DatePicker
+                    initialValues={context.initialValues}
                     id="interview_date"
                     name="interview_date"
-                    placeholder="Interview Date"
+                    placeholderText="Enter Date"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />
             </FormElement>
@@ -171,11 +194,26 @@ export const InterviewForm = () => {
                 <Field
                     id="venue"
                     name="venue"
+                    as="select"
                     placeholder="Venue"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    readOnly={true}
-                />
+                >
+
+                    {venues.map((item: datalist) => {
+                        return <option key={item.id} value={item.id}>{item.label}</option>
+                    })}
+
+
+                </Field>
+
             </FormElement>
+
+            {/* <div>
+                <label htmlFor="nonFormikInput">Non-Formik Input</label>
+                <input id="nonFormikInput" placeholder="This is not in Formik's state" />
+            </div> */}
+
+
 
 
 
@@ -204,6 +242,7 @@ export const InterviewForm = () => {
                     setYear={setYear}
                     checkbox={true}
                     hideTotal={true}
+                    setSelected={setSelected}
                 >
                 </Table>
             </div>
@@ -212,11 +251,13 @@ export const InterviewForm = () => {
 
 
             <div className="col-span-4 mt-5">
-                <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
-                    submitForm();
-                    const element = document.getElementById('drawer_title');
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
+                <Button className={`btn btn-sm text-white rounded-lg ${(selected.length > 0) ? "bg-cyan-500" : "bg-slate-500"}  hover:scale-90 shadow-sm text mx-auto`} type="button" onClick={() => {
+                    if (selected.length > 0) {
+                        submitForm();
+                        const element = document.getElementById('drawer_title');
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
                     }
                 }}>
                     Submit
