@@ -13,8 +13,8 @@ import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { DisqualifiedIValues, formContextType, email, filter, alert, button, header, row } from '../types/pds';
-import DisqualifiedContextProvider from '../contexts/DisqualifiedContext';
+import { InterviewIvalues, formContextType, email, filter, alert, button, row, header } from '../types/pds';
+import InterviewContextProvider from '../contexts/InterviewContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
@@ -77,22 +77,12 @@ function AllRequestsTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
-    const [defaultData, setDefaultData] = useState<DisqualifiedIValues>({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        suffix: '',
-        date_submitted: '',
-        vacancy_id: '',
-        vacancy: '',
-        vacancy_autosuggest: '',
-        reason: '',
-        remarks: '',
-        recipient: '',
-        subject: '',
-        body: ''
+    const [defaultData, setDefaultData] = useState<InterviewIvalues>({
+        interview_date: '',
+        venue: '',
+        positions: [],
     });
-    var [initialValues, setValues] = useState<DisqualifiedIValues>(
+    var [initialValues, setValues] = useState<InterviewIvalues>(
         defaultData
     );
 
@@ -276,19 +266,9 @@ function AllRequestsTabs() {
 
                 setValues(defaultData);
                 setValues({
-                    first_name: data.details.first_name,
-                    middle_name: (data.details.middle_name) ? data.details.middle_name : "",
-                    last_name: data.details.last_name,
-                    suffix: (data.details.suffix) ? data.details.suffix : "",
-                    date_submitted: data.application.date_submitted,
-                    vacancy_id: data.application.vacancy_id,
-                    vacancy: data.vacancy,
-                    vacancy_autosuggest: data.vacancy,
-                    reason: (data.disqualification) ? data.disqualification.reason : '',
-                    remarks: '',
-                    recipient: data.details.email_address,
-                    subject: "Notice of Disqualification",
-                    body: body
+                    interview_date: '',
+                    venue: '',
+                    positions: [],
                 });
             }
         }
@@ -308,7 +288,7 @@ function AllRequestsTabs() {
     // Submit form
     const onFormSubmit = async (
         values: any,
-        { setSubmitting, resetForm, setFieldError }: FormikHelpers<DisqualifiedIValues>
+        { setSubmitting, resetForm, setFieldError }: FormikHelpers<InterviewIvalues>
     ) => {
 
         // console.log(values.attachments);
@@ -427,7 +407,7 @@ function AllRequestsTabs() {
                                 })}
                             </div>
 
-                            <DisqualifiedContextProvider
+                            <InterviewContextProvider
                                 formikData={formikData}
                                 isLoading={isLoading}
                                 errors={errors}
@@ -437,7 +417,7 @@ function AllRequestsTabs() {
                                 process={process}
                                 id={id}>
                                 <InterviewForm />
-                            </DisqualifiedContextProvider>
+                            </InterviewContextProvider>
                         </Form>
                     )}
                 </Formik>

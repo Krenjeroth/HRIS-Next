@@ -2,7 +2,7 @@
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import DatePicker from "../DatePicker";
-import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
+import { useInterviewContext } from "@/app/contexts/InterviewContext";
 import { Button } from "flowbite-react";
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Table from "../../components/Table";
@@ -17,7 +17,7 @@ export const InterviewForm = () => {
 
 
     // variables
-    const context = useDisqualifiedContext();
+    const context = useInterviewContext();
     const { setFieldValue, submitForm } = useFormikContext();
     const [activePage, setActivePage] = useState<number>(1);
     const [filters, setFilters] = useState<filter[]>([]);
@@ -70,9 +70,7 @@ export const InterviewForm = () => {
     );
 
 
-
     // use effect hooks
-
     useEffect(() => {
 
         async function getVenues() {
@@ -87,23 +85,21 @@ export const InterviewForm = () => {
     }, []);
 
     useEffect(() => {
-        console.log(selected);
+        setFieldValue(`positions`, selected);
     }, [selected]);
 
     useEffect(() => {
         // query
-        let newArrayFilter = [...filters];
-
-        // add year to filter
-        newArrayFilter.push({
+        let newArrayFilter = [...filters, {
             column: "date_submitted",
             value: String(year)
-        });
-
-        newArrayFilter.push({
+        }, {
             column: "vacancies.status",
             value: 'Approved'
-        });
+        }];
+
+
+
         async function getData() {
             const postData = {
                 activePage: activePage,
@@ -198,7 +194,7 @@ export const InterviewForm = () => {
                     placeholder="Venue"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 >
-
+                    <option value="">Select Venue</option>
                     {venues.map((item: datalist) => {
                         return <option key={item.id} value={item.id}>{item.label}</option>
                     })}

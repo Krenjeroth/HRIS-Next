@@ -51,6 +51,22 @@ export type disqualifiedContextType = {
 
 };
 
+
+export type interviewContextType = {
+    formikData: any,
+    readonly?: boolean,
+    errors: any,
+    touched: any,
+    initialValues: InterviewIvalues,
+    setValues: Function,
+    isLoading: boolean,
+    process: string,
+    children?: React.ReactNode,
+    id?: number,
+    submitSearchPerson?: Function
+
+};
+
 export type country = {
     value: string,
     label: string,
@@ -182,6 +198,14 @@ export interface DisqualifiedIValues {
     recipient: string,
     subject: string,
     body: string
+}
+
+
+export interface InterviewIvalues {
+    // personal information
+    interview_date: string,
+    venue: string,
+    positions: string[],
 }
 
 export interface IValues {
