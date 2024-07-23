@@ -970,6 +970,39 @@ body {
   background-color: white;
 }
 
+
+/* Custom styles */
+.tabs {
+  /* Example: Change background color */
+  background-color: #f0f0f0;
+}
+
+.tabs-list {
+  /* Example: Center align tabs */
+  justify-content: center;
+}
+
+.tabs-item {
+  /* Example: Change default tab text color */
+  color: #007bff; /* Blue color */
+}
+
+.tabs-item.active {
+  /* Example: Style active tab */
+  border-bottom-color: #007bff; /* Blue color */
+}
+
+.tabs-panels {
+  /* Example: Add padding to panels */
+  padding: 20px;
+}
+
+.tabs-panel {
+  /* Example: Change panel background color */
+  background-color: #fff;
+}
+
+
 #cta {
   background-image: url('/img/bg-simplify-section-desktop.svg');
   background-repeat: no-repeat;

@@ -78,7 +78,7 @@ export const EmailForm = () => {
             {/* <TestEditor/> */}
 
             <div className="col-span-4 mt-5">
-                <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
+                <Button className={`btn btn-sm text-white rounded-lg bg-blue-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
                     submitForm();
                     const element = document.getElementById('drawer_title');
                     if (element) {

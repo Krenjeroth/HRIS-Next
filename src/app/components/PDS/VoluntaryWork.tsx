@@ -28,8 +28,8 @@ function VoluntaryWork() {
             <div className='grid lg:grid-cols-4 grid-col' >
 
                 <div className='col-span-4 md:col-span-4'>
-                    <span className=' text-cyan-600 font-medium text-lg '>VI. Voluntary Work or Involvement in Civic / Non-government / People / Voluntary Organization/s</span>
-                    <hr className='text-cyan-600 mt-6' />
+                    <span className=' text-blue-600 font-medium text-lg '>VI. Voluntary Work or Involvement in Civic / Non-government / People / Voluntary Organization/s</span>
+                    <hr className='text-blue-600 mt-6' />
                 </div>
 
 
@@ -122,7 +122,7 @@ function VoluntaryWork() {
                                             </Tooltip>
                                         </Button>
                                     </div>
-                                    {/* <hr className='text-cyan-600 mt-6 col-span-10' /> */}
+                                    {/* <hr className='text-blue-600 mt-6 col-span-10' /> */}
                                 </div>
                             })}
                             <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col'>

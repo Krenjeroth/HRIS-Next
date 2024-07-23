@@ -571,7 +571,7 @@ function SalaryGradeTabs() {
 
                             {/* submit button */}
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>
@@ -588,7 +588,7 @@ function SalaryGradeTabs() {
                 >
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
                             setValues({
                                 item_number: "",
                                 division_id: "",

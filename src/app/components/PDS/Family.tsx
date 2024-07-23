@@ -26,13 +26,13 @@ function Family() {
         <>
             <div className='grid md:grid-cols-4 grid-col'>
                 <div className='col-span-4 md:col-span-4'>
-                    <span className=' text-cyan-600 font-medium text-lg '>II. Family and Education</span>
-                    <hr className='text-cyan-600 mt-6' />
+                    <span className=' text-blue-600 font-medium text-lg '>II. Family and Education</span>
+                    <hr className='text-blue-600 mt-6' />
                 </div>
 
                 <div className='col-span-4 mt-4'>
-                    <span className=' text-cyan-600 font-medium '> Spouse Information</span>
-                    {/* <hr className='text-cyan-600' /> */}
+                    <span className=' text-blue-600 font-medium '> Spouse Information</span>
+                    {/* <hr className='text-blue-600' /> */}
                 </div>
                 <FormElement
                     name="spouse_first_name"
@@ -162,8 +162,8 @@ function Family() {
             <div className='grid lg:grid-cols-4 grid-col' >
 
                 <div className='col-span-4 md:col-span-4 mt-4'>
-                    <span className=' text-cyan-600 font-medium '> Children</span>
-                    {/* <hr className='text-cyan-600' /> */}
+                    <span className=' text-blue-600 font-medium '> Children</span>
+                    {/* <hr className='text-blue-600' /> */}
                 </div>
 
                 <FieldArray name="children">
@@ -256,8 +256,8 @@ function Family() {
 
             <div className='grid md:grid-cols-4 grid-col'>
                 <div className='col-span-4 mt-4'>
-                    <span className=' text-cyan-600 font-medium '> Father's Name</span>
-                    {/* <hr className='text-cyan-600' /> */}
+                    <span className=' text-blue-600 font-medium '> Father's Name</span>
+                    {/* <hr className='text-blue-600' /> */}
                 </div>
                 <FormElement
                     name="father_first_name"
@@ -324,8 +324,8 @@ function Family() {
 
 
                 <div className='col-span-4 mt-4'>
-                    <span className=' text-cyan-600 font-medium '> Mother's Maiden Name</span>
-                    {/* <hr className='text-cyan-600' /> */}
+                    <span className=' text-blue-600 font-medium '> Mother's Maiden Name</span>
+                    {/* <hr className='text-blue-600' /> */}
                 </div>
                 <FormElement
                     name="mother_first_name"

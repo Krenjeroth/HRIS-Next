@@ -507,7 +507,7 @@ function AllRequestsTabs() {
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type={(isLoading ? "button" : "submit")} className="py-2 px-4   bg-cyan-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
+                                <button type={(isLoading ? "button" : "submit")} className="py-2 px-4   bg-blue-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
                                     Submit
                                 </button>
                             </div>

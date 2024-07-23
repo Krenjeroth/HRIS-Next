@@ -28,8 +28,8 @@ function Education() {
             <div className='grid lg:grid-cols-4 grid-col' >
 
                 <div className='col-span-4 md:col-span-4'>
-                    <span className=' text-cyan-600 font-medium text-lg '>III. Educational Background</span>
-                    <hr className='text-cyan-600 mt-6' />
+                    <span className=' text-blue-600 font-medium text-lg '>III. Educational Background</span>
+                    <hr className='text-blue-600 mt-6' />
                 </div>
 
 
@@ -152,7 +152,7 @@ function Education() {
                                             </Tooltip>
                                         </Button>
                                     </div>
-                                    <hr className='text-cyan-600 mt-6 col-span-12' />
+                                    <hr className='text-blue-600 mt-6 col-span-12' />
                                 </div>
                             })}
                             <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>

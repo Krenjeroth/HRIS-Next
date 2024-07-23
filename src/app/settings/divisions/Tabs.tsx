@@ -242,7 +242,7 @@ function SalaryGradeTabs() {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -260,7 +260,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                     }
                     else {
                         if (typeof resp.data != "undefined") {
@@ -278,7 +278,7 @@ setRefresh(!refresh);
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
                         setFilters([]);
-setRefresh(!refresh);
+                        setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
                     }
@@ -307,7 +307,7 @@ setRefresh(!refresh);
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false}  validateOnChange={false}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
@@ -414,7 +414,7 @@ setRefresh(!refresh);
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>
@@ -431,8 +431,13 @@ setRefresh(!refresh);
                 >
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
-                             setValues(defaultData);
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            setInitialValues({
+                                code: "",
+                                name: "",
+                                office_id: "",
+                                type: ""
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");

@@ -81,8 +81,8 @@ function EmployeeDetail() {
     return (
         <div className='grid lg:grid-cols-4 grid-col'>
             <div className='col-span-4'>
-                <span className=' text-cyan-600 font-medium text-lg '> Employee Details</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '> Employee Details</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
             <FormElement
                 name="employee_id"

@@ -22,8 +22,8 @@ export const DisqualifyForm = () => {
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>
-                <span className=' text-cyan-600 font-medium text-lg '>Personal Details</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Personal Details</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
             <FormElement
                 name="first_name"
@@ -94,8 +94,8 @@ export const DisqualifyForm = () => {
             </FormElement>
 
             <div className='col-span-4 mt-3'>
-                <span className=' text-cyan-600 font-medium text-lg '>Application Details</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Application Details</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
 
             <FormElement
@@ -152,7 +152,7 @@ export const DisqualifyForm = () => {
 
 
             <div className="col-span-4 mt-5">
-                <Button className={`btn btn-sm text-white rounded-lg bg-cyan-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
+                <Button className={`btn btn-sm text-white rounded-lg bg-blue-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {
                     submitForm();
                     const element = document.getElementById('drawer_title');
                     if (element) {

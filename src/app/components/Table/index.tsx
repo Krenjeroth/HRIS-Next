@@ -123,7 +123,7 @@ function index(parameter: Props) {
 
                 {parameter.hideTotal ? <></> :
                     <div className="flex items-center justify-center text-center my-2">
-                        <div className=" font-medium">Total Records:{parameter.pages}</div>
+                        <div className=" font-medium text-blue-600">Total Records:{parameter.pages}</div>
                     </div>
                 }
                 <div className="">
@@ -205,7 +205,7 @@ function index(parameter: Props) {
                     {parameter.data.length > 0 ?
                         parameter.data.map((item: row, index: number) => {
                             return (
-                                <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-cyan-50' : 'bg-white')} >
+                                <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-blue-50' : 'bg-white')} >
                                     {parameter.checkbox ?
                                         <Table.Cell onClick={(e) => {
                                             let newArray = [...selected];

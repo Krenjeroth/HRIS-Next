@@ -156,8 +156,8 @@ export const InterviewForm = () => {
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>
-                <span className=' text-cyan-600 font-medium text-lg '>Interview Details</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Interview Details</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
             <FormElement
                 name="interview_date"
@@ -214,8 +214,8 @@ export const InterviewForm = () => {
 
 
             <div className='col-span-4 mt-3'>
-                <span className=' text-cyan-600 font-medium text-lg '>Positions</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Positions</span>
+                <hr className='text-blue-600 mt-6' />
                 <Table
                     buttons={buttons}
                     filters={filters}
@@ -247,7 +247,7 @@ export const InterviewForm = () => {
 
 
             <div className="col-span-4 mt-5">
-                <Button className={`btn btn-sm text-white rounded-lg ${(selected.length > 0) ? "bg-cyan-500" : "bg-slate-500"}  hover:scale-90 shadow-sm text mx-auto`} type="button" onClick={() => {
+                <Button className={`btn btn-sm text-white rounded-lg ${(selected.length > 0) ? "bg-blue-500" : "bg-slate-500"}  hover:scale-90 shadow-sm text mx-auto`} type="button" onClick={() => {
                     if (selected.length > 0) {
                         submitForm();
                         const element = document.getElementById('drawer_title');

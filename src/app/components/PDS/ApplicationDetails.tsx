@@ -65,8 +65,8 @@ function ApplicationDetails() {
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4 md:col-span-4'>
-                <span className=' text-cyan-600 font-medium text-lg '>Application Details</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Application Details</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
 
             <div className='col-span-2 md:col-span-2' >

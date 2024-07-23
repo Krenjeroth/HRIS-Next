@@ -58,8 +58,8 @@ function Personal() {
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>
-                <span className=' text-cyan-600 font-medium text-lg '>I. Personal Information</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>I. Personal Information</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
 
 
@@ -428,15 +428,15 @@ function Personal() {
                 />
             </FormElement>
             <div className='col-span-4 mt-4'>
-                <span className=' text-cyan-600 font-medium '>Residential Address</span>
-                <hr className='text-cyan-600' />
+                <span className=' text-blue-600 font-medium '>Residential Address</span>
+                <hr className='text-blue-600' />
             </div>
 
             <Address name='residential' setSameAddress={setSameAddress} />
 
             <div className='col-span-4 mt-4'>
-                <span className=' text-cyan-600 font-medium '>Permanent Address</span>
-                <hr className='text-cyan-600' />
+                <span className=' text-blue-600 font-medium '>Permanent Address</span>
+                <hr className='text-blue-600' />
             </div>
 
 
@@ -444,8 +444,8 @@ function Personal() {
             <Address name='permanent' sameAddress={sameAddress} setSameAddress={setSameAddress} />
 
             <div className='col-span-4 mt-4'>
-                <span className=' text-cyan-600 font-medium '></span>
-                <hr className='text-cyan-600' />
+                <span className=' text-blue-600 font-medium '></span>
+                <hr className='text-blue-600' />
             </div>
             <FormElement
                 name="telephone"

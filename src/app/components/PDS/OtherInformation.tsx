@@ -32,15 +32,15 @@ function OtherInformation() {
             <div className='grid md:grid-cols-2 grid-col content-start' >
 
                 <div className='col-span-2 md:col-span-2'>
-                    <span className=' text-cyan-600 font-medium text-lg '>VI. Other Information</span>
-                    <hr className='text-cyan-600 mt-6' />
+                    <span className=' text-blue-600 font-medium text-lg '>VI. Other Information</span>
+                    <hr className='text-blue-600 mt-6' />
                 </div>
 
                 <Skill />
                 <Recognition />
-                <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2' />
+                <hr className='text-blue-600 mt-6 col-span-2 md:col-span-2' />
                 <Membership />
-                <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2' />
+                <hr className='text-blue-600 mt-6 col-span-2 md:col-span-2' />
                 <Question />
             </div>
 

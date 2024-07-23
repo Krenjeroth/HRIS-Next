@@ -81,8 +81,8 @@ function Question() {
     return (
         <>
             <div className='col-span-2 md:col-span-2 '>
-                <span className=' text-cyan-600 font-medium text-lg '>Questions</span>
-                <hr className='text-cyan-600 mt-6' />
+                <span className=' text-blue-600 font-medium text-lg '>Questions</span>
+                <hr className='text-blue-600 mt-6' />
             </div>
             <div className='col-span-2 md:col-span-2 md:grid-cols-3 grid-col content-start'>
                 <Table>

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -65,6 +65,8 @@ interface IValues {
     status: string;
     posting_date: string,
     closing_date: string,
+    office_name?: string,
+    division_name?: string,
 }
 
 
@@ -125,6 +127,8 @@ function AllRequestsTabs() {
             date_queued: '',
             posting_date: '',
             closing_date: '',
+            office_name: '',
+            division_name: '',
         }
     );
     const initialValueContext = createContext();
@@ -207,7 +211,8 @@ function AllRequestsTabs() {
                     resp.data.data.map((data: any) => {
                         return {
                             "id": data.id,
-                            "label": data.attributes.label
+                            "label": data.attributes.label,
+                            "data": data.attributes
                         }
                     })
                 );
@@ -229,6 +234,8 @@ function AllRequestsTabs() {
                 date_queued: '',
                 posting_date: '',
                 closing_date: '',
+                office_name: '',
+                division_name: ''
             });
         }
         else {
@@ -281,6 +288,8 @@ function AllRequestsTabs() {
                     date_queued: '',
                     posting_date: '',
                     closing_date: '',
+                    office_name: data.office_name,
+                    division_name: data.division_name
                 });
                 setShowDrawer(true);
             }
@@ -442,7 +451,7 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
@@ -462,9 +471,10 @@ function AllRequestsTabs() {
                             <div className="">
                                 <FormElement
                                     name="date_submitted"
-                                    label="Date Submitted *"
+                                    label="Date Submitted"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
 
                                     <DatePicker
@@ -484,12 +494,57 @@ function AllRequestsTabs() {
                                 readonly={readOnly}
                                 id="position_id"
                                 setKeyword={setPositionKeyword}
-                                label="Position - Plantilla*"
+                                label="Position - Plantilla"
                                 title="Position"
                                 name="position"
                                 initialValues={initialValues}
                                 setValues={setValues}
-                                data={positionData} />
+                                required={true}
+                                data={positionData}
+                                fillValues={['office_name', 'division_name']}
+                            />
+
+
+                            <div className="">
+                                <FormElement
+                                    name="office_name"
+                                    label="Office"
+                                    errors={errors}
+                                    touched={touched}
+                                    className='col-span-4 md:col-span-2'
+                                    required={true}
+                                >
+                                    <Field
+                                        readOnly
+                                        name="office_name"
+                                        id="office_name"
+                                        placeholder="Office"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+                                </FormElement>
+                            </div>
+
+                            <div className="">
+                                <FormElement
+                                    name="division_name"
+                                    label="Division/Section/Unit"
+                                    errors={errors}
+                                    touched={touched}
+                                    className='col-span-4 md:col-span-2'
+                                    required={true}
+                                >
+                                    <Field
+                                        readOnly
+                                        name="division_name"
+                                        id="division_name"
+                                        placeholder="Division/Section/Unit"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
+                                </FormElement>
+                            </div>
+
+
+
 
 
                             {/* Date Approved */}

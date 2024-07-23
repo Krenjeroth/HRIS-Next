@@ -20,6 +20,8 @@ import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
 import { HiDownload, HiMail } from 'react-icons/hi';
 import { InterviewForm } from '../components/Forms/InterviewForm';
+import type { CustomFlowbiteTheme } from "flowbite-react";
+
 
 
 
@@ -27,6 +29,13 @@ import { InterviewForm } from '../components/Forms/InterviewForm';
 //main function
 
 function AllRequestsTabs() {
+
+    const customTheme: CustomFlowbiteTheme["button"] = {
+        color: {
+            primary: "bg-red-500 hover:bg-red-600",
+        },
+    };
+
 
 
     // variables
@@ -429,6 +438,7 @@ function AllRequestsTabs() {
                 <Tabs.Group
                     aria-label="Tabs with underline"
                     style="underline"
+                    theme={customTheme}
                     ref={props.tabsRef}
                 // onActiveTabChange={(tab) => {
                 //     // if (tab == 1) {
@@ -442,8 +452,8 @@ function AllRequestsTabs() {
 
                 >
 
-                    <Tabs.Item title={title + "s"} active>
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 hover:bg-cyan-400 shadow-sm text' onClick={() => {
+                    <Tabs.Item title={title + "s"} className='text-blue-500' active>
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 hover:bg-blue-400 shadow-sm text' onClick={() => {
                             setValues(defaultData);
                             setShowDrawer(true);
                             setId(0);

@@ -8,7 +8,8 @@ import { FormElement } from '@/app/components/commons/FormElement';
 import Autosuggest from 'react-autosuggest';
 type datalist = {
     id: string,
-    label: string
+    label: string,
+    data?: any
 }
 
 interface IValues {
@@ -35,8 +36,9 @@ type Props = {
     initialValues: any,
     setValues: Function,
     id: string,
-    className: string
-    required?: boolean
+    className: string,
+    required?: boolean,
+    fillValues?: string[]
 }
 
 
@@ -89,6 +91,11 @@ function index(parameter: Props) {
                             setFieldValue(parameter.id, '');
                             setFieldValue(parameter.name, '');
                             setFieldValue(`${parameter.name}_autosuggest`, '');
+                            if (parameter.fillValues?.length) {
+                                parameter.fillValues.forEach((item: string, index: number) => {
+                                    setFieldValue(item, "");
+                                })
+                            }
                         }
 
                     }}
@@ -107,7 +114,13 @@ function index(parameter: Props) {
                         setValue(suggestion.label);
                         setFieldValue(parameter.id, suggestion.id);
                         setFieldValue(parameter.name, suggestion.label);
-                        setFieldValue(`${parameter.name}_autosuggest`, suggestion.label);
+                        setFieldValue(`${parameter.name}_autosuggest`, suggestion.label)
+
+                        if (parameter.fillValues?.length) {
+                            parameter.fillValues.forEach((item: string, index: number) => {
+                                setFieldValue(item, suggestion.data[item]);
+                            })
+                        }
                     }}
                     inputProps={{
                         placeholder: `Enter ${parameter.title}`,

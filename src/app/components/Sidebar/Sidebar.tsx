@@ -21,9 +21,9 @@ function index(parameter: Props) {
     let token = Cookies.get('token');
 
     return (
-        // <nav id="default-sidebar" className={`fixed top-0 left-0 z-50 w-64 h-[calc(100vh-16px)] transition-transform mt-16    ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0"}   ${parameter.isMinimized ? 'sm:w-24 text-center ' : 'sm:w-64'}    sm:translate-x-0 sm:border-spacing-1 rounded-sm sm:border-r-gray-500 shadow-xl`} aria-label="Sidebar">
-        <nav id="drawer-right-example" className={`fixed top-0 left-0 z-30 w-64 h-[calc(100vh-16px)] transition-transform mt-16 pb-3 bg-white  overflow-x-visible dark:bg-gray-800 ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0 overflow-y-auto pb-10"} ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0"}   ${parameter.isMinimized ? 'sm:w-24 text-center ' : 'sm:w-64'}    sm:translate-x-0 sm:border-spacing-1 rounded-sm sm:border-r-gray-500 shadow-xl`} aria-label="Sidebar">
-            <div className='overflow-y-visible z-30 rounded bg-white py-4 px-4 dark:bg-gray-800'>
+        // <nav id="default-sidebar" className={`fixed top-0 left-0 z-50 w-64 h-[calc(100vh-16px)] transition-transform mt-16    ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0"}   ${parameter.isMinimized ? 'sm:w-24 text-center ' : 'sm:w-64'}    sm:translate-x-0 sm:border-spacing-1 rounded-sm sm:border-r-gray-500  bg-white p-6 shadow-xl shadow-slate-900/10`} aria-label="Sidebar">
+        <nav id="drawer-right-example" className={`fixed top-0 left-0 z-30 w-64 h-[calc(100vh-16px)] transition-transform mt-16 pb-3 bg-slate-50  overflow-x-visible dark:bg-gray-800 ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0 overflow-y-auto pb-10"} ${parameter.isMinimized ? "-translate-x-full" : "translate-x-0"}   ${parameter.isMinimized ? 'sm:w-24 text-center ' : 'sm:w-64'}    sm:translate-x-0 sm:border-spacing-1 rounded-sm sm:border-r-gray-500 rounded-2xl bg-white  shadow-xl shadow-slate-900/10`} aria-label="Sidebar">
+            <div className='overflow-y-visible z-30 rounded bg-slate-50 py-4 px-4 dark:bg-gray-800'>
                 <ul className="font-medium ">
 
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Dashboard" icon={<ChartPieIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />

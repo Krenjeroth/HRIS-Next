@@ -17,7 +17,7 @@ function CustomRow(parameter: Props) {
             setClassName('bg-white');
         }
         else {
-            setClassName('bg-cyan-50');
+            setClassName('bg-blue-50');
         }
 
     }, [isSelected]);

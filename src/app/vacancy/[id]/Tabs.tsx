@@ -128,8 +128,8 @@ function Details(props: params) {
                         <DisplayField id='posting_date' class='md:col-span-1' label='Posting Date (Start)' value={`${details.posting_date}`} />
                         <DisplayField id='closing_date' class='md:col-span-1' label='Posting Date (End)' value={`${details.closing_date}`} />
                         <div className='col-span-4 md:col-span-4'>
-                            <span className=' text-cyan-600 font-medium text-lg '>Qualification Standards</span>
-                            <hr className='text-cyan-600 mt-6' />
+                            <span className=' text-blue-600 font-medium text-lg '>Qualification Standards</span>
+                            <hr className='text-blue-600 mt-6' />
                         </div>
                         <DisplayField id='education' class='md:col-span-2' label='Education' value={`${details.education}`} />
                         <DisplayField id='training' class='md:col-span-2' label='Training' value={`${details.training}`} />
@@ -138,8 +138,8 @@ function Details(props: params) {
                         <DisplayField id='competency' class='md:col-span-2' label='Competency' value={`${details.competency}`} />
 
                         <div className='col-span-4 md:col-span-4'>
-                            <span className=' text-cyan-600 font-medium text-lg '>Applicants</span>
-                            <hr className='text-cyan-600 mt-6' />
+                            <span className=' text-blue-600 font-medium text-lg '>Applicants</span>
+                            <hr className='text-blue-600 mt-6' />
                         </div>
                         <div className='col-span-4 md:col-span-4'>
                             <ApplicantList vacancy_id={`${props.id}`} />

@@ -112,10 +112,10 @@ function ApplicationPDS(parameter: Props) {
                     title={`Voluntary Work, and Learning and Development`}
                 >
                     <VoluntaryWork />
-                    {/* <hr className='text-cyan-600 col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4' /> */}
+                    {/* <hr className='text-blue-600 col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4' /> */}
                     <LearningAndDevelopment />
                     <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
-                        <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                        <hr className='text-blue-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                     </div>
                 </Tabs.Item>
                 <Tabs.Item
@@ -131,7 +131,7 @@ function ApplicationPDS(parameter: Props) {
 
             </Tabs.Group >
             <div className='col-span-4 md:col-span-4 grid md:grid-cols-2 grid-col mt-4'>
-                <hr className='text-cyan-600 mt-6 col-span-2 md:col-span-2 mb-3' />
+                <hr className='text-blue-600 mt-6 col-span-2 md:col-span-2 mb-3' />
                 <div className="mt-2  col-span-2 md:col-span-2 flex mx-auto">
                     {parameter.formActiveTab != 0 ?
                         <Button className='mx-2 btn btn-sm text-white rounded-lg bg-stone-500  hover:scale-90 shadow-sm text' onClick={() => {
@@ -144,7 +144,7 @@ function ApplicationPDS(parameter: Props) {
 
 
 
-                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-cyan-500")} hover:scale-90 shadow-sm text`} onClick={() => {
+                    <Button className={`mx-2 btn btn-sm text-white rounded-lg   ${(context.process == "Delete" && (parameter.formActiveTab == (validations.length - 1)) ? "bg-red-500 hidden" : "bg-blue-500")} hover:scale-90 shadow-sm text`} onClick={() => {
                         if (parameter.formActiveTab < (validations.length - 1)) {
                             parameter.setFormActiveTab(parameter.formActiveTab + 1);
                         }
