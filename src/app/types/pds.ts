@@ -223,6 +223,8 @@ export interface IValues {
     lgu_position_id?: string,
     lgu_position?: string,
     lgu_position_autosuggest?: string,
+    office_name?: string,
+    division_name?: string,
     employee_status?: string,
     first_name: string,
     middle_name: string,

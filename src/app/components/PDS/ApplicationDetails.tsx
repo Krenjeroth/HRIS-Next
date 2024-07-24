@@ -49,7 +49,8 @@ function ApplicationDetails() {
                     resp.data.data.map((data: any) => {
                         return {
                             "id": data.id,
-                            "label": data.attributes.label
+                            "label": data.attributes.label,
+                            "data": data.attributes
                         }
                     })
                 );
@@ -100,8 +101,51 @@ function ApplicationDetails() {
                     initialValues={context.initialValues}
                     setValues={context.setValues}
                     setKeyword={setKeyword}
-                    data={vacancies} />
+                    data={vacancies}
+                    fillValues={['office_name', 'division_name']}
+                />
 
+
+            </div>
+
+
+
+            <div className="col-span-2 md:col-span-2">
+                <FormElement
+                    name="office_name"
+                    label="Office"
+                    errors={context.errors}
+                    touched={context.touched}
+                    className='col-span-4 md:col-span-2'
+                    required={true}
+                >
+                    <Field
+                        readOnly
+                        name="office_name"
+                        id="office_name"
+                        placeholder="Office"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    />
+                </FormElement>
+            </div>
+
+            <div className="col-span-2 md:col-span-2">
+                <FormElement
+                    name="division_name"
+                    label="Division/Section/Unit"
+                    errors={context.errors}
+                    touched={context.touched}
+                    className='col-span-4 md:col-span-2'
+                    required={true}
+                >
+                    <Field
+                        readOnly
+                        name="division_name"
+                        id="division_name"
+                        placeholder="Division/Section/Unit"
+                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    />
+                </FormElement>
             </div>
 
             <FileUpload />

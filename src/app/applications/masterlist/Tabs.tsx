@@ -198,6 +198,8 @@ function AllRequestsTabs() {
         lgu_position_id: '',
         lgu_position: '',
         lgu_position_autosuggest: '',
+        office_name: '',
+        division_name: '',
         employee_status: '',
         first_name: '',
         middle_name: '',
@@ -293,7 +295,7 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters,{ column: "applications.date_submitted", value: String(year) }],
+                filters: [...filters, { column: "applications.date_submitted", value: String(year) }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -594,6 +596,7 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues(defaultData);
+                console.log(data.details);
                 setChildren(data.children.map((item: child) => {
                     return {
                         'number': (item.number) ? item.number : "",
@@ -628,6 +631,8 @@ function AllRequestsTabs() {
                     lgu_position: (data.lguPosition) ? data.lguPosition : "",
                     lgu_position_autosuggest: (data.lguPosition) ? data.lguPosition : "",
                     employee_status: (data.details.employee_status) ? data.details.employee_status : "",
+                    office_name: (data.vacancyOffice.office_name) ? (data.vacancyOffice.office_name) : "",
+                    division_name: (data.vacancyDivision.division_name) ? (data.vacancyDivision.division_name) : "",
                     first_name: data.details.first_name,
                     middle_name: (data.details.middle_name) ? data.details.middle_name : "",
                     last_name: data.details.last_name,
