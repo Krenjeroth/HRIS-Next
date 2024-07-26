@@ -203,7 +203,7 @@ export interface DisqualifiedIValues {
 
 export interface InterviewIvalues {
     // personal information
-    interview_date: string,
+    meeting_date: string,
     venue: string,
     positions: string[],
 }

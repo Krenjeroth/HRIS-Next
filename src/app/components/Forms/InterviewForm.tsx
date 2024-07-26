@@ -45,7 +45,6 @@ export const InterviewForm = () => {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Interview Schedule");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -156,12 +155,12 @@ export const InterviewForm = () => {
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
             <div className='col-span-4'>
-                <span className=' text-blue-600 font-medium text-lg '>Interview Details</span>
+                <span className=' text-blue-600 font-medium text-lg '>Meeting Details</span>
                 <hr className='text-blue-600 mt-6' />
             </div>
             <FormElement
-                name="interview_date"
-                label="Interview Date"
+                name="meeting_date"
+                label="Meeting Date"
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-4 md:col-span-1'
@@ -170,8 +169,8 @@ export const InterviewForm = () => {
 
                 <DatePicker
                     initialValues={context.initialValues}
-                    id="interview_date"
-                    name="interview_date"
+                    id="meeting_date"
+                    name="meeting_date"
                     placeholderText="Enter Date"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                 />

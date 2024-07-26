@@ -168,10 +168,10 @@ function SalaryGradeTabs() {
         let newArrayFilter = [...filters];
 
         // add year to filter
-        newArrayFilter.push({
-            column: "year",
-            value: String(year)
-        });
+        // newArrayFilter.push({
+        //     column: "year",
+        //     value: String(year)
+        // });
 
         async function getData() {
             const postData = {
@@ -652,8 +652,8 @@ function SalaryGradeTabs() {
                             reload={reload}
                             setReload={setReload}
                             setProcess={setProcess}
-                            year={year}
-                            setYear={setYear}
+                            // year={year}
+                            // setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >

@@ -81,13 +81,13 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Interview Schedule");
+    const [title, setTitle] = useState<string>("PSB Meeting");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<InterviewIvalues>({
-        interview_date: '',
+        meeting_date: '',
         venue: '',
         positions: [],
     });
@@ -275,7 +275,7 @@ function AllRequestsTabs() {
 
                 setValues(defaultData);
                 setValues({
-                    interview_date: '',
+                    meeting_date: '',
                     venue: '',
                     positions: [],
                 });

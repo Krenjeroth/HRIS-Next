@@ -596,7 +596,6 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues(defaultData);
-                console.log(data.details);
                 setChildren(data.children.map((item: child) => {
                     return {
                         'number': (item.number) ? item.number : "",
