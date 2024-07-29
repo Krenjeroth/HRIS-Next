@@ -97,7 +97,7 @@ function AllRequestsTabs() {
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
         { "column": "date_submitted", "display": "Date Submitted" },
-        { "column": "item_number", "display": "Position" },
+        { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },

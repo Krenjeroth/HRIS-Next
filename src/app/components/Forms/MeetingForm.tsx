@@ -5,15 +5,15 @@ import DatePicker from "../DatePicker";
 import { useInterviewContext } from "@/app/contexts/InterviewContext";
 import { Button } from "flowbite-react";
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import Table from "../../components/Table";
-import { DisqualifiedIValues, button, datalist, filter, header, row } from "@/app/types/pds";
+import Table from "../Table";
+import { InterviewIvalues, button, datalist, filter, header, row } from "@/app/types/pds";
 import { ClipboardIcon, PencilIcon } from "@heroicons/react/24/solid";
 import dayjs from "dayjs";
 import HttpService from "../../../../lib/http.services";
 
 
 // Main function
-export const InterviewForm = () => {
+export const MeetingForm = () => {
 
 
     // variables
@@ -49,24 +49,11 @@ export const InterviewForm = () => {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
-    const [defaultData, setDefaultData] = useState<DisqualifiedIValues>({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        suffix: '',
-        date_submitted: '',
-        vacancy_id: '',
-        vacancy: '',
-        vacancy_autosuggest: '',
-        reason: '',
-        remarks: '',
-        recipient: '',
-        subject: '',
-        body: ''
+    const [defaultData, setDefaultData] = useState<InterviewIvalues>({
+        meeting_date: '',
+        venue: '',
+        positions: [],
     });
-    var [initialValues, setValues] = useState<DisqualifiedIValues>(
-        defaultData
-    );
 
 
     // use effect hooks
@@ -82,6 +69,15 @@ export const InterviewForm = () => {
         }
         getVenues();
     }, []);
+
+
+    // use effect hooks
+    useEffect(() => {
+        if (selected.sort.toString != context.initialValues.positions.sort.toString && context.initialValues.positions.length === 0) {
+            console.log(context.initialValues);
+            //     setSelected(context.initialValues.positions);
+        }
+    }, [context.initialValues]);
 
     useEffect(() => {
         setFieldValue(`positions`, selected);
@@ -119,7 +115,7 @@ export const InterviewForm = () => {
 
     useEffect(() => {
         if (id == 0) {
-            setValues(defaultData);
+            context.setValues(defaultData);
         }
         else {
 
@@ -131,7 +127,7 @@ export const InterviewForm = () => {
             }
 
             else {
-                setValues(defaultData);
+                context.setValues(defaultData);
                 setShowDrawer(true);
                 setShowAttachmentDrawer(false);
             }
@@ -203,15 +199,6 @@ export const InterviewForm = () => {
 
             </FormElement>
 
-            {/* <div>
-                <label htmlFor="nonFormikInput">Non-Formik Input</label>
-                <input id="nonFormikInput" placeholder="This is not in Formik's state" />
-            </div> */}
-
-
-
-
-
             <div className='col-span-4 mt-3'>
                 <span className=' text-blue-600 font-medium text-lg '>Positions</span>
                 <hr className='text-blue-600 mt-6' />
@@ -238,6 +225,7 @@ export const InterviewForm = () => {
                     checkbox={true}
                     hideTotal={true}
                     setSelected={setSelected}
+                    selected={selected}
                 >
                 </Table>
             </div>

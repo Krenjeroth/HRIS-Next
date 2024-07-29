@@ -222,6 +222,7 @@ function AllRequestsTabs() {
 
         try {
             const resp = await HttpService.get("application/" + id);
+
             if (resp.status === 200) {
                 let data = resp.data;
                 var body = `<p>
@@ -231,7 +232,7 @@ function AllRequestsTabs() {
                                 &nbsp;
                             </p>
                             <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancy_office.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
+                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancyOffice.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
                             </p>
                             <p>
                                 &nbsp;
@@ -270,7 +271,6 @@ function AllRequestsTabs() {
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i><strong>EMAIL ADDRESS</strong>: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com</i></span>
                             </p>`;
 
-
                 setValues(defaultData);
                 setValues({
                     first_name: data.details.first_name,
@@ -290,6 +290,7 @@ function AllRequestsTabs() {
             }
         }
         catch (error: any) {
+            console.log(error);
         }
 
     };

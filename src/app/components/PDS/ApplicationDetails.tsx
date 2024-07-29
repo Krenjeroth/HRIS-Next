@@ -40,7 +40,7 @@ function ApplicationDetails() {
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent']
+                positionStatus: ['permanent']
             };
 
             const resp = await HttpService.post("search-vacancy", postData);

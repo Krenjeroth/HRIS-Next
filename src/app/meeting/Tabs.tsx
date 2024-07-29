@@ -5,8 +5,6 @@ import { useState } from 'react';
 import Table from "../components/Table";
 import HttpService from '../../../lib/http.services';
 import Drawer from '../components/Drawer';
-import AttachmentDrawer from '../components/AttachmentDrawer';
-import AttachmentView from '../components/AttachmentView';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -19,7 +17,7 @@ import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
 import { HiDownload, HiMail } from 'react-icons/hi';
-import { InterviewForm } from '../components/Forms/InterviewForm';
+import { MeetingForm } from '../components/Forms/MeetingForm';
 import type { CustomFlowbiteTheme } from "flowbite-react";
 
 
@@ -52,7 +50,6 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
         { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
         { "icon": <HiMail className=' w-5 h-5' />, "title": "Email", "process": "Email", "class": "text-purple-600" },
         { "icon": <ArrowLeftEndOnRectangleIcon className=' w-5 h-5' />, "title": "Revert", "process": "Revert", "class": "text-red-600" }
@@ -65,17 +62,8 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
-        { "column": "first_name", "display": "first_name" },
-        { "column": "middle_name", "display": "middle_name" },
-        { "column": "last_name", "display": "last_name" },
-        { "column": "suffix", "display": "suffix" },
-        { "column": "application_type", "display": "application_type" },
-        { "column": "title", "display": "title" },
-        { "column": "item_number", "display": "item_number" },
-        { "column": "division_name", "display": "division_name" },
-        { "column": "status", "display": "status" },
-        { "column": "reason", "display": "Disqualification Reason" },
+        { "column": "meeting_date", "display": "Meeting Date" },
+        { "column": "name", "display": "Venue" }
     ]);
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
@@ -85,7 +73,6 @@ function AllRequestsTabs() {
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<InterviewIvalues>({
         meeting_date: '',
         venue: '',
@@ -108,11 +95,11 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters, { column: 'status', value: 'Disqualified' }],
+                filters: [...filters],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-applications", postData);
+            const resp = await HttpService.post("search-interviews", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -178,7 +165,6 @@ function AllRequestsTabs() {
 
             if (process == "View") {
                 setShowDrawer(false);
-                setShowAttachmentDrawer(true);
             }
             else if (process == "Download") {
                 downloadLetter(id);
@@ -188,22 +174,12 @@ function AllRequestsTabs() {
                 setValues(defaultData);
                 getDataById(id);
                 setShowDrawer(true);
-                setShowAttachmentDrawer(false);
             }
         }
     }, [id, reload]);
 
 
-    useEffect(() => {
-        if (!showDrawer) {
-            if (!showAttachmentDrawer) {
-                setId(0);
-            }
-        }
-        else {
-            setShowAttachmentDrawer(false);
-        }
-    }, [showDrawer]);
+
 
     useEffect(() => {
         if (process === "Revert") {
@@ -223,61 +199,16 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("application/" + id);
+            const resp = await HttpService.get("interview/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                var body = `<p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Dear <strong>Applicant</strong>:&nbsp;</span>
-                            </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancy_office.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
-                            </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">We regret to inform that based on the evaluation of your qualifications as submitted, vis - a’-vis the qualification standards(QS) of the position, ${data.disqualification.reason} .&nbsp;</span>
-                            </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Nonetheless, we thank you for your interest to join the Provincial Government of Benguet.</span>
-                            </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Very truly yours,</span>
-                            </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p class="MsoNormal">
-                                <span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;"><strong>PROVINCIAL HUMAN RESOURCE MANAGEMENT AND DEVELOPMENT OFFICE</strong></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><o:p></o:p></span>
-                            </p>
-                            <p>
-                                <span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;font-size:14px;">PROVINCE OF BENGUET</span>
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Poblacion, La Trinidad, Benguet 2601</span>
-                            </p>
-                            <p>
-                                <span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>(074) 422-6475</i></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i> | </i></span><span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>http://www.benguet.gov.ph&nbsp;</i></span>
-                            </p>
-                            <p>
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i><strong>EMAIL ADDRESS</strong>: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com</i></span>
-                            </p>`;
-
-
                 setValues(defaultData);
                 setValues({
-                    meeting_date: '',
-                    venue: '',
-                    positions: [],
+                    meeting_date: data.interview.meeting_date,
+                    venue: data.interview.venue,
+                    positions: data.positions.map((item: any) => {
+                        return item.vacancy_id
+                    }),
                 });
             }
         }
@@ -300,12 +231,11 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<InterviewIvalues>
     ) => {
 
-        // console.log(values.attachments);
+
         alerts.forEach(element => {
             alerts.pop();
         });
 
-        console.log(values);
 
 
         try {
@@ -395,10 +325,6 @@ function AllRequestsTabs() {
     // tsx
     return (
         <>
-            {/* drawer */}
-            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>
-                <AttachmentView id={id} link={"/view-application-attachments"} />
-            </AttachmentDrawer>
 
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
@@ -425,13 +351,13 @@ function AllRequestsTabs() {
                                 setValues={setValues}
                                 process={process}
                                 id={id}>
-                                <InterviewForm />
+                                <MeetingForm />
                             </InterviewContextProvider>
                         </Form>
                     )}
                 </Formik>
             </Drawer>
-            <div className={`${(showDrawer || showAttachmentDrawer) ? "blur-[1px]" : ""}`}>
+            <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
 
 
                 {/*  Tabs */}

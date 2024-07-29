@@ -39,6 +39,7 @@ type Props = {
     checkbox?: boolean,
     hideTotal?: boolean,
     setSelected?: Function,
+    selected?: string[],
 }
 
 
@@ -51,7 +52,7 @@ function index(parameter: Props) {
 
     const router = useRouter();
     const [startDate, setStartDate] = useState(new Date());
-    const [selected, setSelected] = useState<string[]>([]);
+    // const [selected, setSelected] = useState<string[]>([]);
     const [numberFormats] = useState<string[]>(['amount']);
     const [filters, setFilters] = useState<filter[]>(parameter.filters);
     const options = {
@@ -67,11 +68,10 @@ function index(parameter: Props) {
 
 
 
+
     useEffect(() => {
-        if (parameter.setSelected != null) {
-            parameter.setSelected(selected);
-        }
-    }, [selected])
+        // console.log(parameter.selected);
+    }, [parameter.selected]);
 
 
     const search = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,22 +205,26 @@ function index(parameter: Props) {
                     {parameter.data.length > 0 ?
                         parameter.data.map((item: row, index: number) => {
                             return (
-                                <Table.Row key={item.id} className={(selected.includes(item.id) ? 'bg-blue-50' : 'bg-white')} >
-                                    {parameter.checkbox ?
+                                <Table.Row key={item.id} className={(parameter.selected && parameter.selected.includes(item.id) ? 'bg-blue-50' : 'bg-white')} >
+                                    {parameter.checkbox && parameter.selected ?
                                         <Table.Cell onClick={(e) => {
-                                            let newArray = [...selected];
-                                            if (newArray.includes(item.id)) {
-                                                newArray = newArray.filter((str: string) => {
-                                                    return str !== item.id
-                                                })
+                                            if (parameter.selected) {
+                                                let newArray = [...parameter.selected];
+                                                if (newArray.includes(item.id)) {
+                                                    newArray = newArray.filter((str: string) => {
+                                                        return str !== item.id
+                                                    })
+                                                }
+                                                else {
+                                                    newArray.push(item.id);
+                                                }
+                                                if (parameter.setSelected) {
+                                                    parameter.setSelected(newArray);
+                                                }
                                             }
-                                            else {
-                                                newArray.push(item.id);
-                                            }
-                                            setSelected(newArray);
                                         }}>
 
-                                            {selected.includes(item.id) ?
+                                            {parameter.selected.includes(item.id) ?
                                                 <CheckCircleIcon className=' text-green-500 w-5 h-5' />
                                                 :
                                                 <CheckCircleIcon className=' text-slate-300 w-5 h-5' />
