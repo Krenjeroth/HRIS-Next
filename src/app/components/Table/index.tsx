@@ -34,7 +34,7 @@ type Props = {
     setId: Function,
     setReload: Function,
     reload: boolean,
-    setProcess: Function,
+    setProcess?: Function,
     children?: ReactNode,
     checkbox?: boolean,
     hideTotal?: boolean,
@@ -69,9 +69,9 @@ function index(parameter: Props) {
 
 
 
-    useEffect(() => {
-        // console.log(parameter.selected);
-    }, [parameter.selected]);
+    // useEffect(() => {
+    //     console.log(parameter.selected);
+    // }, [parameter.selected]);
 
 
     const search = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -259,7 +259,9 @@ function index(parameter: Props) {
                                                                         className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
                                                                             parameter.setReload(!parameter.reload);
                                                                             parameter.setId(item.id);
-                                                                            parameter.setProcess(button.process);
+                                                                            if (parameter.setProcess) {
+                                                                                parameter.setProcess(button.process);
+                                                                            }
                                                                         }}
                                                                     >
                                                                         {button.icon} </button>
@@ -274,7 +276,9 @@ function index(parameter: Props) {
                                                                     className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
                                                                         parameter.setReload(!parameter.reload);
                                                                         parameter.setId(item.id);
-                                                                        parameter.setProcess(button.process);
+                                                                        if (parameter.setProcess) {
+                                                                            parameter.setProcess(button.process);
+                                                                        }
                                                                     }}
                                                                 >
                                                                     {button.icon} </button>

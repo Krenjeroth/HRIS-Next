@@ -28,7 +28,6 @@ export const MeetingForm = () => {
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
-    const [process, setProcess] = useState<string>("Add");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
@@ -73,9 +72,8 @@ export const MeetingForm = () => {
 
     // use effect hooks
     useEffect(() => {
-        if (selected.sort.toString != context.initialValues.positions.sort.toString && context.initialValues.positions.length === 0) {
-            console.log(context.initialValues);
-            //     setSelected(context.initialValues.positions);
+        if (JSON.stringify(selected) != JSON.stringify(context.initialValues.positions) && selected.length != context.initialValues.positions.length) {
+            setSelected(context.initialValues.positions);
         }
     }, [context.initialValues]);
 
@@ -119,11 +117,11 @@ export const MeetingForm = () => {
         }
         else {
 
-            if (process == "View") {
+            if (context.process == "View") {
                 setShowDrawer(false);
                 setShowAttachmentDrawer(true);
             }
-            else if (process == "Download") {
+            else if (context.process == "Download") {
             }
 
             else {
@@ -220,7 +218,6 @@ export const MeetingForm = () => {
                     setId={setId}
                     reload={reload}
                     setReload={setReload}
-                    setProcess={setProcess}
                     setYear={setYear}
                     checkbox={true}
                     hideTotal={true}
@@ -234,7 +231,7 @@ export const MeetingForm = () => {
 
 
             <div className="col-span-4 mt-5">
-                <Button className={`btn btn-sm text-white rounded-lg ${(selected.length > 0) ? "bg-blue-500" : "bg-slate-500"}  hover:scale-90 shadow-sm text mx-auto`} type="button" onClick={() => {
+                <Button className={`btn btn-sm text-white rounded-lg ${(selected.length > 0) ? (context.process === "Delete" ? "bg-red-500" : "bg-blue-500") : "bg-slate-500"}  hover:scale-90 shadow-sm text mx-auto`} type="button" onClick={() => {
                     if (selected.length > 0) {
                         submitForm();
                         const element = document.getElementById('drawer_title');
@@ -243,8 +240,9 @@ export const MeetingForm = () => {
                         }
                     }
                 }}>
-                    Submit
+                    {(context.process === "Delete" ? "Delete" : "Submit")}
                 </Button>
+
             </div>
 
 

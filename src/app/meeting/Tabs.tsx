@@ -16,7 +16,7 @@ import InterviewContextProvider from '../contexts/InterviewContext';
 import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
-import { HiDownload, HiMail } from 'react-icons/hi';
+import { HiArchive, HiDownload, HiMail } from 'react-icons/hi';
 import { MeetingForm } from '../components/Forms/MeetingForm';
 import type { CustomFlowbiteTheme } from "flowbite-react";
 
@@ -50,9 +50,9 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
-        { "icon": <HiMail className=' w-5 h-5' />, "title": "Email", "process": "Email", "class": "text-purple-600" },
-        { "icon": <ArrowLeftEndOnRectangleIcon className=' w-5 h-5' />, "title": "Revert", "process": "Revert", "class": "text-red-600" }
+        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download Notice of Meeting", "process": "Download", "class": "text-slate-600" },
+        { "icon": <HiArchive className=' w-5 h-5' />, "title": "Download Initial Comporative Assessment Form", "process": "CAF", "class": "text-green-500" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -109,10 +109,10 @@ function AllRequestsTabs() {
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
 
-    const downloadLetter = async (id: number) => {
+    const downloadNoticeOfMeeting = async (id: number) => {
         try {
             if (process === "Download") {
-                const resp = await HttpService.get("download-disqualification-letter/" + id);
+                const resp = await HttpService.get("download-notice-of-meeting/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -157,6 +157,56 @@ function AllRequestsTabs() {
     };
 
 
+
+    const downloadInitialCAF = async (id: number) => {
+        try {
+            if (process === "CAF") {
+                const resp = await HttpService.get("generate-initial-caf-per-meeting/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        console.log("test");
+                        // let base64String = resp.data.data.base64;
+                        // let filename = resp.data.data.filename;
+                        // var binaryString = atob(base64String);
+
+                        // // Convert binary to ArrayBuffer
+                        // var binaryData = new ArrayBuffer(binaryString.length);
+                        // var byteArray = new Uint8Array(binaryData);
+                        // for (var i = 0; i < binaryString.length; i++) {
+                        //     byteArray[i] = binaryString.charCodeAt(i);
+                        // }
+
+                        // // Create Blob object
+                        // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+                        // // Create object URL
+                        // var url = URL.createObjectURL(blob);
+
+                        // // Create a link element, set its href attribute, and trigger download
+                        // var a = document.createElement('a');
+                        // a.href = url;
+                        // a.download = filename + '.docx'; // Specify desired file name with .docx extension
+                        // document.body.appendChild(a); // Append anchor to body
+                        // a.click(); // Programmatically click the anchor element to trigger the download
+                        // document.body.removeChild(a); // Clean up anchor element afterwards
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+        }
+        catch (error: any) {
+            if (error.response.status === 422) {
+
+            }
+        }
+    };
+
+
     useEffect(() => {
         if (id == 0) {
             setValues(defaultData);
@@ -167,7 +217,17 @@ function AllRequestsTabs() {
                 setShowDrawer(false);
             }
             else if (process == "Download") {
-                downloadLetter(id);
+                downloadNoticeOfMeeting(id);
+            }
+            else if (process == "CAF") {
+                downloadInitialCAF(id);
+            }
+
+            else if (process === "Delete") {
+                setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
+                // setValues(defaultData);
+                getDataById(id);
+                setShowDrawer(true);
             }
 
             else {
@@ -181,16 +241,16 @@ function AllRequestsTabs() {
 
 
 
-    useEffect(() => {
-        if (process === "Revert") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to revert this application?" }]);
-            setReadOnly(true);
-        }
-        else {
-            setAlerts([]);
-            setReadOnly(false);
-        }
-    }, [process]);
+    // useEffect(() => {
+    //     if (process === "Revert") {
+    //         setAlerts([{ "type": "failure", "message": "Are you sure to revert this application?" }]);
+    //         setReadOnly(true);
+    //     }
+    //     else {
+    //         setAlerts([]);
+    //         setReadOnly(false);
+    //     }
+    // }, [process]);
 
 
 
@@ -207,7 +267,7 @@ function AllRequestsTabs() {
                     meeting_date: data.interview.meeting_date,
                     venue: data.interview.venue,
                     positions: data.positions.map((item: any) => {
-                        return item.vacancy_id
+                        return item.vacancy_id.toString();
                     }),
                 });
             }
@@ -258,8 +318,8 @@ function AllRequestsTabs() {
                 }
             }
 
-            if (process === "Edit") {
-                const resp = await HttpService.post("disqualify-application/" + id, values)
+            else if (process === "Edit") {
+                const resp = await HttpService.patch("interview/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -277,7 +337,28 @@ function AllRequestsTabs() {
                 }
             }
 
-            if (process === "Email") {
+            else if (process === "Delete") {
+                const resp = await HttpService.delete("interview/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": resp.data.message });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                        setId(0);
+                        setProcess("Add");
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
+
+            else if (process === "Email") {
                 const resp = await HttpService.post("send-disqualification-email/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
@@ -291,27 +372,9 @@ function AllRequestsTabs() {
                     }
                 }
             }
+            else {
 
-
-            if (process === "Revert") {
-                const resp = await HttpService.post("revert-application/" + id, values)
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully reverted!" });
-                        // setValues(defaultData);
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
             }
-
 
         }
         catch (error: any) {
