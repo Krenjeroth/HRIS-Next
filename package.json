@@ -9,10 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^42.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^42.0.2",
     "@ckeditor/ckeditor5-font": "^42.0.0",
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@heroicons/react": "^2.0.17",
+    "@next/bundle-analyzer": "^14.2.5",
     "@nextui-org/react": "^1.0.0-beta.12",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/lodash": "^4.14.195",
@@ -29,7 +30,6 @@
     "dayjs": "^1.11.8",
     "draft-js": "^0.11.7",
     "eslint": "8.37.0",
-    "eslint-config-next": "^13.4.19",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.4.11",
     "formik": "^2.2.9",
@@ -59,6 +59,7 @@
     "@types/react-datepicker": "^4.11.2",
     "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
+    "eslint-config-next": "^14.2.5",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.3.1"
   },

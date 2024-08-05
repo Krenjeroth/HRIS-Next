@@ -1,9 +1,13 @@
 "use client";
+import dynamic from "next/dynamic";
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import { Button } from "flowbite-react";
 import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
 import CKEditorComponent from '../CKEditorComponent';
+import Editor from "../CKEditor";
+
+import { useMemo } from "react";
 
 
 // Main function
@@ -12,10 +16,13 @@ export const EmailForm = () => {
 
     const context = useDisqualifiedContext();
     const { setFieldValue, submitForm } = useFormikContext();
+    // const Editor = dynamic(() => import("../CKEditor"), { ssr: false });
+
+
+
 
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
-
             <FormElement
                 name="recipient"
                 label="Recipient"
@@ -71,9 +78,16 @@ export const EmailForm = () => {
                 />
             </FormElement> */}
 
-            <CKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' />
+            <Editor
+                name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2'
+                onChange={(v) => {
+                    console.log("hello");
+                }}
+            />
+
+            {/* <CKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
             {/* <CustomCKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
-        
+
 
             {/* <TestEditor/> */}
 

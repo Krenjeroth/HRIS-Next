@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tabs from './Tabs';
 export const metadata = {
   title: 'HRIS - Disqualified',
@@ -6,6 +6,7 @@ export const metadata = {
 
 
 function page() {
+
   return (
     <div>
       <Tabs />

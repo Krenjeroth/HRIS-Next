@@ -225,49 +225,46 @@ function AllRequestsTabs() {
 
             if (resp.status === 200) {
                 let data = resp.data;
-                var body = `<p>
+                var body = `<p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Dear <strong>Applicant</strong>:&nbsp;</span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 &nbsp;
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancyOffice.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
                             </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
+                           
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">We regret to inform that based on the evaluation of your qualifications as submitted, vis - a’-vis the qualification standards(QS) of the position, ${data.disqualification.reason} .&nbsp;</span>
                             </p>
-                            <p>
-                                &nbsp;
-                            </p>
-                            <p>
+                           
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Nonetheless, we thank you for your interest to join the Provincial Government of Benguet.</span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 &nbsp;
                             </p>
-                            <p>
+                           
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Very truly yours,</span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 &nbsp;
                             </p>
-                            <p class="MsoNormal">
+                            <p style="padding:0px" class="MsoNormal">
                                 <span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;"><strong>PROVINCIAL HUMAN RESOURCE MANAGEMENT AND DEVELOPMENT OFFICE</strong></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><o:p></o:p></span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 <span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;font-size:14px;">PROVINCE OF BENGUET</span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Poblacion, La Trinidad, Benguet 2601</span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 <span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>(074) 422-6475</i></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i> | </i></span><span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>http://www.benguet.gov.ph&nbsp;</i></span>
                             </p>
-                            <p>
+                            <p style="padding:0px">
                                 <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i><strong>EMAIL ADDRESS</strong>: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com</i></span>
                             </p>`;
 
@@ -399,7 +396,7 @@ function AllRequestsTabs() {
                             <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
-                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
+                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p ><span className="font-medium">{item.message}</span></p></span></Alert>
                                     );
                                 })}
                             </div>
