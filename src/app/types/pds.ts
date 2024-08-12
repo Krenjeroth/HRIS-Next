@@ -297,6 +297,7 @@ export interface IValues {
     attachments?: any,
     date_submitted?: string,
     reason?: string,
+    appropriate_eligibility?: string,
     shortlist_trainings?: string,
     performance?: number,
     education?: number,

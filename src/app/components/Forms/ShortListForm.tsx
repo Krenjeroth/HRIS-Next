@@ -126,8 +126,118 @@ export const ShortListForm = () => {
                 />
             </FormElement>
 
+            <FormElement
+                name="appropriate_eligibility"
+                label="Appropriate Civil Service Eligibility"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-4 md:col-span-4'
+                required={true}
+            >
+                <Field
+                    as="select"
+                    id="appropriate_eligibility"
+                    name="appropriate_eligibility"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                >
+                    <option value="">Select Eligibility </option>
 
-            <div className="col-span-4 mt-5"><AppropriateEligibility /></div>
+                    {context.initialValues.eligibilities.map((object, index: number) => {
+                        return <option value={`${object.eligibility_title}`}>{object.eligibility_title}</option>
+                    })};
+                </Field>
+            </FormElement>
+
+
+            <div className="col-span-4 mt-5">
+                <div className='grid lg:grid-cols-4 grid-col' >
+
+                    {/* <div className='col-span-4 md:col-span-4'>
+                        <span className=' text-blue-600 font-medium text-lg '>Appropriate Civil Service Eligibility</span>
+                        <hr className='text-blue-600 mt-6' />
+                    </div> */}
+
+
+
+                    {/* 
+                <FieldArray name="eligibilities">
+                    {({ insert, remove, push }) => (
+                        <>
+                            {eligibilities.map((object, index: number) => {
+                                return <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col' key={index}>
+
+
+                                    <div className="mt-2 mx-2 col-span-10 md:col-span-9 ">
+                                        <Field
+                                            id={`eligibilities.${index}.eligibility_title`}
+                                            name={`eligibilities.${index}.eligibility_title`}
+                                            placeholder="Eligibility Title *"
+                                            className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                            autoComplete="on"
+                                        />
+                                        <FormFieldError name={`eligibilities.${index}.eligibility_title`} errors={context.errors} touched={context.touched} />
+                                    </div>
+                                    <div className="mt-1 col-span-10 md:col-span-1 mx-auto ">
+                                        <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
+                                            remove(index);
+                                            let reinitialize_eligibilities = [...eligibilities].filter((object, filterIndedx: number) => {
+                                                return index != filterIndedx;
+                                            });
+
+                                            setEligibilities(reinitialize_eligibilities);
+                                        }
+                                        }>
+                                            <Tooltip content="Remove Data">
+                                                <HiDocumentRemove />
+                                            </Tooltip>
+                                        </Button>
+                                    </div>
+                                    <hr className='text-blue-600 mt-6 col-span-10' />
+                                </div>
+                            })}
+                            <div className='col-span-4 md:col-span-4 grid md:grid-cols-10 grid-col'>
+                                <div className="mt-2 mx-2 md:col-start-10 col-span-10 md:col-span-1">
+
+                                    <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
+
+                                        let reinitialize_eligibilities = [...eligibilities].map((object: eligibility, index: number) => {
+                                            return object;
+                                        });
+
+                                        reinitialize_eligibilities.push({
+                                            eligibility_title: '',
+                                            rating: 0,
+                                            date_of_examination_conferment: '',
+                                            place_of_examination_conferment: '',
+                                            license_number: '',
+                                            license_date_validity: ''
+                                        })
+
+                                        push({
+                                            eligibility_title: '',
+                                            rating: '',
+                                            date_of_examination_conferment: '',
+                                            place_of_examination_conferment: '',
+                                            license_number: '',
+                                            license_date_validity: ''
+                                        });
+
+                                        setEligibilities(reinitialize_eligibilities);
+
+                                    }}>
+                                        <Tooltip content="Add Eligibility">
+                                            <HiDocumentAdd className='' />
+                                        </Tooltip>
+                                    </Button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </FieldArray> */}
+
+
+                </div>
+            </div>
 
             <FormElement
                 name="shortlist_trainings"

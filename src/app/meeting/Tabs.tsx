@@ -51,7 +51,7 @@ function AllRequestsTabs() {
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download Notice of Meeting", "process": "Download", "class": "text-slate-600" },
-        { "icon": <HiArchive className=' w-5 h-5' />, "title": "Download Initial Comporative Assessment Form", "process": "CAF", "class": "text-green-500" },
+        { "icon": <HiArchive className=' w-5 h-5' />, "title": "Download Initial Comparative Assessment Form", "process": "CAF", "class": "text-green-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -165,31 +165,30 @@ function AllRequestsTabs() {
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
-                        console.log("test");
-                        // let base64String = resp.data.data.base64;
-                        // let filename = resp.data.data.filename;
-                        // var binaryString = atob(base64String);
+                        let base64String = resp.data.data.base64;
+                        let filename = resp.data.data.filename;
+                        var binaryString = atob(base64String);
 
-                        // // Convert binary to ArrayBuffer
-                        // var binaryData = new ArrayBuffer(binaryString.length);
-                        // var byteArray = new Uint8Array(binaryData);
-                        // for (var i = 0; i < binaryString.length; i++) {
-                        //     byteArray[i] = binaryString.charCodeAt(i);
-                        // }
+                        // Convert binary to ArrayBuffer
+                        var binaryData = new ArrayBuffer(binaryString.length);
+                        var byteArray = new Uint8Array(binaryData);
+                        for (var i = 0; i < binaryString.length; i++) {
+                            byteArray[i] = binaryString.charCodeAt(i);
+                        }
 
-                        // // Create Blob object
-                        // var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                        // Create Blob object
+                        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 
-                        // // Create object URL
-                        // var url = URL.createObjectURL(blob);
+                        // Create object URL
+                        var url = URL.createObjectURL(blob);
 
-                        // // Create a link element, set its href attribute, and trigger download
-                        // var a = document.createElement('a');
-                        // a.href = url;
-                        // a.download = filename + '.docx'; // Specify desired file name with .docx extension
-                        // document.body.appendChild(a); // Append anchor to body
-                        // a.click(); // Programmatically click the anchor element to trigger the download
-                        // document.body.removeChild(a); // Clean up anchor element afterwards
+                        // Create a link element, set its href attribute, and trigger download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename; // Specify desired file name with .zip extension
+                        document.body.appendChild(a); // Append anchor to body
+                        a.click(); // Programmatically click the anchor element to trigger the download
+                        document.body.removeChild(a); // Clean up anchor element afterwards
                     }
                     else {
                         if (typeof resp.data != "undefined") {

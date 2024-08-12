@@ -259,6 +259,7 @@ function AllRequestsTabs() {
         vacancy: '',
         vacancy_autosuggest: '',
         attachments: '',
+        appropriate_eligibility: '',
         shortlist_trainings: '',
         performance: 0,
         education: 0,
@@ -280,11 +281,11 @@ function AllRequestsTabs() {
     // Use Effect Hook
     useEffect(() => {
         // query
-        
+
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters,{ column: "applications.date_submitted", value: String(year) }, { column: 'status', value: 'Shortlisted' }],
+                filters: [...filters, { column: "applications.date_submitted", value: String(year) }, { column: 'status', value: 'Shortlisted' }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -536,12 +537,14 @@ function AllRequestsTabs() {
                     vacancy: data.vacancy,
                     vacancy_autosuggest: data.vacancy,
                     attachments: '',
+                    appropriate_eligibility: data.assessment.appropriate_eligibility,
                     shortlist_trainings: data.assessment.training,
                     performance: data.assessment.performance,
                     education: data.assessment.education,
                     experience: data.assessment.experience,
                     remarks: ''
                 });
+
             }
         }
         catch (error: any) {
