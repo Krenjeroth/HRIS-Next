@@ -4,22 +4,13 @@ import { Field, Form, Formik, FormikHelpers, useFormikContext } from "formik";
 import { FormElement } from "../commons/FormElement";
 import { Button } from "flowbite-react";
 import { useDisqualifiedContext } from "@/app/contexts/DisqualifiedContext";
-import CKEditorComponent from '../CKEditorComponent';
-import Editor from "../CKEditor";
-
-import { useMemo } from "react";
-
 
 // Main function
 export const EmailForm = () => {
 
-
+    const Editor = dynamic(() => import("../CKEditor2"), { ssr: true });
     const context = useDisqualifiedContext();
     const { setFieldValue, submitForm } = useFormikContext();
-    // const Editor = dynamic(() => import("../CKEditor"), { ssr: false });
-
-
-
 
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
@@ -36,7 +27,7 @@ export const EmailForm = () => {
                     name="recipient"
                     placeholder="Recipient"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    readOnly={true}
+                    // readOnly={true}
                     autoComplete="on"
                 />
             </FormElement>
@@ -80,16 +71,8 @@ export const EmailForm = () => {
 
             <Editor
                 name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2'
-                onChange={(v) => {
-                    console.log("hello");
-                }}
+                onChange={(v) => { }}
             />
-
-            {/* <CKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
-            {/* <CustomCKEditorComponent name="body" label="Email Body" className='col-span-4 md:col-span-4 mx-2 my-2' /> */}
-
-
-            {/* <TestEditor/> */}
 
             <div className="col-span-4 mt-5">
                 <Button className={`btn btn-sm text-white rounded-lg bg-blue-500 hover:scale-90 shadow-sm text mx-auto`} onClick={() => {

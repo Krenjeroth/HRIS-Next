@@ -1,4 +1,5 @@
 "use client";
+import dynamic from 'next/dynamic';
 import { Button, Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
@@ -69,9 +70,14 @@ interface IValues {
     division_name?: string,
 }
 
+// Dynamically import the component
+const LazyComponent = dynamic(() => import('../../components/LazyComponent'), {
+    ssr: false, // This disables server-side rendering for this component
+    loading: () => <p>Loading...</p>, // Optional: Show a loading state while the component is being loaded
+});
+
 
 //main function
-
 function AllRequestsTabs() {
 
 
@@ -110,7 +116,7 @@ function AllRequestsTabs() {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Request");
+    const [title] = useState<string>("Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
@@ -203,7 +209,6 @@ function AllRequestsTabs() {
                 orderAscending: "asc",
                 positionStatus: ['Permanent']
             };
-
 
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -628,8 +633,6 @@ function AllRequestsTabs() {
                 </Formik>
             </Drawer>
             <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
-
-
                 {/*  Tabs */}
                 <Tabs.Group
                     aria-label="Tabs with underline"
@@ -697,12 +700,9 @@ function AllRequestsTabs() {
                     <Tabs.Item title={"Approved Requests"}>
                     </Tabs.Item>
 
-
-
                     <Tabs.Item title={"Queued Requests"}>
                     </Tabs.Item>
                 </Tabs.Group >
-
             </div >
         </>
     );

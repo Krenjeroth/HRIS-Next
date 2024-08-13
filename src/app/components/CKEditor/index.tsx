@@ -55,18 +55,17 @@ const Editor: React.FC<CKEditorComponentProps> = ({
   const { setFieldValue } = useFormikContext();
   const context = useDisqualifiedContext();
 
-  useEffect(() => {
-    setFieldValue(name, editorData);
-    console.log(editorData);
+  // useEffect(() => {
+  //   // setFieldValue(name, editorData);
+  //   // console.log(editorData);
 
-  }, [editorData]);
+  // }, [editorData]);
 
   return (
     <div className={className}>
       <h2 className='text-sm font-medium my-1'>{label}</h2>
-      <CKEditor
+      {/* <CKEditor
         editor={ClassicEditor}
-        data={context.initialValues.body}
         config={{
           toolbar: {
             items: [
@@ -192,13 +191,16 @@ const Editor: React.FC<CKEditorComponentProps> = ({
         }}
         onReady={editor => {
           editorRef.current = editor;
-          setEditorData("");
+          // setEditorData("");
 
         }}
         onChange={(event, editor) => {
           const data = editor.getData();
-          setEditorData(data);
+          // setEditorData(data);
         }}
+      /> */}
+      <CKEditor
+        editor={ClassicEditor}
       />
     </div>
   );

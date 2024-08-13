@@ -1,94 +1,211 @@
-// // components/CKEditorField.tsx
-// import dynamic from 'next/dynamic';
-// import { useEffect, useState } from 'react';
-// import { FieldProps, Form, useFormikContext } from 'formik';
-// import { FormElement } from '../commons/FormElement';
-
-// // Dynamically import CKEditor and ClassicEditor to ensure they only load on the client side
-// const CKEditor = dynamic(() => import('@ckeditor/ckeditor5-react').then(mod => mod.CKEditor), { ssr: false });
-// const ClassicEditor = dynamic(() => import('@ckeditor/ckeditor5-build-classic'), { ssr: false });
-
-// interface CKEditorFieldProps extends FieldProps {
-//   data: string,
-//   label: string,
-//   name: string,
-//   className: string,
-// }
-
-// const CKEditorField: React.FC<CKEditorFieldProps> = ({ data, label, name, className, }) => {
-
-//   const [editorLoaded, setEditorLoaded] = useState(false);
-//   const { setFieldValue } = useFormikContext();
-
-//   useEffect(() => {
-//     setEditorLoaded(true);
-//   }, []);
-
-//   const handleChange = (event: any, editor: any) => {
-//     const data = editor.getData();
-//     setFieldValue(name, data);
-//   };
-
-//   return (
-//     <div>
-//       {label && <label>{label}</label>}
-//       {editorLoaded ? (
-//         <CKEditor
-//           editor={ClassicEditor}
-//           data={data}
-//           onChange={handleChange}
-//         />
-//       ) : (
-//         <p>Loading...</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CKEditorField;
-
-// components/CKEditorField.tsx
-
 "use client";
-import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
-import { FieldProps } from 'formik';
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import React, { useCallback, useMemo } from "react";
+import { useField, useFormikContext } from 'formik';
+import 'ckeditor5/ckeditor5.css';
+import debounce from 'lodash/debounce';
 
-// Dynamically import CKEditor and ClassicEditor to ensure they only load on the client side
-const CKEditor = dynamic(() => import('@ckeditor/ckeditor5-react').then(mod => mod.CKEditor), { ssr: false });
-const ClassicEditor = dynamic(() => import('@ckeditor/ckeditor5-build-classic'), { ssr: false });
+import {
+  ClassicEditor,
+  AccessibilityHelp,
+  AutoLink,
+  Autosave,
+  Bold,
+  Code,
+  Essentials,
+  FontBackgroundColor,
+  FontColor,
+  FontFamily,
+  FontSize,
+  GeneralHtmlSupport,
+  Heading,
+  Highlight,
+  Italic,
+  Link,
+  List,
+  ListProperties,
+  Paragraph,
+  SelectAll,
+  ShowBlocks,
+  SourceEditing,
+  Table,
+  TableToolbar,
+  TodoList,
+  Undo
+} from 'ckeditor5';
 
-interface CKEditorFieldProps extends FieldProps {
-  label?: string;
+interface CKEditorComponentProps {
+  label: string,
+  name: string,
+  className: string,
+  onChange: (data: string) => void;
 }
 
-const CKEditorField: React.FC<CKEditorFieldProps> = ({ field, form, label }) => {
-  const [editorLoaded, setEditorLoaded] = useState(false);
 
-  useEffect(() => {
-    setEditorLoaded(true);
-  }, []);
+interface CKEditorComponentProps {
+  label: string,
+  name: string,
+  className: string,
+  onChange: (data: string) => void;
+}
 
-  const handleChange = (event: any, editor: any) => {
-    const data = editor.getData();
-    form.setFieldValue(field.name, data);
-  };
+const Editor: React.FC<CKEditorComponentProps> = ({
+  label,
+  name,
+  className,
+  onChange,
+}) => {
+
+  const [field, , helpers] = useField(name);
+  const { setFieldValue } = useFormikContext();
+
+  // Debounce the onChange handler to trigger only after the user stops typing
+  const debouncedHandleChange = useCallback(
+    debounce((data: string) => {
+      setFieldValue(name, data);
+    }, 400), // Adjust the debounce delay as needed
+    []
+  );
 
   return (
-    <div>
-      {label && <label>{label}</label>}
-      {editorLoaded ? (
-        <CKEditor
-          editor={ClassicEditor}
-          data={field.value}
-          onChange={handleChange}
-        />
-      ) : (
-        <p>Loading...</p>
-      )}
+    <div className={className}>
+      <h2 className='text-sm font-medium my-1'>{label}</h2>
+      <CKEditor
+        editor={ClassicEditor}
+
+        onChange={(event: Event, editor: any) => {
+          const data = editor.getData();
+          debouncedHandleChange(data);
+        }}
+
+        data={field.value}
+        config={{
+          toolbar: {
+            items: [
+              'undo',
+              'redo',
+              '|',
+              'sourceEditing',
+              'showBlocks',
+              'selectAll',
+              '|',
+              'heading',
+              '|',
+              'fontSize',
+              'fontFamily',
+              'fontColor',
+              'fontBackgroundColor',
+              '|',
+              'bold',
+              'italic',
+              'code',
+              '|',
+              'link',
+              'insertTable',
+              'highlight',
+              '|',
+              'bulletedList',
+              'numberedList',
+              'todoList',
+              '|',
+              'accessibilityHelp'
+            ],
+            shouldNotGroupWhenFull: false
+          },
+          plugins: [
+            AccessibilityHelp,
+            AutoLink,
+            Autosave,
+            Bold,
+            Code,
+            Essentials,
+            FontBackgroundColor,
+            FontColor,
+            FontFamily,
+            FontSize,
+            GeneralHtmlSupport,
+            Heading,
+            Highlight,
+            Italic,
+            Link,
+            List,
+            ListProperties,
+            Paragraph,
+            SelectAll,
+            ShowBlocks,
+            SourceEditing,
+            Table,
+            TableToolbar,
+            TodoList,
+            Undo
+          ],
+          fontFamily: {
+            supportAllValues: true
+          },
+          fontSize: {
+            options: [10, 12, 14, 'default', 18, 20, 22],
+            supportAllValues: true
+          },
+          heading: {
+            options: [
+              {
+                model: 'paragraph',
+                title: 'Paragraph',
+                class: 'ck-heading_paragraph'
+              },
+              {
+                model: 'heading1',
+                view: 'h1',
+                title: 'Heading 1',
+                class: 'ck-heading_heading1'
+              },
+              {
+                model: 'heading2',
+                view: 'h2',
+                title: 'Heading 2',
+                class: 'ck-heading_heading2'
+              },
+              {
+                model: 'heading3',
+                view: 'h3',
+                title: 'Heading 3',
+                class: 'ck-heading_heading3'
+              },
+              {
+                model: 'heading4',
+                view: 'h4',
+                title: 'Heading 4',
+                class: 'ck-heading_heading4'
+              },
+              {
+                model: 'heading5',
+                view: 'h5',
+                title: 'Heading 5',
+                class: 'ck-heading_heading5'
+              },
+              {
+                model: 'heading6',
+                view: 'h6',
+                title: 'Heading 6',
+                class: 'ck-heading_heading6'
+              }
+            ]
+          },
+          htmlSupport: {
+            allow: [
+              {
+                name: /^.*$/,
+                styles: true,
+                attributes: true,
+                classes: true
+              }
+            ]
+          },
+        }}
+      />
     </div>
   );
 };
 
-export default CKEditorField;
-
+export default Editor;
