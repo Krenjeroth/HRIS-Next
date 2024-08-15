@@ -48,7 +48,9 @@ type filter = {
 interface member {
     prefix: string,
     name: string,
-    position: string
+    position: string,
+    office: string,
+    role: string
 }
 
 
@@ -57,15 +59,18 @@ interface member {
 interface IValues {
     date_of_effectivity: "",
     end_of_effectivity: "",
+    presiding_officer_prefix: "",
     presiding_officer: "",
     presiding_officer_position: "",
-    members: member[]
+    presiding_officer_office: "",
+    members: member[],
+    secretariats: member[]
 }
 
 
 //main function
 
-function SalaryGradeTabs() {
+function PSBTab() {
 
 
     // variables
@@ -92,14 +97,18 @@ function SalaryGradeTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
-    const [members, setMembers] = useState<member[]>([{ name: "hello", position: "there" }]);
+    const [members, setMembers] = useState<member[]>([]);
+    const [secretariats, setSecretariats] = useState<member[]>([]);
     const [defaultValue] = useState<IValues>(
         {
             date_of_effectivity: "",
+            presiding_officer_prefix: "",
             end_of_effectivity: "",
             presiding_officer: "",
             presiding_officer_position: "",
-            members: []
+            presiding_officer_office: "",
+            members: [],
+            secretariats: []
         }
     );
     const [initialValues, setValues] = useState<IValues>(
@@ -162,21 +171,32 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("personnel-selection-board/" + id);
             const data = resp.data;
             if (resp.status === 200) {
-                // setValues(defaultValue)
+                const temp_members = data.personnels.filter((personnel: member) => {
+                    return personnel.role = "member";
+                });
+                const temp_secretariats = data.personnels.filter((personnel: member) => {
+                    return personnel.role = "secretariat";
+                });
+
+                setValues(defaultValue)
                 setValues({
                     date_of_effectivity: data.personnelSelectionBoard.date_of_effectivity,
                     end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity,
+                    presiding_officer_prefix: data.personnelSelectionBoard.presiding_officer_prefix,
                     presiding_officer: data.personnelSelectionBoard.presiding_officer,
                     presiding_officer_position: data.personnelSelectionBoard.presiding_officer_position,
-                    members: [...data.members]
+                    presiding_officer_office: data.personnelSelectionBoard.presiding_officer_office,
+                    members: temp_members,
+                    secretariats: temp_secretariats
                 });
 
-                setMembers([...data.members]);
+                setMembers(temp_members);
+                setSecretariats(temp_secretariats);
                 setShowDrawer(true);
             }
         }
         catch (error: any) {
-            // console.log(error);
+            console.log(error);
         }
 
     };
@@ -208,7 +228,7 @@ function SalaryGradeTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("psb", values);
+                const resp = await HttpService.post("personnel-selection-board", values);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -300,7 +320,7 @@ function SalaryGradeTabs() {
                                 label="Date of Effectivity"
                                 errors={errors}
                                 touched={touched}
-                                className='col-span-4 md:col-span-2'
+                                className='col-span-4 md:col-span-4'
                                 required={true}
                             >
 
@@ -318,7 +338,7 @@ function SalaryGradeTabs() {
                                 label="End of Effectivity"
                                 errors={errors}
                                 touched={touched}
-                                className='col-span-4 md:col-span-2'
+                                className='col-span-4 md:col-span-4'
                             >
 
                                 <DatePicker
@@ -327,6 +347,25 @@ function SalaryGradeTabs() {
                                     name="end_of_effectivity"
                                     placeholderText="Enter Date"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+                            </FormElement>
+
+                            {/*  */}
+                            <FormElement
+                                name="presiding_officer_prefix"
+                                label="Prefix"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-4'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="presiding_officer_prefix"
+                                    name="presiding_officer_prefix"
+                                    placeholder="Enter Presiding Officer Prefix"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
@@ -344,7 +383,7 @@ function SalaryGradeTabs() {
                                     readOnly={(process === "Delete") ? true : false}
                                     id="presiding_officer"
                                     name="presiding_officer"
-                                    placeholder="Enter Presiding Officer"
+                                    placeholder="Enter Presiding"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -368,9 +407,27 @@ function SalaryGradeTabs() {
                                 />
                             </FormElement>
 
+                            {/*  */}
+                            <FormElement
+                                name="presiding_officer_office"
+                                label="Office"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-4'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="presiding_officer_office"
+                                    name="presiding_officer_office"
+                                    placeholder="Enter Presiding Officer Office"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
 
 
-                            <div className='col-span-4 md:col-span-4 mt-6 ml-3'>
+                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-6'>
                                 <span className='  font-medium text-lg '>Members</span>
                                 <hr className=' mt-6' />
                             </div>
@@ -380,9 +437,21 @@ function SalaryGradeTabs() {
                                 {({ insert, remove, push }) => (
                                     <>
                                         {members.map((object, index: number) => {
-                                            return <div className='col-span-4 md:col-span-4 grid grid-cols-4' key={index}>
+                                            return <div className='col-span-4 md:col-span-4 grid grid-cols-4 gap-2' key={index}>
 
-                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                                <div className="col-span-4 md:col-span-4">
+                                                    <Field
+                                                        id={`members.${index}.prefix`}
+                                                        name={`members.${index}.prefix`}
+                                                        placeholder="Prefix"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`members.${index}.prefix`} errors={errors} touched={touched} />
+                                                </div>
+
+
+                                                <div className="col-span-2">
                                                     <Field
                                                         id={`members.${index}.name`}
                                                         name={`members.${index}.name`}
@@ -393,7 +462,7 @@ function SalaryGradeTabs() {
                                                     <FormFieldError name={`members.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="mt-2 mx-2 col-span-8 md:col-span-4">
+                                                {/* <div className="">
                                                     <Field
                                                         id={`members.${index}.position`}
                                                         name={`members.${index}.position`}
@@ -404,7 +473,18 @@ function SalaryGradeTabs() {
                                                     <FormFieldError name={`members.${index}.position`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="mt-1 col-span-4 md:col-span-2 mx-auto ">
+                                                <div className="">
+                                                    <Field
+                                                        id={`members.${index}.office`}
+                                                        name={`members.${index}.office`}
+                                                        placeholder="Office"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`members.${index}.office`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className=" ">
                                                     <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
                                                         remove(index);
                                                         let reinitialize_members = [...members].filter((object, filterIndedx: number) => {
@@ -412,6 +492,117 @@ function SalaryGradeTabs() {
                                                         });
 
                                                         setMembers(reinitialize_members);
+                                                    }
+                                                    }>
+                                                        <Tooltip content="Remove Data">
+                                                            <HiOutlineDocumentRemove />
+                                                        </Tooltip>
+                                                    </Button>
+                                                </div> */}
+
+                                                <hr className='text-blue-600 mt-6 col-span-12' />
+                                            </div>
+                                        })}
+                                        <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>
+                                            <div className="mt-2 mx-2 md:col-start-4 col-span-4 md:col-span-1">
+
+                                                <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
+
+                                                    let reinitialize_members = [...members].map((object: member, index: number) => {
+                                                        return object;
+                                                    });
+
+                                                    reinitialize_members.push({
+                                                        prefix: '',
+                                                        name: '',
+                                                        position: '',
+                                                        office: '',
+                                                        role: 'member',
+                                                    });
+
+                                                    push({
+                                                        prefix: '',
+                                                        name: '',
+                                                        position: '',
+                                                        office: '',
+                                                        role: 'member',
+                                                    });
+
+                                                    setMembers(reinitialize_members);
+
+                                                }}>
+                                                    <Tooltip content="Add Member">
+                                                        <HiDocumentAdd className='text-lg' />
+                                                    </Tooltip>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </FieldArray>
+
+
+                            <div className='col-span-4 md:col-span-4 mt-6 ml-3'>
+                                <span className='  font-medium text-lg '>Secrerariats</span>
+                                <hr className=' mt-6' />
+                            </div>
+
+
+                            <FieldArray name="secretariats">
+                                {({ insert, remove, push }) => (
+                                    <>
+                                        {secretariats.map((object, index: number) => {
+                                            return <div className='col-span-4 md:col-span-4 grid grid-cols-4' key={index}>
+                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                                    <Field
+                                                        id={`secretariats.${index}.prefix`}
+                                                        name={`secretariats.${index}.prefix`}
+                                                        placeholder="Prefix"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`secretariats.${index}.prefix`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                                    <Field
+                                                        id={`secretariats.${index}.name`}
+                                                        name={`secretariats.${index}.name`}
+                                                        placeholder="Name"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`secretariats.${index}.name`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                                    <Field
+                                                        id={`secretariats.${index}.position`}
+                                                        name={`secretariats.${index}.position`}
+                                                        placeholder="Position"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`secretariats.${index}.position`} errors={errors} touched={touched} />
+                                                </div>
+                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                                    <Field
+                                                        id={`secretariats.${index}.office`}
+                                                        name={`secretariats.${index}.office`}
+                                                        placeholder="Office"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`secretariats.${index}.office`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className="mt-1 col-span-4 md:col-span-2 mx-auto ">
+                                                    <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
+                                                        remove(index);
+                                                        let reinitialize_secretariats = [...secretariats].filter((object, filterIndedx: number) => {
+                                                            return index != filterIndedx;
+                                                        });
+                                                        setSecretariats(reinitialize_secretariats);
                                                     }
                                                     }>
                                                         <Tooltip content="Remove Data">
@@ -428,21 +619,27 @@ function SalaryGradeTabs() {
 
                                                 <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
 
-                                                    let reinitialize_members = [...members].map((object: member, index: number) => {
+                                                    let reinitialize_secretariats = [...secretariats].map((object: member, index: number) => {
                                                         return object;
                                                     });
 
-                                                    reinitialize_members.push({
+                                                    reinitialize_secretariats.push({
+                                                        prefix: '',
                                                         name: '',
                                                         position: '',
+                                                        office: '',
+                                                        role: 'secretariat',
                                                     });
 
                                                     push({
+                                                        prefix: '',
                                                         name: '',
                                                         position: '',
+                                                        office: '',
+                                                        role: 'secretariat',
                                                     });
 
-                                                    setMembers(reinitialize_members);
+                                                    setSecretariats(reinitialize_secretariats);
 
                                                 }}>
                                                     <Tooltip content="Add Member">
@@ -514,4 +711,4 @@ function SalaryGradeTabs() {
     );
 }
 
-export default SalaryGradeTabs
+export default PSBTab
