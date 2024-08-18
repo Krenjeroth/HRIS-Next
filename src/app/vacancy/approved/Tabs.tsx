@@ -210,6 +210,7 @@ function AllRequestsTabs() {
 
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 date_submitted: '',

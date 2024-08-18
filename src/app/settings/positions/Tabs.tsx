@@ -157,6 +157,7 @@ function positionTabs() {
     }, []);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 code: '',

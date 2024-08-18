@@ -30,7 +30,6 @@ function index(parameter: Props) {
     return (
 
 
-
         <DatePicker
             {...field}
             {...parameter}
@@ -42,8 +41,13 @@ function index(parameter: Props) {
             yearDropdownItemNumber={50}
             scrollableYearDropdown
             onChange={val => {
-                setFieldValue(field.name, moment(val).format("YYYY-MM-DD")
-                );
+                if (val === null) {
+                    setFieldValue(field.name, "");
+                }
+                else {
+                    setFieldValue(field.name, moment(val).format("YYYY-MM-DD"));
+                }
+
             }}
         />
 

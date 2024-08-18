@@ -145,6 +145,7 @@ function SalaryGradeTabs() {
     }, []);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setInitialValues({
                 code: '',

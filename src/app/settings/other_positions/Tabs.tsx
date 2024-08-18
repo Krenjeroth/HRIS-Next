@@ -228,6 +228,7 @@ function SalaryGradeTabs() {
 
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 item_number: "",

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Field, FieldArray, Form, Formik, FormikHelpers } from 'formik';
+import { Field, FieldArray, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -75,6 +75,7 @@ function PSBTab() {
 
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
+    // const { submitForm } = useFormikContext();
     const [activePage, setActivePage] = useState<number>(1);
     var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
@@ -143,7 +144,33 @@ function PSBTab() {
         getData();
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
+
     useEffect(() => {
+
+        setMembers(initialValues.members.map((item: member) => {
+            return {
+                'prefix': item.prefix ? item.prefix : "",
+                'name': item.name ? item.name : "",
+                'position': item.position ? item.position : "",
+                'office': item.office ? item.office : "",
+                'role': item.role ? item.role : "",
+            };
+        }));
+
+        setSecretariats(initialValues.secretariats.map((item: member) => {
+            return {
+                'prefix': item.prefix ? item.prefix : "",
+                'name': item.name ? item.name : "",
+                'position': item.position ? item.position : "",
+                'office': item.office ? item.office : "",
+                'role': item.role ? item.role : "",
+            };
+        }));
+
+    }, [initialValues.secretariats, initialValues.members]);
+
+    useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues(defaultValue);
         }
@@ -171,27 +198,49 @@ function PSBTab() {
             const resp = await HttpService.get("personnel-selection-board/" + id);
             const data = resp.data;
             if (resp.status === 200) {
-                const temp_members = data.personnels.filter((personnel: member) => {
-                    return personnel.role = "member";
+                let temp_members = data.personnels.filter((personnel: member) => {
+                    return personnel.role == "member";
                 });
-                const temp_secretariats = data.personnels.filter((personnel: member) => {
-                    return personnel.role = "secretariat";
+                let temp_secretariats = data.personnels.filter((personnel: member) => {
+
+                    return personnel.role == "secretariat";
                 });
 
-                setValues(defaultValue)
+
+
+                setValues(defaultValue);
                 setValues({
                     date_of_effectivity: data.personnelSelectionBoard.date_of_effectivity,
-                    end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity,
-                    presiding_officer_prefix: data.personnelSelectionBoard.presiding_officer_prefix,
+                    end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity == null ? "" : data.personnelSelectionBoard.end_of_effectivity,
                     presiding_officer: data.personnelSelectionBoard.presiding_officer,
+                    presiding_officer_prefix: data.personnelSelectionBoard.presiding_officer_prefix,
                     presiding_officer_position: data.personnelSelectionBoard.presiding_officer_position,
                     presiding_officer_office: data.personnelSelectionBoard.presiding_officer_office,
-                    members: temp_members,
-                    secretariats: temp_secretariats
+                    members: temp_members.map((item: member) => {
+                        return {
+                            'prefix': item.prefix ? item.prefix : "",
+                            'name': item.name ? item.name : "",
+                            'position': item.position ? item.position : "",
+                            'office': item.office ? item.office : "",
+                            'role': item.role ? item.role : "",
+                        };
+                    }),
+                    secretariats: temp_secretariats.map((item: member) => {
+                        return {
+                            'prefix': item.prefix ? item.prefix : "",
+                            'name': item.name ? item.name : "",
+                            'position': item.position ? item.position : "",
+                            'office': item.office ? item.office : "",
+                            'role': item.role ? item.role : "",
+                        };
+                    })
                 });
 
-                setMembers(temp_members);
-                setSecretariats(temp_secretariats);
+
+
+
+
+
                 setShowDrawer(true);
             }
         }
@@ -320,7 +369,7 @@ function PSBTab() {
                                 label="Date of Effectivity"
                                 errors={errors}
                                 touched={touched}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-2'
                                 required={true}
                             >
 
@@ -338,7 +387,7 @@ function PSBTab() {
                                 label="End of Effectivity"
                                 errors={errors}
                                 touched={touched}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-2'
                             >
 
                                 <DatePicker
@@ -357,7 +406,7 @@ function PSBTab() {
                                 errors={errors}
                                 touched={touched}
                                 required={true}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-1'
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
@@ -377,7 +426,7 @@ function PSBTab() {
                                 errors={errors}
                                 touched={touched}
                                 required={true}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-3'
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
@@ -395,7 +444,7 @@ function PSBTab() {
                                 errors={errors}
                                 touched={touched}
                                 required={true}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-2'
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
@@ -414,7 +463,7 @@ function PSBTab() {
                                 errors={errors}
                                 touched={touched}
                                 required={true}
-                                className='col-span-4 md:col-span-4'
+                                className='col-span-4 md:col-span-2'
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
@@ -426,20 +475,22 @@ function PSBTab() {
                                 />
                             </FormElement>
 
+                            <hr className=' col-span-4 md:col-span-4 grid grid-cols-4 my-2' />
 
-                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-6'>
+                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-3 '>
                                 <span className='  font-medium text-lg '>Members</span>
-                                <hr className=' mt-6' />
                             </div>
+
+
 
 
                             <FieldArray name="members">
                                 {({ insert, remove, push }) => (
                                     <>
                                         {members.map((object, index: number) => {
-                                            return <div className='col-span-4 md:col-span-4 grid grid-cols-4 gap-2' key={index}>
+                                            return <div className='col-span-4 md:col-span-4 grid md:grid-cols-8 grid-col ' key={index}>
 
-                                                <div className="col-span-4 md:col-span-4">
+                                                <div className="col-span-8 md:col-span-3 mx-1 mt-1">
                                                     <Field
                                                         id={`members.${index}.prefix`}
                                                         name={`members.${index}.prefix`}
@@ -451,7 +502,8 @@ function PSBTab() {
                                                 </div>
 
 
-                                                <div className="col-span-2">
+
+                                                <div className="col-span-8 md:col-span-4 mx-1 mt-1">
                                                     <Field
                                                         id={`members.${index}.name`}
                                                         name={`members.${index}.name`}
@@ -462,7 +514,8 @@ function PSBTab() {
                                                     <FormFieldError name={`members.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                {/* <div className="">
+
+                                                <div className="col-span-8 md:col-span-3 mx-1 mt-1">
                                                     <Field
                                                         id={`members.${index}.position`}
                                                         name={`members.${index}.position`}
@@ -473,7 +526,7 @@ function PSBTab() {
                                                     <FormFieldError name={`members.${index}.position`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="">
+                                                <div className="col-span-8 md:col-span-4 mx-1 mt-1">
                                                     <Field
                                                         id={`members.${index}.office`}
                                                         name={`members.${index}.office`}
@@ -484,7 +537,8 @@ function PSBTab() {
                                                     <FormFieldError name={`members.${index}.office`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className=" ">
+
+                                                <div className="col-span-8 md:col-span-1 mx-1 mt-1">
                                                     <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
                                                         remove(index);
                                                         let reinitialize_members = [...members].filter((object, filterIndedx: number) => {
@@ -498,15 +552,16 @@ function PSBTab() {
                                                             <HiOutlineDocumentRemove />
                                                         </Tooltip>
                                                     </Button>
-                                                </div> */}
+                                                </div>
 
-                                                <hr className='text-blue-600 mt-6 col-span-12' />
+                                                <hr className='col-span-8 md:col-span-8 mx-1 mt-2' />
                                             </div>
                                         })}
-                                        <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>
-                                            <div className="mt-2 mx-2 md:col-start-4 col-span-4 md:col-span-1">
 
-                                                <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
+                                        <div className='col-span-4 md:col-span-4 grid md:grid-cols-8 grid-col'>
+                                            <div className="mt-2 mx-2 md:col-start-8 col-span-8 md:col-span-1">
+
+                                                <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-green-400 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle' onClick={() => {
 
                                                     let reinitialize_members = [...members].map((object: member, index: number) => {
                                                         return object;
@@ -534,6 +589,9 @@ function PSBTab() {
                                                     <Tooltip content="Add Member">
                                                         <HiDocumentAdd className='text-lg' />
                                                     </Tooltip>
+                                                    {/* <Tooltip content="Remove Data">
+                                                        <HiOutlineDocumentRemove />
+                                                    </Tooltip> */}
                                                 </Button>
                                             </div>
                                         </div>
@@ -542,9 +600,9 @@ function PSBTab() {
                             </FieldArray>
 
 
-                            <div className='col-span-4 md:col-span-4 mt-6 ml-3'>
-                                <span className='  font-medium text-lg '>Secrerariats</span>
-                                <hr className=' mt-6' />
+                            <hr className=' col-span-4 md:col-span-4 grid grid-cols-4 my-2' />
+                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-3 '>
+                                <span className='  font-medium text-lg '>Secretariats</span>
                             </div>
 
 
@@ -552,8 +610,9 @@ function PSBTab() {
                                 {({ insert, remove, push }) => (
                                     <>
                                         {secretariats.map((object, index: number) => {
-                                            return <div className='col-span-4 md:col-span-4 grid grid-cols-4' key={index}>
-                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+                                            return <div className='col-span-4 md:col-span-4 grid md:grid-cols-8 grid-col ' key={index}>
+
+                                                <div className="col-span-8 md:col-span-3 mx-1 mt-1">
                                                     <Field
                                                         id={`secretariats.${index}.prefix`}
                                                         name={`secretariats.${index}.prefix`}
@@ -564,7 +623,9 @@ function PSBTab() {
                                                     <FormFieldError name={`secretariats.${index}.prefix`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+
+
+                                                <div className="col-span-8 md:col-span-4 mx-1 mt-1">
                                                     <Field
                                                         id={`secretariats.${index}.name`}
                                                         name={`secretariats.${index}.name`}
@@ -575,7 +636,8 @@ function PSBTab() {
                                                     <FormFieldError name={`secretariats.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+
+                                                <div className="col-span-8 md:col-span-3 mx-1 mt-1">
                                                     <Field
                                                         id={`secretariats.${index}.position`}
                                                         name={`secretariats.${index}.position`}
@@ -585,7 +647,8 @@ function PSBTab() {
                                                     />
                                                     <FormFieldError name={`secretariats.${index}.position`} errors={errors} touched={touched} />
                                                 </div>
-                                                <div className="mt-2 mx-2 col-span-2 md:col-span-2">
+
+                                                <div className="col-span-8 md:col-span-4 mx-1 mt-1">
                                                     <Field
                                                         id={`secretariats.${index}.office`}
                                                         name={`secretariats.${index}.office`}
@@ -596,12 +659,14 @@ function PSBTab() {
                                                     <FormFieldError name={`secretariats.${index}.office`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="mt-1 col-span-4 md:col-span-2 mx-auto ">
+
+                                                <div className="col-span-8 md:col-span-1 mx-1 mt-1">
                                                     <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-red-500 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle ' onClick={() => {
                                                         remove(index);
                                                         let reinitialize_secretariats = [...secretariats].filter((object, filterIndedx: number) => {
                                                             return index != filterIndedx;
                                                         });
+
                                                         setSecretariats(reinitialize_secretariats);
                                                     }
                                                     }>
@@ -611,13 +676,13 @@ function PSBTab() {
                                                     </Button>
                                                 </div>
 
-                                                <hr className='text-blue-600 mt-6 col-span-12' />
+                                                <hr className='col-span-8 md:col-span-8 mx-1 mt-2' />
                                             </div>
                                         })}
-                                        <div className='col-span-4 md:col-span-4 grid md:grid-cols-4 grid-col'>
-                                            <div className="mt-2 mx-2 md:col-start-4 col-span-4 md:col-span-1">
 
-                                                <Button className='btn btn-sm bg-green-400 text-white rounded-lg   hover:scale-90 shadow-sm  mx-auto' onClick={() => {
+                                        <div className='col-span-4 md:col-span-4 grid md:grid-cols-8 grid-col'>
+                                            <div className="mt-2 mx-2 md:col-start-8 col-span-8 md:col-span-1">
+                                                <Button className='mt-3 btn btn-sm text-white rounded-lg  bg-green-400 hover:bg-red-500 hover:scale-90 shadow-sm float-left align-middle' onClick={() => {
 
                                                     let reinitialize_secretariats = [...secretariats].map((object: member, index: number) => {
                                                         return object;
@@ -656,8 +721,15 @@ function PSBTab() {
                             {/* submit button */}
 
                             <div className=" col-span-4 mx-auto mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} onClick={() => {
+                                    // submitForm();
+                                    const element = document.getElementById('drawer_title');
+                                    if (element) {
+                                        element.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                }}>
                                     {(process == "Delete" ? "Delete" : "Submit")}
+
                                 </button>
                             </div>
                         </Form>

@@ -107,6 +107,7 @@ function SalaryGradeTabs() {
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 name: ''

@@ -318,6 +318,7 @@ function AllRequestsTabs() {
 
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues(defaultData);
         }

@@ -231,6 +231,7 @@ function SalaryGradeTabs() {
     }, [divisionKeyword]);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 item_number: "",

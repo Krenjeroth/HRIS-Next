@@ -112,6 +112,7 @@ export const MeetingForm = () => {
 
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             context.setValues(defaultData);
         }
