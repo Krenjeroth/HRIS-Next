@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--inspect' next dev  --port 80 --hostname 192.168.7.200",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev  --port 80 --hostname 192.168.0.103",
     "build": "next build",
     "start": "next start --port 80 --hostname 192.168.7.200",
     "lint": "next lint"

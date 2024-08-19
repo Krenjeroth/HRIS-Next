@@ -528,7 +528,7 @@ function AllRequestsTabs() {
                         if (tab == 0) {
                             router.push('/vacancy/requests');
                         }
-                        else if (2) {
+                        else if (tab == 2) {
                             router.push('/vacancy/queued');
                         }
 
