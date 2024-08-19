@@ -15,6 +15,7 @@ export type formContextType = {
     process: string,
     children?: React.ReactNode,
     id?: number,
+    code?: string,
     submitSearchPerson?: Function
 
 };
@@ -203,6 +204,7 @@ export interface DisqualifiedIValues {
 
 export interface InterviewIvalues {
     // personal information
+    date_created: string,
     meeting_date: string,
     venue: string,
     positions: string[],

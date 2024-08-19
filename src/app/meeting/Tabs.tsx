@@ -74,6 +74,7 @@ function AllRequestsTabs() {
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<InterviewIvalues>({
+        date_created: '',
         meeting_date: '',
         venue: '',
         positions: [],
@@ -264,8 +265,9 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 setValues(defaultData);
                 setValues({
+                    date_created: data.interview.date_created,
                     meeting_date: data.interview.meeting_date,
-                    venue: data.interview.venue,
+                    venue: data.interview.venue_id,
                     positions: data.positions.map((item: any) => {
                         return item.vacancy_id.toString();
                     }),

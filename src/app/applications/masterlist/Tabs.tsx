@@ -153,6 +153,7 @@ function AllRequestsTabs() {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
+    const [code, setCode] = useState<string>("employee");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
@@ -598,6 +599,15 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("application/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+
+                if (data.application.vacancy.lgu_position.position.code.includes("PGDH-")) {
+                    setCode("head");
+                }
+                else {
+                    setCode("employee");
+                }
+
+
                 setValues(defaultData);
                 setChildren(data.children.map((item: child) => {
                     return {
@@ -986,12 +996,13 @@ function AllRequestsTabs() {
                                 process={process}
                                 submitSearchPerson={submitSearchPerson}
                                 id={id}>
+
                                 {(process == "Disqualify") ?
                                     (<MasterlistDisqualifyForm />)
                                     :
                                     (
                                         (process == "Shortlist") ?
-                                            (<ShortListForm />)
+                                            (<ShortListForm code={code} />)
                                             :
                                             (<ApplicationPDS
                                                 formActiveTab={formActiveTab}

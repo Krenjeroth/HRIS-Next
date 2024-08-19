@@ -6,13 +6,35 @@ import { usePDSContext } from "@/app/contexts/PDSContext";
 import { Button } from "flowbite-react";
 import AppropriateEligibility from "../PDS/AppropriateEligibility";
 import Trainings from "../PDS/Trainings";
+import { useEffect, useState } from "react";
+import { Code } from "ckeditor5";
+interface parameters {
+    code: string
+}
 
 
 // Main function
-export const ShortListForm = () => {
+export const ShortListForm = (param: parameters) => {
 
     const context = usePDSContext();
     const { setFieldValue, submitForm } = useFormikContext();
+    const [performanceLabel, setPerformanceLabel] = useState<string>("");
+    const [experienceLabel, setExperienceLabel] = useState<string>("");
+
+    useEffect(() => {
+        console.log(param.code == "head");
+        if (param.code == "head") {
+            console.log("here");
+            setPerformanceLabel("Performace (20)");
+            setExperienceLabel("Experience (25)");
+        }
+        else {
+            console.log("here2");
+            setPerformanceLabel("Performace (25)");
+            setExperienceLabel("Experience (20)");
+        }
+
+    }, [param.code]);
 
     return (
         <div className='grid lg:grid-cols-4 grid-col mt-4'>
@@ -258,7 +280,7 @@ export const ShortListForm = () => {
 
             <FormElement
                 name="performance"
-                label="Performance(20)"
+                label={performanceLabel}
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-1 md:col-span-1'
@@ -293,7 +315,7 @@ export const ShortListForm = () => {
             </FormElement>
             <FormElement
                 name="experience"
-                label="Experience(25)"
+                label={experienceLabel}
                 errors={context.errors}
                 touched={context.touched}
                 className='col-span-1 md:col-span-1'

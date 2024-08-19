@@ -31,7 +31,7 @@ export const MeetingForm = () => {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "item_number", "display": "Position" },
+        { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "office_name", "display": "Office" },
@@ -49,6 +49,7 @@ export const MeetingForm = () => {
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
     const [defaultData, setDefaultData] = useState<InterviewIvalues>({
+        date_created: '',
         meeting_date: '',
         venue: '',
         positions: [],
@@ -68,6 +69,13 @@ export const MeetingForm = () => {
         }
         getVenues();
     }, []);
+
+
+
+    useEffect(() => {
+        setSelected([]);
+    }, [context.process]);
+
 
 
     // use effect hooks
@@ -112,7 +120,6 @@ export const MeetingForm = () => {
 
 
     useEffect(() => {
-        setAlerts([]);
         if (id == 0) {
             context.setValues(defaultData);
         }
@@ -153,12 +160,32 @@ export const MeetingForm = () => {
                 <span className=' text-blue-600 font-medium text-lg '>Meeting Details</span>
                 <hr className='text-blue-600 mt-6' />
             </div>
+
+            <FormElement
+                name="date_created"
+                label="Date Created"
+                errors={context.errors}
+                touched={context.touched}
+                className='col-span-4 md:col-span-2'
+                required={true}
+            >
+
+                <DatePicker
+                    initialValues={context.initialValues}
+                    id="date_created"
+                    name="date_created"
+                    placeholderText="Enter Date"
+                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                />
+            </FormElement>
+
+
             <FormElement
                 name="meeting_date"
                 label="Meeting Date"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-1'
+                className='col-span-4 md:col-span-2'
                 required={true}
             >
 
@@ -178,7 +205,7 @@ export const MeetingForm = () => {
                 label="Venue"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-4 md:col-span-3'
+                className='col-span-4 md:col-span-4'
                 required={true}
             >
                 <Field

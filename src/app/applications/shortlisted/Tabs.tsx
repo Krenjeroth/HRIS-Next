@@ -32,6 +32,7 @@ function AllRequestsTabs() {
     const [activeTab, setActiveTab] = useState<number>(0);
     const tabsRef = useRef<TabsRef>(null);
     const props = { setActiveTab, tabsRef };
+    const [code, setCode] = useState<string>("employee");
     const [children, setChildren] = useState<child[]>([]);
     const [schools, setSchools] = useState<school[]>([{
         level: '',
@@ -353,6 +354,14 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("application/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+
+                if (data.application.vacancy.lgu_position.position.code.includes("PGDH-")) {
+                    setCode("head");
+                }
+                else {
+                    setCode("employee");
+                }
+
                 setValues(defaultData);
                 setChildren(data.children.map((item: child) => {
                     return {
@@ -671,7 +680,7 @@ function AllRequestsTabs() {
                                 process={process}
                                 id={id}>
 
-                                {(process === "Revert") ? <RevertForm /> : <ShortListForm />}
+                                {(process === "Revert") ? <RevertForm /> : <ShortListForm code={code} />}
 
 
                             </PDSContextProvider>

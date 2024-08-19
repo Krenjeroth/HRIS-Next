@@ -24,6 +24,7 @@ export default function index(parameter: formContextType) {
         isLoading: parameter.isLoading,
         process: parameter.process,
         submitSearchPerson: parameter.submitSearchPerson,
+        code: parameter.code,
     }}>
         {parameter.children}
 
