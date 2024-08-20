@@ -55,7 +55,7 @@ type filter = {
 }
 
 
-interface applicant {
+interface application {
     id: string,
     name: string,
     psychosocial_attributes: string,
@@ -73,7 +73,7 @@ interface IValues {
     division: string,
     position: string,
     item_number: string,
-    applications: applicant[]
+    applications: application[]
 }
 
 
@@ -119,10 +119,8 @@ function AllRequestsTabs() {
 
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [applicants, setApplicants] = useState<applicant[]>([]);
+    const [applications, setApplications] = useState<application[]>([]);
     const [title, setTitle] = useState<string>("PSB Result");
-    const [positionKeyword, setPositionKeyword] = useState<string>("");
-    const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -200,18 +198,8 @@ function AllRequestsTabs() {
 
 
     useEffect(() => {
-        setApplicants(initialValues.applications.map((item: applicant) => {
-            return {
-                'id': item.id ? item.id : "",
-                'name': item.name ? item.name : "",
-                'psychosocial_attributes': item.psychosocial_attributes ? item.psychosocial_attributes : "",
-                'potential': item.potential ? item.potential : "",
-                'administrative': item.administrative ? item.administrative : "",
-                'technical': item.technical ? item.technical : "",
-                'leadership': item.leadership ? item.leadership : "",
-                'awards': item.awards ? item.awards : "",
-            };
-        }));
+        console.log(initialValues.applications);
+        setApplications(initialValues.applications);
     }, [initialValues.applications]);
 
 
@@ -235,16 +223,20 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("psb-result/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                console.log(data);
                 setValues({
                     office: data.office.office_name,
                     division: data.division.division_name,
                     position: data.position.title,
                     item_number: data.lguPosition.item_number,
                     applications: data.applications.map((item: any) => {
+
+                        let name = item.first_name + " " + item.last_name;
+                        if (item.middle_name) {
+                            name = item.first_name + " " + item.middle_name[0] + ". " + item.last_name;
+                        }
                         return {
                             'id': item.id ? item.id : "",
-                            'name': item.name ? item.name : "",
+                            'name': name,
                             'psychosocial_attributes': item.psychosocial_attributes ? item.psychosocial_attributes : "",
                             'potential': item.potential ? item.potential : "",
                             'administrative': item.administrative ? item.administrative : "",
@@ -434,78 +426,89 @@ function AllRequestsTabs() {
                             </div>
 
 
-                            <FieldArray name="applicants">
+                            <FieldArray name="applications">
                                 {({ insert, remove, push }) => (
                                     <>
-                                        {applicants.map((object, index: number) => {
+                                        {applications.map((object, index: number) => {
                                             return <div className='col-span-8 md:col-span-8 grid md:grid-cols-8 grid-col ' key={index}>
+
+                                                <div className="col-span-1 md:col-span-1 mx-1 mt-1 hidden">
+                                                    <Field
+                                                        id={`applications.${index}.id`}
+                                                        name={`applications.${index}.id`}
+                                                        placeholder="ID"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`applications.${index}.id`} errors={errors} touched={touched} />
+                                                </div>
 
                                                 <div className="col-span-2 md:col-span-2 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.name`}
-                                                        name={`applicants.${index}.name`}
+                                                        id={`applications.${index}.name`}
+                                                        name={`applications.${index}.name`}
                                                         placeholder="Name"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.name`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
                                                 <div className="col-span-2 md:col-span-2 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.psychological_attributes`}
-                                                        name={`applicants.${index}.psychological_attributes`}
+                                                        id={`applications.${index}.psychological_attributes`}
+                                                        name={`applications.${index}.psychological_attributes`}
                                                         placeholder="Psychological Attributes"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.psychological_attributes`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.psychological_attributes`} errors={errors} touched={touched} />
                                                 </div>
 
                                                 <div className="col-span-1 md:col-span-1 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.potential`}
-                                                        name={`applicants.${index}.potential`}
+                                                        id={`applications.${index}.potential`}
+                                                        name={`applications.${index}.potential`}
                                                         placeholder="Potential"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.potential`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.potential`} errors={errors} touched={touched} />
                                                 </div>
 
                                                 <div className="col-span-1 md:col-span-1 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.technical`}
-                                                        name={`applicants.${index}.technical`}
+                                                        id={`applications.${index}.technical`}
+                                                        name={`applications.${index}.technical`}
                                                         placeholder="Technical"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.technical`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.technical`} errors={errors} touched={touched} />
                                                 </div>
 
 
                                                 <div className="col-span-1 md:col-span-1 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.leadership`}
-                                                        name={`applicants.${index}.leadership`}
+                                                        id={`applications.${index}.leadership`}
+                                                        name={`applications.${index}.leadership`}
                                                         placeholder="Leadership"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.leadership`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.leadership`} errors={errors} touched={touched} />
                                                 </div>
 
 
                                                 <div className="col-span-1 md:col-span-41 mx-1 mt-1">
                                                     <Field
-                                                        id={`applicants.${index}.awards`}
-                                                        name={`applicants.${index}.awards`}
+                                                        id={`applications.${index}.awards`}
+                                                        name={`applications.${index}.awards`}
                                                         placeholder="awards"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applicants.${index}.awards`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.awards`} errors={errors} touched={touched} />
                                                 </div>
 
                                                 <hr className='col-span-8 md:col-span-8 mx-1 mt-2' />
