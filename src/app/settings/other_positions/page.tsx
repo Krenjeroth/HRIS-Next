@@ -1,7 +1,7 @@
 import React from 'react'
 import Tabs from './Tabs';
 export const metadata = {
-  title: 'HRIS - Other Positions',
+  title: 'HRIS - Other Plantillas',
 };
 
 

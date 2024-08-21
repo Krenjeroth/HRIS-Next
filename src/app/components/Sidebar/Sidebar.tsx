@@ -72,8 +72,8 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/settings/divisions"} label="Divisions/Sections/Units" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/psb"} label="PSB" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/positions"} label="Positions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/settings/plantillas"} label="Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/settings/other_positions"} label="Other LGU Positions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/settings/plantillas"} label="Permanent Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/settings/other_positions"} label="Casual Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/user_management"} label="User Management" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/holidays"} label="Holidays/Suspensions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/salary_grades"} label="Salary Grade" activeLink={activeLink} SetActiveLink={SetActiveLink} />

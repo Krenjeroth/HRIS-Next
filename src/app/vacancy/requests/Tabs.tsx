@@ -67,7 +67,9 @@ interface IValues {
     posting_date: string,
     closing_date: string,
     office_name?: string,
-    division_name?: string,
+    division_id?: string;
+    division?: string;
+    division_autosuggest?: string;
 }
 
 // Dynamically import the component
@@ -97,6 +99,7 @@ function AllRequestsTabs() {
         { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" },
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
+
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -117,7 +120,10 @@ function AllRequestsTabs() {
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title] = useState<string>("Request");
+    const [divisionKeyword, setDivisionKeyword] = useState<string>('');
+    const [divisions, setDivisions] = useState<datalist[]>([]);
     const [positionKeyword, setPositionKeyword] = useState<string>("");
+    const [division_id, setDivisionId] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
@@ -133,8 +139,9 @@ function AllRequestsTabs() {
             date_queued: '',
             posting_date: '',
             closing_date: '',
-            office_name: '',
-            division_name: '',
+            division_id: '',
+            division: '',
+            division_autosuggest: '',
         }
     );
     const initialValueContext = createContext();
@@ -150,6 +157,10 @@ function AllRequestsTabs() {
             date_queued: '',
             posting_date: '',
             closing_date: '',
+            office_name: '',
+            division_id: '',
+            division: '',
+            division_autosuggest: '',
         });
     }
 
@@ -187,6 +198,31 @@ function AllRequestsTabs() {
         getData();
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
+    // get divisions
+    useEffect(() => {
+
+        async function getDivisions() {
+            const postData = {
+                multiFilter: true,
+                activePage: 1,
+                filters: [{ column: 'division_name', value: divisionKeyword }],
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-division", postData);
+            if (resp != null) {
+                setDivisions(resp.data.data);
+            }
+        }
+        getDivisions();
+    }, [divisionKeyword]);
+
+    // update division id
+    useEffect(() => {
+        console.log("test");
+        if (initialValues.division_id) {
+            setDivisionId(initialValues.division_id);
+        }
+    }, [initialValues]);
 
     // Get LGU Positions
     useEffect(() => {
@@ -195,13 +231,14 @@ function AllRequestsTabs() {
             var keyword = positionKeyword.split("-");
             var filters = [];
             if (keyword.length === 2) {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+                filters = [{ column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
             }
             else {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
+                filters = [{ column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: positionKeyword }];
             }
 
             const postData = {
+                vacant: 1,
                 activePage: 1,
                 filters: filters,
                 orderBy: 'title',
@@ -223,7 +260,15 @@ function AllRequestsTabs() {
                 );
             }
         }
-        getPositions();
+
+        console.log(division_id);
+        if (division_id == "") {
+            setDivisions([]);
+        }
+        else {
+
+            getPositions();
+        }
     }, [positionKeyword]);
 
 
@@ -241,7 +286,9 @@ function AllRequestsTabs() {
                 posting_date: '',
                 closing_date: '',
                 office_name: '',
-                division_name: ''
+                division_id: '',
+                division: '',
+                division_autosuggest: '',
             });
         }
         else {
@@ -295,7 +342,9 @@ function AllRequestsTabs() {
                     posting_date: '',
                     closing_date: '',
                     office_name: data.office_name,
-                    division_name: data.division_name
+                    division_id: data.division_id,
+                    division: data.division_name,
+                    division_autosuggest: data.division_name,
                 });
                 setShowDrawer(true);
             }
@@ -494,6 +543,23 @@ function AllRequestsTabs() {
                                 </FormElement>
                             </div>
 
+
+                            {/*Division*/}
+
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="division_id"
+                                setKeyword={setDivisionKeyword}
+                                label="Division/Section/Unit *"
+                                title="Division/Section/Unit"
+                                name="division"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={divisions}
+                                className=""
+                            />
+
+
                             {/*positions */}
                             <DataList errors={errors} touched={touched}
                                 className=''
@@ -507,47 +573,7 @@ function AllRequestsTabs() {
                                 setValues={setValues}
                                 required={true}
                                 data={positionData}
-                                fillValues={['office_name', 'division_name']}
                             />
-
-
-                            <div className="">
-                                <FormElement
-                                    name="office_name"
-                                    label="Office"
-                                    errors={errors}
-                                    touched={touched}
-                                    className='col-span-4 md:col-span-2'
-                                    required={true}
-                                >
-                                    <Field
-                                        readOnly
-                                        name="office_name"
-                                        id="office_name"
-                                        placeholder="Office"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-                            </div>
-
-                            <div className="">
-                                <FormElement
-                                    name="division_name"
-                                    label="Division/Section/Unit"
-                                    errors={errors}
-                                    touched={touched}
-                                    className='col-span-4 md:col-span-2'
-                                    required={true}
-                                >
-                                    <Field
-                                        readOnly
-                                        name="division_name"
-                                        id="division_name"
-                                        placeholder="Division/Section/Unit"
-                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    />
-                                </FormElement>
-                            </div>
 
 
 
@@ -664,6 +690,10 @@ function AllRequestsTabs() {
                                 date_queued: '',
                                 posting_date: '',
                                 closing_date: '',
+                                office_name: '',
+                                division_id: '',
+                                division: '',
+                                division_autosuggest: ''
                             });
                             setShowDrawer(true);
                             setId(0);

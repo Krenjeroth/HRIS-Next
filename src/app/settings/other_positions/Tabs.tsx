@@ -15,7 +15,6 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import DataList from '../../components/DataList';
 
 // types
-
 type row = {
     id: string,
     attributes: object[]
@@ -653,8 +652,8 @@ function SalaryGradeTabs() {
                             reload={reload}
                             setReload={setReload}
                             setProcess={setProcess}
-                            // year={year}
-                            // setYear={setYear}
+                        // year={year}
+                        // setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >
