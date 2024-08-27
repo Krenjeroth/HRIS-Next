@@ -82,7 +82,6 @@ const LazyComponent = dynamic(() => import('../../components/LazyComponent'), {
 //main function
 function AllRequestsTabs() {
 
-
     // variables
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<number>(1);
@@ -216,13 +215,12 @@ function AllRequestsTabs() {
         getDivisions();
     }, [divisionKeyword]);
 
-    // update division id
+
+    // get divisions
     useEffect(() => {
-        console.log("test");
-        if (initialValues.division_id) {
-            setDivisionId(initialValues.division_id);
-        }
-    }, [initialValues]);
+        setPositionData([]);
+    }, [division_id]);
+
 
     // Get LGU Positions
     useEffect(() => {
@@ -231,10 +229,10 @@ function AllRequestsTabs() {
             var keyword = positionKeyword.split("-");
             var filters = [];
             if (keyword.length === 2) {
-                filters = [{ column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { column: 'vacant', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
             }
             else {
-                filters = [{ column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: positionKeyword }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: positionKeyword }];
             }
 
             const postData = {
@@ -260,20 +258,12 @@ function AllRequestsTabs() {
                 );
             }
         }
-
-        console.log(division_id);
-        if (division_id == "") {
-            setDivisions([]);
-        }
-        else {
-
-            getPositions();
-        }
+        getPositions();
     }, [positionKeyword]);
 
 
     useEffect(() => {
-        setAlerts([]);
+        // setAlerts([]);
         if (id == 0) {
             setValues({
                 date_submitted: '',
@@ -550,12 +540,14 @@ function AllRequestsTabs() {
                                 readonly={process === "Delete" ? true : false}
                                 id="division_id"
                                 setKeyword={setDivisionKeyword}
-                                label="Division/Section/Unit *"
+                                label="Division/Section/Unit"
                                 title="Division/Section/Unit"
                                 name="division"
                                 initialValues={initialValues}
                                 setValues={setValues}
+                                updateId={setDivisionId}
                                 data={divisions}
+                                required={true}
                                 className=""
                             />
 
@@ -563,7 +555,6 @@ function AllRequestsTabs() {
                             {/*positions */}
                             <DataList errors={errors} touched={touched}
                                 className=''
-                                readonly={readOnly}
                                 id="position_id"
                                 setKeyword={setPositionKeyword}
                                 label="Position - Plantilla"
@@ -573,17 +564,16 @@ function AllRequestsTabs() {
                                 setValues={setValues}
                                 required={true}
                                 data={positionData}
+                                readonly={process === "Add" || process === "Edit" ? false : true}
                             />
-
-
-
-
 
                             {/* Date Approved */}
                             <div className={`${process === "Approve" ? "" : "hidden"}`}>
+
                                 <FormElement
+                                    required={true}
                                     name="date_approved"
-                                    label="Date Approved *"
+                                    label="Date Approved"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -598,9 +588,10 @@ function AllRequestsTabs() {
 
                                 <FormElement
                                     name="posting_date"
-                                    label="Posting Date*"
+                                    label="Posting Date"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
@@ -613,9 +604,10 @@ function AllRequestsTabs() {
 
                                 <FormElement
                                     name="closing_date"
-                                    label="Closing Date*"
+                                    label="Closing Date"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
@@ -631,8 +623,9 @@ function AllRequestsTabs() {
                             {/* Date Queued */}
                             <div className={`${process === "Queue" ? "" : "hidden"}`}>
                                 <FormElement
+                                    required={true}
                                     name="date_queued"
-                                    label="Date Queued *"
+                                    label="Date Queued"
                                     errors={errors}
                                     touched={touched}
                                 >

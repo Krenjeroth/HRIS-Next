@@ -305,6 +305,8 @@ function AllRequestsTabs() {
         values: any,
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<DisqualifiedIValues>
     ) => {
+
+        // psbPersonnels(values.attachments);
         alerts.forEach(element => {
             alerts.pop();
         });

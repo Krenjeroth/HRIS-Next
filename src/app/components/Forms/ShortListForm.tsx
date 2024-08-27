@@ -22,14 +22,11 @@ export const ShortListForm = (param: parameters) => {
     const [experienceLabel, setExperienceLabel] = useState<string>("");
 
     useEffect(() => {
-        console.log(param.code == "head");
         if (param.code == "head") {
-            console.log("here");
             setPerformanceLabel("Performace (20)");
             setExperienceLabel("Experience (25)");
         }
         else {
-            console.log("here2");
             setPerformanceLabel("Performace (25)");
             setExperienceLabel("Experience (20)");
         }

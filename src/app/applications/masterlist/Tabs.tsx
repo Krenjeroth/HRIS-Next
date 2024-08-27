@@ -836,7 +836,6 @@ function AllRequestsTabs() {
         }
 
 
-        // console.log(values.attachments);
         alerts.forEach(element => {
             alerts.pop();
         });

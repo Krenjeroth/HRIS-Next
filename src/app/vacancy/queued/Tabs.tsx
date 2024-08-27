@@ -58,6 +58,7 @@ type filter = {
 interface IValues {
     date_submitted: string;
     date_queued: string,
+    division: string;
     position_id: string;
     position: string;
     position_autosuggest: string;
@@ -113,6 +114,7 @@ function AllRequestsTabs() {
     var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -125,6 +127,7 @@ function AllRequestsTabs() {
     function resetFormik() {
         setValues({
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -202,6 +205,7 @@ function AllRequestsTabs() {
         if (id == 0) {
             setValues({
                 date_submitted: '',
+                division: '',
                 position_id: '',
                 position: '',
                 position_autosuggest: '',
@@ -245,6 +249,7 @@ function AllRequestsTabs() {
                 if (process === "Reactivate") {
                     setValues({
                         date_submitted: data.date_submitted,
+                        division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -255,6 +260,7 @@ function AllRequestsTabs() {
                 else {
                     setValues({
                         date_submitted: data.date_submitted,
+                        division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -373,6 +379,7 @@ function AllRequestsTabs() {
                             {/* Date Submitted */}
                             <div className="">
                                 <FormElement
+                                    required={true}
                                     name="date_submitted"
                                     label="Date Submitted *"
                                     errors={errors}
@@ -380,7 +387,7 @@ function AllRequestsTabs() {
                                 >
 
                                     <DatePicker
-                                        readOnly={process === "Reactivate" ? true : false}
+                                        readOnly={true}
                                         initialValues={initialValues}
                                         id="date_submitted"
                                         name="date_submitted"
@@ -390,18 +397,46 @@ function AllRequestsTabs() {
                                 </FormElement>
 
 
-                                {/* positions */}
-                                <DataList errors={errors} touched={touched}
-                                    className=''
-                                    readonly={true}
-                                    id="position_id"
-                                    setKeyword={setPositionKeyword}
-                                    label="Position *"
-                                    title="Position"
+                                {/*Division*/}
+
+                                <FormElement
+                                    required={true}
+                                    name="division"
+                                    label="Division"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={true}
+                                        id="division"
+                                        name="division"
+                                        placeholder="Division"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    />
+
+                                </FormElement>
+
+
+                                {/*Position*/}
+
+                                <FormElement
+                                    required={true}
                                     name="position"
-                                    initialValues={initialValues}
-                                    setValues={setValues}
-                                    data={positionData} />
+                                    label="Position"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={true}
+                                        id="position"
+                                        name="position"
+                                        placeholder="Position"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    />
+
+                                </FormElement>
                             </div>
 
 

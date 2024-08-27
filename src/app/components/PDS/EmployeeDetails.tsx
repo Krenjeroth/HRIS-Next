@@ -17,8 +17,10 @@ function EmployeeDetail() {
     const context = usePDSContext();
     const [divisionKeyword, setDivisionKeyword] = useState<string>('');
     const [divisions, setDivisions] = useState<datalist[]>([]);
+    const [division_id, setDivisionId] = useState<string>('');
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
+    const [position_status, setPositionStatus] = useState<string>('');
 
     // get divisions
     useEffect(() => {
@@ -39,18 +41,29 @@ function EmployeeDetail() {
         getPositions();
     }, [divisionKeyword]);
 
+    // reset positions
+    useEffect(() => {
+        setPositionData([]);
+    }, [division_id]);
+
+
+    useEffect(() => {
+        setPositionData([]);
+    }, [position_status]);
+
 
     // Get LGU Positions
     useEffect(() => {
         // query
         async function getPositions() {
+            console.log(division_id);
             var keyword = positionKeyword.split("-");
             var filters = [];
             if (keyword.length === 2) {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
             }
             else {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
             }
 
             const postData = {
@@ -59,7 +72,7 @@ function EmployeeDetail() {
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['permanent', 'contractual', 'casual']
+                positionStatus: [position_status]
             };
 
 
@@ -100,6 +113,25 @@ function EmployeeDetail() {
                 />
             </FormElement>
 
+
+            {/*Division*/}
+            <div className='col-span-4 md:col-span-2'>
+
+                <DataList errors={context.errors} touched={context.touched}
+                    id="division_id"
+                    setKeyword={setDivisionKeyword}
+                    label="Division/Section/Unit"
+                    title="Division/Section/Unit"
+                    name="division"
+                    className='col-span-4 md:col-span-2'
+                    required={true}
+                    initialValues={context.initialValues}
+                    setValues={context.setValues}
+                    updateId={setDivisionId}
+                    data={divisions} />
+            </div>
+
+
             <FormElement
                 name="employment_status"
                 label="Employment Status"
@@ -113,6 +145,11 @@ function EmployeeDetail() {
                     name="employment_status"
                     placeholder="Employee Type"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        const value = e.target.value;
+                        setFieldValue('employment_status', value);
+                        setPositionStatus(value);
+                    }}
                 >
                     <option value="">Select Type </option>
                     <option value="permanent">Permanent</option>
@@ -124,42 +161,31 @@ function EmployeeDetail() {
                 </Field>
             </FormElement>
 
-            {/*Division*/}
 
-            <DataList errors={context.errors} touched={context.touched}
-                id="division_id"
-                setKeyword={setDivisionKeyword}
-                label="Division/Section/Unit"
-                title="Division/Section/Unit"
-                name="division"
-                className="col-span-4 md:col-span-2"
-                required={true}
-                initialValues={context.initialValues}
-                setValues={context.setValues}
-                data={divisions} />
 
             {/* Current Position */}
 
+            <div className='col-span-4 md:col-span-2'>
 
-
-            <DataList errors={context.errors} touched={context.touched}
-                id="lgu_position_id"
-                setKeyword={setPositionKeyword}
-                label="Position - Plantilla"
-                title="Position"
-                name="lgu_position"
-                className="col-span-4 md:col-span-1"
-                required={true}
-                initialValues={context.initialValues}
-                setValues={context.setValues}
-                data={positionData} />
+                <DataList errors={context.errors} touched={context.touched}
+                    id="lgu_position_id"
+                    setKeyword={setPositionKeyword}
+                    label="Position - Plantilla"
+                    title="Position"
+                    name="lgu_position"
+                    className="col-span-4 md:col-span-1"
+                    required={true}
+                    initialValues={context.initialValues}
+                    setValues={context.setValues}
+                    data={positionData} />
+            </div>
 
             <FormElement
                 name="employee_status"
                 label="Status"
                 errors={context.errors}
                 touched={context.touched}
-                className='col-span-1 md:col-span-1'
+                className='col-span-4 md:col-span-2'
                 required={true}
             >
                 <Field

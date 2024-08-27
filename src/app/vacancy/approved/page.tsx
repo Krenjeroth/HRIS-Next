@@ -7,7 +7,7 @@ export const metadata = {
 
 function page() {
   return (
-    <div>
+    <div className="">
       <Tabs />
     </div>
   )

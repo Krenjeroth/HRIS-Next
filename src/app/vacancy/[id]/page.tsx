@@ -12,7 +12,6 @@ type params = {
 
 function page(context: any) {
   const { id } = context.params;
-  console.log(id);
   return (
     <div>
       <Tabs id={id} />

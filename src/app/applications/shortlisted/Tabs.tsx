@@ -591,8 +591,6 @@ function AllRequestsTabs() {
             values.country = "";
         }
 
-
-        // console.log(values.attachments);
         alerts.forEach(element => {
             alerts.pop();
         });

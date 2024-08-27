@@ -20,6 +20,34 @@ function ApplicationDetails() {
     const context = usePDSContext();
     const [vacancies, setVacancies] = useState<datalist[]>([]);
     const [keyword, setKeyword] = useState<string>("");
+    const [divisionKeyword, setDivisionKeyword] = useState<string>('');
+    const [divisions, setDivisions] = useState<datalist[]>([]);
+    const [division_id, setDivisionId] = useState<string>("");
+
+
+    // get divisions
+    useEffect(() => {
+
+        async function getDivisions() {
+            const postData = {
+                multiFilter: true,
+                activePage: 1,
+                filters: [{ column: 'division_name', value: divisionKeyword }],
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-division", postData);
+            if (resp != null) {
+                setDivisions(resp.data.data);
+            }
+        }
+        getDivisions();
+    }, [divisionKeyword]);
+
+
+    // get divisions
+    useEffect(() => {
+        setVacancies([]);
+    }, [division_id]);
 
     // Get LGU Positions
     useEffect(() => {
@@ -35,6 +63,7 @@ function ApplicationDetails() {
             }
 
             const postData = {
+                vacant: 1,
                 activePage: 1,
                 filters: filters,
                 orderBy: 'title',
@@ -130,22 +159,21 @@ function ApplicationDetails() {
             </div>
 
             <div className="col-span-2 md:col-span-2">
-                <FormElement
-                    name="division_name"
+                {/*Division*/}
+                <DataList errors={context.errors} touched={context.touched}
+                    readonly={context.process === "Delete" ? true : false}
+                    id="division_id"
+                    setKeyword={setDivisionKeyword}
                     label="Division/Section/Unit"
-                    errors={context.errors}
-                    touched={context.touched}
-                    className='col-span-4 md:col-span-2'
+                    title="Division/Section/Unit"
+                    name="division"
+                    initialValues={context.initialValues}
+                    setValues={context.setValues}
+                    updateId={setDivisionId}
+                    data={divisions}
                     required={true}
-                >
-                    <Field
-                        readOnly
-                        name="division_name"
-                        id="division_name"
-                        placeholder="Division/Section/Unit"
-                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    />
-                </FormElement>
+                    className=""
+                />
             </div>
 
             <FileUpload />

@@ -58,6 +58,7 @@ type filter = {
 interface IValues {
     date_submitted: string;
     date_approved: string,
+    division: string;
     position_id: string;
     position: string;
     position_autosuggest: string;
@@ -120,6 +121,7 @@ function AllRequestsTabs() {
     var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -135,6 +137,7 @@ function AllRequestsTabs() {
     function resetFormik() {
         setValues({
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
@@ -214,6 +217,7 @@ function AllRequestsTabs() {
         if (id == 0) {
             setValues({
                 date_submitted: '',
+                division: '',
                 position_id: '',
                 position: '',
                 position_autosuggest: '',
@@ -260,6 +264,7 @@ function AllRequestsTabs() {
                 if (process === "Reactivate") {
                     setValues({
                         date_submitted: data.date_submitted,
+                        division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -273,6 +278,7 @@ function AllRequestsTabs() {
                 else {
                     setValues({
                         date_submitted: data.date_submitted,
+                        division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -378,7 +384,7 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
@@ -397,15 +403,16 @@ function AllRequestsTabs() {
                             {/* Date Submitted */}
                             <div className="">
                                 <FormElement
+                                    required={true}
                                     name="date_submitted"
-                                    label="Date Submitted *"
+                                    label="Date Submitted"
                                     errors={errors}
                                     touched={touched}
                                 >
 
                                     <DatePicker
                                         id="date_submitted"
-                                        readOnly={process === "Reactivate" ? true : false}
+                                        readOnly={true}
                                         initialValues={initialValues}
                                         name="date_submitted"
                                         placeholderText="Enter Date"
@@ -413,28 +420,55 @@ function AllRequestsTabs() {
                                     />
                                 </FormElement>
 
+                                {/*Division*/}
 
-                                {/* positions */}
-                                <DataList errors={errors} touched={touched}
-                                    readonly={true}
-                                    id="position_id"
-                                    setKeyword={setPositionKeyword}
-                                    label="Position *"
-                                    title="Position"
+                                <FormElement
+                                    required={true}
+                                    name="division"
+                                    label="Division"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={true}
+                                        id="division"
+                                        name="division"
+                                        placeholder="Division"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    />
+
+                                </FormElement>
+
+
+                                {/*Position*/}
+
+                                <FormElement
+                                    required={true}
                                     name="position"
-                                    initialValues={initialValues}
-                                    setValues={setValues}
-                                    data={positionData}
-                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
+                                    label="Position"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={true}
+                                        id="position"
+                                        name="position"
+                                        placeholder="Position"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    />
+
+                                </FormElement>
                             </div>
 
 
                             {/* Date Approved */}
                             <div className={process === "Reactivate" ? "hidden" : ""}>
                                 <FormElement
+                                    required={true}
                                     name="date_approved"
-                                    label="Date Approved *"
+                                    label="Date Approved"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -448,8 +482,9 @@ function AllRequestsTabs() {
                                 </FormElement>
 
                                 <FormElement
+                                    required={true}
                                     name="posting_date"
-                                    label="Posting Date*"
+                                    label="Posting Date"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -463,8 +498,9 @@ function AllRequestsTabs() {
                                 </FormElement>
 
                                 <FormElement
+                                    required={true}
                                     name="closing_date"
-                                    label="Closing Date*"
+                                    label="Closing Date"
                                     errors={errors}
                                     touched={touched}
                                 >
@@ -480,6 +516,7 @@ function AllRequestsTabs() {
 
                                 {/*Publication Status*/}
                                 <FormElement
+                                    required={true}
                                     name="publication_status"
                                     label="Publication Status"
                                     errors={errors}

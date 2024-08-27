@@ -38,7 +38,8 @@ type Props = {
     id: string,
     className: string,
     required?: boolean,
-    fillValues?: string[]
+    fillValues?: string[],
+    updateId?: Function
 }
 
 
@@ -51,7 +52,13 @@ function index(parameter: Props) {
 
     // call once after render
     const loadSuggestions = useCallback(({ value }: any) => {
-        parameter.setKeyword(value);
+
+        if (parameter.readonly) {
+
+        }
+        else {
+            parameter.setKeyword(value);
+        }
     }, []);
 
     const debouncedLoadSuggestions = useMemo(() => {
@@ -80,7 +87,7 @@ function index(parameter: Props) {
                 label={parameter.label}
                 errors={parameter.errors}
                 touched={parameter.touched}
-                className={`${parameter.readonly === true ? "hidden" : ""} ${parameter.className}`}
+                // className={`${parameter.readonly === true ? "hidden" : ""} ${parameter.className}`}
                 required={parameter.required}
             >
                 <Autosuggest
@@ -91,13 +98,16 @@ function index(parameter: Props) {
                             setFieldValue(parameter.id, '');
                             setFieldValue(parameter.name, '');
                             setFieldValue(`${parameter.name}_autosuggest`, '');
+
+                            if (parameter.updateId) {
+                                parameter.updateId('');
+                            }
                             if (parameter.fillValues?.length) {
                                 parameter.fillValues.forEach((item: string, index: number) => {
                                     setFieldValue(item, "");
                                 })
                             }
                         }
-
                     }}
                     getSuggestionValue={(suggestion: datalist) =>
                         suggestion.label
@@ -115,6 +125,10 @@ function index(parameter: Props) {
                         setFieldValue(parameter.id, suggestion.id);
                         setFieldValue(parameter.name, suggestion.label);
                         setFieldValue(`${parameter.name}_autosuggest`, suggestion.label)
+
+                        if (parameter.updateId) {
+                            parameter.updateId(suggestion.id);
+                        }
 
                         if (parameter.fillValues?.length) {
                             parameter.fillValues.forEach((item: string, index: number) => {

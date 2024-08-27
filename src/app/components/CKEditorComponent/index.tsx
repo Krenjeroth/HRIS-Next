@@ -52,7 +52,6 @@ function index(parameter: Props) {
 
     useEffect(() => {
         setFieldValue(parameter.name, editorData);
-        console.log(editorData);
 
     }, [editorData]);
 
@@ -193,18 +192,15 @@ function index(parameter: Props) {
                 }}
                 onReady={editor => {
                     editorRef.current = editor;
-                    // console.log('Editor is ready!', editor);
+                    
                 }}
                 onChange={(event, editor) => {
                     const data = editor.getData();
                     setEditorData(data);
-                    // console.log({ event, editor, data });
                 }}
                 onBlur={(event, editor) => {
-                    // console.log('Blur.', editor);
                 }}
                 onFocus={(event, editor) => {
-                    // console.log('Focus.', editor);
                 }}
             />
             {/* <div>

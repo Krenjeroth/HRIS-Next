@@ -89,7 +89,6 @@ function Details(props: params) {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                console.log(data);
                 setDetails({ ...data });
             }
         }

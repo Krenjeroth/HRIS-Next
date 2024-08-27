@@ -198,7 +198,6 @@ function AllRequestsTabs() {
 
 
     useEffect(() => {
-        console.log(initialValues.applications);
         setApplications(initialValues.applications);
     }, [initialValues.applications]);
 
@@ -251,7 +250,6 @@ function AllRequestsTabs() {
             }
         }
         catch (error: any) {
-            // console.log(error);
         }
 
     };

@@ -57,7 +57,7 @@ const Editor: React.FC<CKEditorComponentProps> = ({
 
   // useEffect(() => {
   //   // setFieldValue(name, editorData);
-  //   // console.log(editorData);
+
 
   // }, [editorData]);
 

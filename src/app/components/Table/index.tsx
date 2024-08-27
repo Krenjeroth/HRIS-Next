@@ -69,10 +69,6 @@ function index(parameter: Props) {
 
 
 
-    // useEffect(() => {
-    //     console.log(parameter.selected);
-    // }, [parameter.selected]);
-
 
     const search = (e: React.ChangeEvent<HTMLInputElement>) => {
         let column = e.target.id.replaceAll("_search", "");

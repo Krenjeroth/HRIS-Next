@@ -245,7 +245,6 @@ function PSBTab() {
             }
         }
         catch (error: any) {
-            console.log(error);
         }
 
     };
