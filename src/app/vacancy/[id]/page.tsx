@@ -3,6 +3,13 @@ import Tabs from '../[id]/Tabs';
 import { useRouter } from 'next/router';
 export const metadata = {
   title: 'HRIS - View Vacancy Details',
+  icons: {
+    icon: {
+      url: "/benguet.png",
+      type: "image/png",
+    },
+    shortcut: { url: "/benguet.png", type: "image/png" },
+  },
 };
 
 type params = {

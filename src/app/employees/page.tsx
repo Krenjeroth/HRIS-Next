@@ -2,7 +2,15 @@ import React from 'react';
 import Tabs from './Tabs';
 export const metadata = {
   title: 'HRIS - Employees',
+  icons: {
+    icon: {
+      url: "/benguet.png",
+      type: "image/png",
+    },
+    shortcut: { url: "/benguet.png", type: "image/png" },
+  },
 };
+
 
 
 function page() {

@@ -31,13 +31,13 @@ export default function RootLayout({
             )}
             <div className={`${(isAuthenticated == true && isMinimized == false) ? "sm:ml-64" : ""} ${(isAuthenticated && isMinimized == true) ? "sm:ml-24" : "sm:m-0"} ${(isAuthenticated ? 'p-4' : '')} min-h-screen mt-16 sm:mt-16 bg-gray-100`}>
               <div className="p-2  min-h-full">
-                 {isAuthenticated ? (
+                {isAuthenticated ? (
                   <div className="mb-4  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10">
-                  {children}
-                </div>
-            ):
-            (<>{children}</>)}
-                
+                    {children}
+                  </div>
+                ) :
+                  (<>{children}</>)}
+
               </div>
             </div>
           </div>
