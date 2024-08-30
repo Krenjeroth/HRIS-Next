@@ -6,10 +6,16 @@ import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
 import CardDataStats from './CardDataStats';
 import HttpService from '../../../../lib/http.services';
-import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, BriefcaseIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon, UserIcon } from '@heroicons/react/24/solid';
 import { StarIcon } from '@heroicons/react/20/solid';
+import { HiPaperClip } from 'react-icons/hi';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+type linebarChartData = {
+    data: number[],
+    categories: string[],
+}
 
 
 type cardData = {
@@ -21,6 +27,8 @@ type cardData = {
 
 
 const index: React.FC = () => {
+
+
     const [cardData, setCardData] = useState<cardData>({
         total_employees: "0",
         total_permanent_plantillas: "0",
@@ -28,9 +36,19 @@ const index: React.FC = () => {
         received_applications: "0"
     });
 
+    const [personnelPerOffice, setPersonnelPerOffice] = useState<linebarChartData>({
+        data: [],
+        categories: []
+    });
+
+    const [applicantsPerMonth, setApplicantsPerMonth] = useState<linebarChartData>({
+        data: [],
+        categories: []
+    });
+
+
 
     useEffect(() => {
-
         // query
         async function getCardData() {
             const resp = await HttpService.get("get-card-data");
@@ -46,6 +64,29 @@ const index: React.FC = () => {
             }
         }
         getCardData();
+    }, [])
+
+
+    useEffect(() => {
+
+        // query
+        async function getPersonnelPerOffice() {
+            const resp = await HttpService.get("get-personnel-per-office");
+            if (resp != null) {
+                let data = resp.data;
+                setPersonnelPerOffice({
+                    data: data.data,
+                    categories: data.office_array
+                })
+                // setCardData({
+                //     total_employees: data.total_employees,
+                //     total_permanent_plantillas: data.total_permanent_plantillas,
+                //     vacant_permanent_positions: data.vacant_permanent_positions,
+                //     received_applications: data.received_applications
+                // })
+            }
+        }
+        getPersonnelPerOffice();
     }, [])
 
 
@@ -125,7 +166,7 @@ const index: React.FC = () => {
     const employeesPerOfficeData = {
         series: [{
             name: 'Personnel',
-            data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+            data: personnelPerOffice.data
         }],
         options: {
             chart: {
@@ -142,7 +183,7 @@ const index: React.FC = () => {
                 enabled: false
             },
             xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                categories: personnelPerOffice.categories,
             },
             title: {
                 text: 'Personnel Per Office',
@@ -158,21 +199,21 @@ const index: React.FC = () => {
         <>
 
             <CardDataStats title="Total Employees" total={cardData.total_employees} rate="" >
-                <StarIcon className=" text-cyan-500 text-sm" />
+                <UserIcon className="text-white  w-7 h-7 mx-auto my-auto" />
             </CardDataStats>
             <CardDataStats title="Plantillas (Permanent)" total={cardData.total_permanent_plantillas} rate="" >
-                <></>
+                <BriefcaseIcon className="text-white  w-7 h-7 mx-auto my-auto" />
             </CardDataStats>
             <CardDataStats title="Vacant Positions (Permanent)" total={cardData.vacant_permanent_positions} rate="" >
-                <></>
+                <StarIcon className="text-white  w-7 h-7 mx-auto my-auto" />
             </CardDataStats>
             <CardDataStats title="Received Applications" total={cardData.received_applications} rate="" >
-                <></>
+                <HiPaperClip className="text-white  w-7 h-7 mx-auto my-auto" />
             </CardDataStats>
 
 
 
-            <div className='col-span-2 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
+            <div className='col-span-4 md:col-span-2 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
                 <Chart
                     options={applicantsData.options}
                     series={applicantsData.series}
@@ -180,7 +221,7 @@ const index: React.FC = () => {
                     height={350}
                 />
             </div>
-            <div className='col-span-2  m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
+            <div className='col-span-4 md:col-span-2  m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
                 <Chart
                     options={employeessData.options}
                     series={employeessData.series}
@@ -189,7 +230,7 @@ const index: React.FC = () => {
                 />
             </div>
 
-            <div className='col-span-2 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
+            <div className='col-span-4 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
                 <Chart
                     options={employeesPerOfficeData.options}
                     series={employeesPerOfficeData.series}
