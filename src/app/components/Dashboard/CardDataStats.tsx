@@ -18,20 +18,23 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   children,
 }) => {
   return (
-    <div className="col-span-4 md:col-span-1 m-2 grid grid-cols-4  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10">
+    <div className="col-span-4 md:col-span-2 lg:col-span-1 m-2 grid grid-cols-4  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10">
       <div className="flex col-span-1 ">
         <div className='float-start bg-blue-500 p-2 rounded-full h-12 w-12 justify-center'>
           {children}
         </div>
       </div>
 
-      <div className="mt-4 flex items-end justify-between col-span-3">
-        <div>
-          <h4 className="text-xl font-bold">
+      <div className="flex col-span-3 mx-2">
+
+        <div className="text-center">
+          <h4 className="text-xl font-bold mx-auto">
             {total}
           </h4>
           <span className="text-sm font-medium text-slate-700">{title}</span>
         </div>
+
+        {/* <span className="text-sm font-medium text-slate-700 text-center">{title}</span> */}
 
         <span
           className={`flex items-center gap-1 text-sm font-medium ${levelUp && 'text-meta-3'

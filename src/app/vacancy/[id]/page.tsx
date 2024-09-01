@@ -1,5 +1,5 @@
 import React from 'react'
-import Tabs from '../[id]/Tabs';
+import Tabs from './Tabs';
 import { useRouter } from 'next/router';
 export const metadata = {
   title: 'HRIS - View Vacancy Details',

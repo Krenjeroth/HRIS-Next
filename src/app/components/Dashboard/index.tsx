@@ -12,10 +12,12 @@ import { HiPaperClip } from 'react-icons/hi';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-type linebarChartData = {
+type chartData = {
     data: number[],
     categories: string[],
 }
+
+
 
 
 type cardData = {
@@ -36,12 +38,19 @@ const index: React.FC = () => {
         received_applications: "0"
     });
 
-    const [personnelPerOffice, setPersonnelPerOffice] = useState<linebarChartData>({
+    const [personnelPerOffice, setPersonnelPerOffice] = useState<chartData>({
         data: [],
         categories: []
     });
 
-    const [applicantsPerMonth, setApplicantsPerMonth] = useState<linebarChartData>({
+    const [personnel, setPersonnel] = useState<chartData>({
+        data: [],
+        categories: []
+    });
+
+
+
+    const [applicantionsPerMonth, setApplicantionsPerMonth] = useState<chartData>({
         data: [],
         categories: []
     });
@@ -54,7 +63,6 @@ const index: React.FC = () => {
             const resp = await HttpService.get("get-card-data");
             if (resp != null) {
                 let data = resp.data;
-                console.log(data);
                 setCardData({
                     total_employees: data.total_employees,
                     total_permanent_plantillas: data.total_permanent_plantillas,
@@ -76,7 +84,7 @@ const index: React.FC = () => {
                 let data = resp.data;
                 setPersonnelPerOffice({
                     data: data.data,
-                    categories: data.office_array
+                    categories: data.label
                 })
                 // setCardData({
                 //     total_employees: data.total_employees,
@@ -87,13 +95,47 @@ const index: React.FC = () => {
             }
         }
         getPersonnelPerOffice();
+    }, []);
+
+
+    useEffect(() => {
+
+        // query
+        async function getPersonnel() {
+            const resp = await HttpService.get("get-personnel");
+            if (resp != null) {
+                let data = resp.data;
+                setPersonnel({
+                    data: data.data,
+                    categories: data.label
+                })
+            }
+        }
+        getPersonnel();
+    }, [])
+
+
+    useEffect(() => {
+
+        // query
+        async function getApplicationsPerMonth() {
+            const resp = await HttpService.get("get-applications-per-month");
+            if (resp != null) {
+                let data = resp.data;
+                setApplicantionsPerMonth({
+                    data: data.data,
+                    categories: data.label
+                })
+            }
+        }
+        getApplicationsPerMonth();
     }, [])
 
 
     const applicantsData = {
         series: [{
-            name: 'Sales',
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+            name: 'Applications',
+            data: applicantionsPerMonth.data
         }],
         options: {
             chart: {
@@ -110,7 +152,7 @@ const index: React.FC = () => {
                 curve: 'smooth'
             },
             title: {
-                text: 'Applicants Per Month',
+                text: 'Applications Per Month',
                 align: 'left'
             },
             grid: {
@@ -120,19 +162,19 @@ const index: React.FC = () => {
                 },
             },
             xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                categories: applicantionsPerMonth.categories,
             }
         } as ApexOptions,
     };
 
 
     const employeessData = {
-        series: [44, 55, 13, 43, 22],
+        series: personnel.data,
         options: {
             chart: {
                 type: 'pie',
             },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            labels: personnel.categories,
             // dataLabels: {
             //     enabled: false
             // },
@@ -140,7 +182,7 @@ const index: React.FC = () => {
                 curve: 'smooth'
             },
             title: {
-                text: 'PLGU Personnels',
+                text: 'PLGU Personnel',
                 align: 'left'
             },
             grid: {
@@ -213,7 +255,7 @@ const index: React.FC = () => {
 
 
 
-            <div className='col-span-4 md:col-span-2 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
+            <div className='col-span-4 lg:col-span-2 m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
                 <Chart
                     options={applicantsData.options}
                     series={applicantsData.series}
@@ -221,7 +263,7 @@ const index: React.FC = () => {
                     height={350}
                 />
             </div>
-            <div className='col-span-4 md:col-span-2  m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
+            <div className='col-span-4 lg:col-span-2  m-2  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10'>
                 <Chart
                     options={employeessData.options}
                     series={employeessData.series}

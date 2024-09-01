@@ -41,6 +41,7 @@ function ApplicationDetails() {
             }
         }
         getDivisions();
+
     }, [divisionKeyword]);
 
 
@@ -49,6 +50,8 @@ function ApplicationDetails() {
         setVacancies([]);
     }, [division_id]);
 
+
+
     // Get LGU Positions
     useEffect(() => {
         // query
@@ -56,10 +59,10 @@ function ApplicationDetails() {
             var keywords = keyword.split("-");
             var filters = [];
             if (keywords.length === 2) {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'positions.title', value: keywords[0] }, { column: 'item_number', value: keywords[1] }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'positions.title', value: keywords[0] }, { column: 'item_number', value: keywords[1] }];
             }
             else {
-                filters = [{ 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'positions.title', value: keyword }];
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'positions.title', value: keyword }];
             }
 
             const postData = {
@@ -99,6 +102,8 @@ function ApplicationDetails() {
                 <hr className='text-blue-600 mt-6' />
             </div>
 
+
+
             <div className='col-span-2 md:col-span-2' >
                 <FormElement
                     name="date_submitted"
@@ -119,6 +124,22 @@ function ApplicationDetails() {
                 </FormElement>
             </div>
 
+            {/*Division*/}
+            <div className='col-span-4 md:col-span-2'>
+                <DataList errors={context.errors} touched={context.touched}
+                    id="division_id"
+                    setKeyword={setDivisionKeyword}
+                    label="Division/Section/Unit"
+                    title="Division/Section/Unit"
+                    name="division"
+                    className='col-span-4 md:col-span-2'
+                    required={true}
+                    initialValues={context.initialValues}
+                    setValues={context.setValues}
+                    updateId={setDivisionId}
+                    data={divisions} />
+            </div>
+
             <div className='col-span-2 md:col-span-2' >
                 <DataList errors={context.errors} touched={context.touched}
                     required={true}
@@ -133,48 +154,13 @@ function ApplicationDetails() {
                     data={vacancies}
                     fillValues={['office_name', 'division_name']}
                 />
-
-
             </div>
 
 
 
-            <div className="col-span-2 md:col-span-2">
-                <FormElement
-                    name="office_name"
-                    label="Office"
-                    errors={context.errors}
-                    touched={context.touched}
-                    className='col-span-4 md:col-span-2'
-                    required={true}
-                >
-                    <Field
-                        readOnly
-                        name="office_name"
-                        id="office_name"
-                        placeholder="Office"
-                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    />
-                </FormElement>
-            </div>
 
-            <div className="col-span-2 md:col-span-2">
-                {/*Division*/}
-                <DataList errors={context.errors} touched={context.touched}
-                    readonly={context.process === "Delete" ? true : false}
-                    id="division_id"
-                    setKeyword={setDivisionKeyword}
-                    label="Division/Section/Unit"
-                    title="Division/Section/Unit"
-                    name="division"
-                    initialValues={context.initialValues}
-                    setValues={context.setValues}
-                    updateId={setDivisionId}
-                    data={divisions}
-                    required={true}
-                    className=""
-                />
-            </div>
+
+
 
             <FileUpload />
         </div >

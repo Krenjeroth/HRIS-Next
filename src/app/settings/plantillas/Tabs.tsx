@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -13,6 +13,8 @@ import YearPicker from '../../components/YearPicker';
 import dayjs from 'dayjs';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import DataList from '../../components/DataList';
+import debounce from 'lodash/debounce';
+
 
 // types
 
@@ -172,7 +174,6 @@ function SalaryGradeTabs() {
         //     value: String(year)
         // });
 
-
         async function getData() {
             const postData = {
                 positionStatus: ['Permanent'],
@@ -192,22 +193,32 @@ function SalaryGradeTabs() {
 
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
+    // debounce get positions
+
+
+
+    const debounceLoadData = useCallback(
+        debounce(() => {
+            async function getPositions() {
+                const postData = {
+                    activePage: 1,
+                    filters: [{ column: 'title', value: positionKeyword }],
+                    orderAscending: 'asc'
+                };
+                const resp = await HttpService.post("search-position", postData);
+                if (resp != null) {
+                    setPositions(resp.data.data);
+                }
+            }
+            getPositions();
+        }, 300), // Adjust the debounce delay as needed
+        []
+    );
+
 
     // get positions
     useEffect(() => {
-        async function getPositions() {
-            const postData = {
-                activePage: 1,
-                filters: [{ column: 'title', value: positionKeyword }],
-                orderAscending: 'asc'
-            };
-            const resp = await HttpService.post("search-position", postData);
-            if (resp != null) {
-                setPositions(resp.data.data);
-            }
-        }
-
-        getPositions();
+        debounceLoadData();
     }, [positionKeyword]);
 
 

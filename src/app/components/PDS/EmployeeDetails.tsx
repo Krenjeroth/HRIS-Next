@@ -1,10 +1,11 @@
 "use client";
-import React, { useContext, useState, useMemo, useRef, useEffect } from 'react'
+import React, { useContext, useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { FormElement } from '../commons/FormElement';
 import { Field, useFormikContext } from 'formik';
 import { usePDSContext } from "@/app/contexts/PDSContext"
 import HttpService from '../../../../lib/http.services';
 import DataList from '../../components/DataList';
+import { debounce } from 'lodash';
 
 type datalist = {
     id: string,
@@ -24,8 +25,7 @@ function EmployeeDetail() {
 
     // get divisions
     useEffect(() => {
-
-        async function getPositions() {
+        async function getDivisions() {
             const postData = {
                 multiFilter: true,
                 activePage: 1,
@@ -38,7 +38,7 @@ function EmployeeDetail() {
             }
         }
 
-        getPositions();
+        getDivisions();
     }, [divisionKeyword]);
 
     // reset positions
@@ -54,9 +54,7 @@ function EmployeeDetail() {
 
     // Get LGU Positions
     useEffect(() => {
-        // query
         async function getPositions() {
-            console.log(division_id);
             var keyword = positionKeyword.split("-");
             var filters = [];
             if (keyword.length === 2) {
@@ -116,7 +114,6 @@ function EmployeeDetail() {
 
             {/*Division*/}
             <div className='col-span-4 md:col-span-2'>
-
                 <DataList errors={context.errors} touched={context.touched}
                     id="division_id"
                     setKeyword={setDivisionKeyword}
