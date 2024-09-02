@@ -258,7 +258,13 @@ function AllRequestsTabs() {
                 );
             }
         }
-        getPositions();
+
+        if (division_id == "") {
+            setPositionData([]);
+        }
+        else {
+            getPositions();
+        }
     }, [positionKeyword]);
 
 

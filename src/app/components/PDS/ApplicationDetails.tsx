@@ -88,7 +88,13 @@ function ApplicationDetails() {
                 );
             }
         }
-        getVacancies();
+
+        if (division_id == "") {
+            setVacancies([]);
+        }
+        else {
+            getVacancies();
+        }
 
     }, [keyword]);
 
@@ -127,11 +133,11 @@ function ApplicationDetails() {
             {/*Division*/}
             <div className='col-span-4 md:col-span-2'>
                 <DataList errors={context.errors} touched={context.touched}
-                    id="division_id"
+                    id="application_division_id"
                     setKeyword={setDivisionKeyword}
                     label="Division/Section/Unit"
                     title="Division/Section/Unit"
-                    name="division"
+                    name="application_division"
                     className='col-span-4 md:col-span-2'
                     required={true}
                     initialValues={context.initialValues}

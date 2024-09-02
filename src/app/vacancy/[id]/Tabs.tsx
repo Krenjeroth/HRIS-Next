@@ -123,7 +123,7 @@ function Details(props: params) {
                         <DisplayField id='office_name' class='md:col-span-2' label='Office' value={`${details.office_name}`} />
                         <DisplayField id='division_name' class='md:col-span-2' label='Unit/Division/Section' value={`${details.division_name}`} />
                         <DisplayField id='position_status' class='md:col-span-1' label='Position Status' value={`${details.position_status}`} />
-                        <DisplayField id='place_of_assignment' class='md:col-span-1' label='Place of Assignment' value={`${details.place_of_assignment}`} />
+                        <DisplayField id='place_of_assignment' class='md:col-span-1' label='Place of Assignment' value={(details.place_of_assignment) ? details.place_of_assignment : ""} />
                         <DisplayField id='posting_date' class='md:col-span-1' label='Posting Date (Start)' value={`${details.posting_date}`} />
                         <DisplayField id='closing_date' class='md:col-span-1' label='Posting Date (End)' value={`${details.closing_date}`} />
                         <div className='col-span-4 md:col-span-4'>

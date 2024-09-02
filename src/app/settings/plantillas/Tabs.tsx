@@ -194,15 +194,12 @@ function SalaryGradeTabs() {
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
     // debounce get positions
-
-
-
     const debounceLoadData = useCallback(
-        debounce(() => {
+        debounce((keyword: string) => {
             async function getPositions() {
                 const postData = {
                     activePage: 1,
-                    filters: [{ column: 'title', value: positionKeyword }],
+                    filters: [{ column: 'title', value: keyword }],
                     orderAscending: 'asc'
                 };
                 const resp = await HttpService.post("search-position", postData);
@@ -218,7 +215,7 @@ function SalaryGradeTabs() {
 
     // get positions
     useEffect(() => {
-        debounceLoadData();
+        debounceLoadData(positionKeyword);
     }, [positionKeyword]);
 
 

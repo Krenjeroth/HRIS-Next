@@ -193,6 +193,9 @@ function AllRequestsTabs() {
         search_suffix: '',
         employee_id: '',
         employment_status: '',
+        application_division_id: '',
+        application_division: '',
+        application_division_autosuggest: '',
         division_id: '',
         division: '',
         division_autosuggest: '',
@@ -411,6 +414,7 @@ function AllRequestsTabs() {
                             data.personalInformation.residential_zipcode == data.personalInformation.permanent_zipcode) {
                             isSame = true;
                         }
+
                         setValues({
                             search_employee_id: (data.details.employee_id) ? data.details.employee_id : "",
                             search_first_name: data.details.first_name,
@@ -419,6 +423,9 @@ function AllRequestsTabs() {
                             search_suffix: (data.details.suffix) ? data.details.suffix : "",
                             employee_id: (data.details.employee_id) ? data.details.employee_id : "",
                             employment_status: (data.details.employment_status) ? data.details.employment_status : "",
+                            application_division_id: "",
+                            application_division: "",
+                            application_division_autosuggest: "",
                             division_id: (data.division.id) ? data.division.id : "",
                             division: (data.division.division_name) ? data.division.division_name : "",
                             division_autosuggest: (data.division.division_name) ? data.division.division_name : "",
@@ -628,6 +635,7 @@ function AllRequestsTabs() {
                     data.personalInformation.residential_zipcode == data.personalInformation.permanent_zipcode) {
                     isSame = true;
                 }
+
                 setValues({
                     search_employee_id: (data.details.employee_id) ? data.details.employee_id : "",
                     search_first_name: data.details.first_name,
@@ -636,6 +644,9 @@ function AllRequestsTabs() {
                     search_suffix: (data.details.suffix) ? data.details.suffix : "",
                     employee_id: (data.details.employee_id) ? data.details.employee_id : "",
                     employment_status: (data.details.employment_status) ? data.details.employment_status : "",
+                    application_division_id: (data.vacancyDivision.id) ? data.vacancyDivision.id : "",
+                    application_division: (data.vacancyDivision.division_name) ? data.vacancyDivision.division_name : "",
+                    application_division_autosuggest: (data.vacancyDivision.division_name) ? data.vacancyDivision.division_name : "",
                     division_id: (data.division.id) ? data.division.id : "",
                     division: (data.division.division_name) ? data.division.division_name : "",
                     division_autosuggest: (data.division.division_name) ? data.division.division_name : "",

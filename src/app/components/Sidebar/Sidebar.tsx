@@ -42,8 +42,9 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/applications/masterlist"} label="Master list" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/applications/shortlisted"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/applications/disqualified"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/applications/interviewed"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/applications/appointed"} label="Appointed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/notices"} label="Notices" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        {/* <SidebarDropdownItem href={"/applications/interviewed"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/applications/appointed"} label="Appointed" activeLink={activeLink} SetActiveLink={SetActiveLink} /> */}
                     </SidebarDropdown>
 
                     {/* SideBarItem  */}
