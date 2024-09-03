@@ -2,13 +2,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import React from 'react';
-import { HomeIcon, CogIcon, ArrowLeftIcon, ChartPieIcon, BriefcaseIcon, UserGroupIcon, StarIcon, HandRaisedIcon, UserIcon, MegaphoneIcon, FolderIcon, BookOpenIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, CogIcon, ArrowLeftIcon, ChartPieIcon, BriefcaseIcon, UserGroupIcon, StarIcon, HandRaisedIcon, UserIcon, MegaphoneIcon, FolderIcon, BookOpenIcon, BellIcon } from '@heroicons/react/24/solid';
 import { Sidebar } from "flowbite-react";
 import SidebarDropdown from './SidebarDropdown';
 import SidebarDropdownItem from './SidebarDropdownItem';
 import SideBarItem from './SidebarItem';
 import Cookies from 'js-cookie';
-import { FolderOpenIcon } from '@heroicons/react/20/solid';
+import { FolderOpenIcon, TagIcon } from '@heroicons/react/20/solid';
 
 type Props = {
     isMinimized: boolean,
@@ -42,7 +42,6 @@ function index(parameter: Props) {
                         <SidebarDropdownItem href={"/applications/masterlist"} label="Master list" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/applications/shortlisted"} label="Shortlisted" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/applications/disqualified"} label="Disqualified" activeLink={activeLink} SetActiveLink={SetActiveLink} />
-                        <SidebarDropdownItem href={"/applications/notices"} label="Notices" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         {/* <SidebarDropdownItem href={"/applications/interviewed"} label="Interviewed" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/applications/appointed"} label="Appointed" activeLink={activeLink} SetActiveLink={SetActiveLink} /> */}
                     </SidebarDropdown>
@@ -50,7 +49,11 @@ function index(parameter: Props) {
                     {/* SideBarItem  */}
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/meeting"} label="PSB Meetings" icon={<StarIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 
-                    <SideBarItem isMinimized={parameter.isMinimized} href={"/results"} label="PSB Results" icon={<StarIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                    <SideBarItem isMinimized={parameter.isMinimized} href={"/notices"} label="Notices" icon={<BellIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+
+                    <SideBarItem isMinimized={parameter.isMinimized} href={"/results"} label="PSB Results" icon={<TagIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
+
+
 
                     <SideBarItem isMinimized={parameter.isMinimized} href={"/"} label="Oath Taking" icon={<HandRaisedIcon className='w-6 h-6' />} activeLink={activeLink} SetActiveLink={SetActiveLink} />
 

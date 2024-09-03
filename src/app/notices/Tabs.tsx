@@ -2,23 +2,17 @@
 import { Tabs, TabsRef } from 'flowbite-react';
 import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
-import AttachmentDrawer from '../../components/AttachmentDrawer';
-import AttachmentView from '../../components/AttachmentView';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import AttachmentDrawer from '../components/AttachmentDrawer';
+import AttachmentView from '../components/AttachmentView';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { setFormikErrors } from '../../../../lib/utils.service';
-import { Alert } from 'flowbite-react';
+import { setFormikErrors } from '../../../lib/utils.service';
 import dayjs from 'dayjs';
 import { ArrowLeftEndOnRectangleIcon, ClipboardIcon, PencilIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { DisqualifiedIValues, filter, alert, button, header, row } from '../../types/pds';
-import DisqualifiedContextProvider from '../../contexts/DisqualifiedContext';
-import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
-import { RevertForm } from '@/app/components/Forms/RevertForm';
-import { HiDownload, HiMail } from 'react-icons/hi';
-import { EmailForm } from '@/app/components/Forms/EmailForm';
+import { DisqualifiedIValues, filter, alert, button, header, row } from '../types/pds';
+import { HiDownload, HiFolderDownload, HiMail } from 'react-icons/hi';
 
 //main function
 
@@ -37,11 +31,9 @@ function AllRequestsTabs() {
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
-        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
-        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
-        { "icon": <HiMail className=' w-5 h-5' />, "title": "Email", "process": "Email", "class": "text-purple-600", "filter": { "column": "email_date", "value": "", "isNull": true } },
-        { "icon": <ArrowLeftEndOnRectangleIcon className=' w-5 h-5' />, "title": "Revert", "process": "Revert", "class": "text-red-600" }
+        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download - Notice", "process": "Download", "class": "text-slate-600" },
+        { "icon": <HiFolderDownload className=' w-5 h-5' />, "title": "Download - Individual Notice", "process": "DownloadIndivicualNotice", "class": "text-blue-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -51,18 +43,15 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
-        { "column": "first_name", "display": "first_name" },
-        { "column": "middle_name", "display": "middle_name" },
-        { "column": "last_name", "display": "last_name" },
-        { "column": "suffix", "display": "suffix" },
-        { "column": "application_type", "display": "application_type" },
-        { "column": "title", "display": "title" },
-        { "column": "item_number", "display": "item_number" },
-        { "column": "division_name", "display": "division_name" },
-        { "column": "status", "display": "status" },
-        { "column": "reason", "display": "Disqualification Reason" },
-        { "column": "email_date", "display": "Date Emailed" },
+        { "column": "posting_date", "display": "Opening Date" },
+        { "column": "closing_date", "display": "Closing Date" },
+        { "column": "item_number", "display": "Item Number" },
+        { "column": "title", "display": "Position" },
+        { "column": "applicants", "display": "No. of Applicants" },
+        { "column": "number", "display": "Salary Grade" },
+        { "column": "amount", "display": "Monthly Salary" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" }
     ]);
 
 
@@ -106,11 +95,11 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters, { column: "applications.date_submitted", value: String(year) }, { column: 'status', value: 'Disqualified' }],
+                filters: [...filters, { column: "vacancies.date_approved", value: String(year) }],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-applications", postData);
+            const resp = await HttpService.post("search-notices", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -123,7 +112,7 @@ function AllRequestsTabs() {
     const downloadLetter = async (id: number) => {
         try {
             if (process === "Download") {
-                const resp = await HttpService.get("download-disqualification-letter/" + id);
+                const resp = await HttpService.get("download-notice-to-applicants/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -159,6 +148,44 @@ function AllRequestsTabs() {
                     }
                 }
             }
+            if (process === "DownloadIndivicualNotice") {
+                const resp = await HttpService.get("download-notice-individual/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        let base64String = resp.data.data.base64;
+                        let filename = resp.data.data.filename;
+                        var binaryString = atob(base64String);
+
+                        // Convert binary to ArrayBuffer
+                        var binaryData = new ArrayBuffer(binaryString.length);
+                        var byteArray = new Uint8Array(binaryData);
+                        for (var i = 0; i < binaryString.length; i++) {
+                            byteArray[i] = binaryString.charCodeAt(i);
+                        }
+
+                        // Create Blob object
+                        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+                        // Create object URL
+                        var url = URL.createObjectURL(blob);
+
+                        // Create a link element, set its href attribute, and trigger download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename + '.docx'; // Specify desired file name with .docx extension
+                        document.body.appendChild(a); // Append anchor to body
+                        a.click(); // Programmatically click the anchor element to trigger the download
+                        document.body.removeChild(a); // Clean up anchor element afterwards
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
         }
         catch (error: any) {
             if (error.response.status === 422) {
@@ -179,7 +206,7 @@ function AllRequestsTabs() {
                 setShowDrawer(false);
                 setShowAttachmentDrawer(true);
             }
-            else if (process == "Download") {
+            else if (process == "Download" || process == "DownloadIndivicualNotice") {
                 downloadLetter(id);
             }
 
@@ -383,37 +410,6 @@ function AllRequestsTabs() {
                 <AttachmentView id={id} link={"/view-application-attachments"} />
             </AttachmentDrawer>
 
-            <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-                {/* formik */}
-                <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
-                >
-                    {({ errors, touched }) => (
-
-                        // forms
-                        <Form className='p-2' id="formik">
-                            <div className='alert-container mb-2' id="alert-container">
-                                {alerts.map((item, index) => {
-                                    return (
-                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p ><span className="font-medium">{item.message}</span></p></span></Alert>
-                                    );
-                                })}
-                            </div>
-                            <DisqualifiedContextProvider
-                                formikData={formikData}
-                                isLoading={isLoading}
-                                errors={errors}
-                                touched={touched}
-                                initialValues={initialValues}
-                                setValues={setValues}
-                                process={process}
-                                id={id}>
-
-                                {(process === "Revert") ? <RevertForm /> : ((process === "Email") ? <EmailForm /> : <DisqualifyForm />)}
-                            </DisqualifiedContextProvider>
-                        </Form>
-                    )}
-                </Formik>
-            </Drawer>
             <div className={`${(showDrawer || showAttachmentDrawer) ? "blur-[1px]" : ""}`}>
 
 
@@ -422,16 +418,6 @@ function AllRequestsTabs() {
                     aria-label="Tabs with underline"
                     style="underline"
                     ref={props.tabsRef}
-                // onActiveTabChange={(tab) => {
-                //     // if (tab == 1) {
-                //     //     router.push('/vacancy/approved');
-                //     // }
-                //     // else if (2) {
-                //     //     router.push('/vacancy/queued');
-                //     // }
-
-                // }}
-
                 >
 
                     <Tabs.Item title={title + "s"} active>

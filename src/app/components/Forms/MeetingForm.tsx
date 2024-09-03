@@ -44,6 +44,7 @@ export const MeetingForm = () => {
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
+    const [meetingId, setMeetingId] = useState<number>(0);
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -103,20 +104,21 @@ export const MeetingForm = () => {
 
         async function getData() {
             const postData = {
+                id: context.id,
                 activePage: activePage,
                 filters: newArrayFilter,
                 orderBy: orderBy,
                 year: year,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-vacancy", postData);
+            const resp = await HttpService.post("search-vacancy-meeting", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
             }
         }
         getData();
-    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year, context.id]);
 
 
     useEffect(() => {

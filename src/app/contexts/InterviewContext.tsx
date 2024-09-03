@@ -21,6 +21,7 @@ export default function index(parameter: interviewContextType) {
         initialValues: parameter.initialValues,
         setValues: parameter.setValues,
         isLoading: parameter.isLoading,
+        id: parameter.id,
         process: parameter.process,
         submitSearchPerson: parameter.submitSearchPerson,
     }}>
