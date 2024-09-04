@@ -63,7 +63,8 @@ interface application {
     administrative: string,
     technical: string,
     leadership: string,
-    awards: string
+    awards: string,
+    additional_information: string
 }
 
 // interfaces
@@ -133,6 +134,7 @@ function AllRequestsTabs() {
             applications: []
         }
     );
+    const [code, setCode] = useState<string>("employee");
     const initialValueContext = createContext();
 
 
@@ -222,6 +224,14 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("psb-result/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
+
+                if (data.position.code.includes("PGDH-")) {
+                    setCode("head");
+                }
+                else {
+                    setCode("employee");
+                }
+
                 setValues({
                     office: data.office.office_name,
                     division: data.division.division_name,
@@ -242,6 +252,7 @@ function AllRequestsTabs() {
                             'technical': item.technical ? item.technical : "",
                             'leadership': item.leadership ? item.leadership : "",
                             'awards': item.awards ? item.awards : "",
+                            'additional_information': item.awards ? item.additional_information : ""
                         };
                     })
                 });
@@ -268,17 +279,14 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         setLoading(true);
+        console.log(values);
         const postData = {
-            date_submitted: values.date_submitted,
-            date_approved: values.date_approved,
-            posting_date: values.posting_date,
-            closing_date: values.closing_date,
-            publication_status: values.publication_status,
-            position_id: values.position_id,
+            application: values.application,
+            division: values.division,
+            item_number: values.item_number,
+            office: values.office,
             position: values.position,
-            device_name: "web",
-            process: process,
-            status: "Approved"
+            code: code
         };
 
 
@@ -289,7 +297,7 @@ function AllRequestsTabs() {
 
         try {
             if (process === "Edit") {
-                const resp = await HttpService.patch("psb-result" + id, postData)
+                const resp = await HttpService.patch("psb-result/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -324,7 +332,7 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-5/6' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
@@ -354,7 +362,7 @@ function AllRequestsTabs() {
                                     readOnly={true}
                                     id="office"
                                     name="office"
-                                    placeholder="Office"
+                                    placeholder="Office *"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -372,7 +380,7 @@ function AllRequestsTabs() {
                                     readOnly={true}
                                     id="division"
                                     name="division"
-                                    placeholder="Division/Section/Office"
+                                    placeholder="Division/Section/Office *"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -394,7 +402,7 @@ function AllRequestsTabs() {
                                     readOnly={true}
                                     id="position"
                                     name="position"
-                                    placeholder="Position"
+                                    placeholder="Position *"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -413,7 +421,7 @@ function AllRequestsTabs() {
                                     readOnly={true}
                                     id="item_number"
                                     name="item_number"
-                                    placeholder="Item Number"
+                                    placeholder="Item Number *"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -434,51 +442,67 @@ function AllRequestsTabs() {
                                                     <Field
                                                         id={`applications.${index}.id`}
                                                         name={`applications.${index}.id`}
-                                                        placeholder="ID"
+                                                        placeholder="ID *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.id`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="col-span-2 md:col-span-2 mx-1 mt-1">
+                                                <div className="col-span-4 md:col-span-2 mx-1 mt-1">
                                                     <Field
                                                         id={`applications.${index}.name`}
                                                         name={`applications.${index}.name`}
-                                                        placeholder="Name"
+                                                        placeholder="Name *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
+                                                        readOnly={true}
                                                     />
                                                     <FormFieldError name={`applications.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="col-span-2 md:col-span-2 mx-1 mt-1">
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "employee") ? "" : "hidden"}`}>
                                                     <Field
-                                                        id={`applications.${index}.psychological_attributes`}
-                                                        name={`applications.${index}.psychological_attributes`}
-                                                        placeholder="Psychological Attributes"
+                                                        id={`applications.${index}.psychosocial_attributes`}
+                                                        name={`applications.${index}.psychosocial_attributes`}
+                                                        placeholder="Psychosocial Attributes *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
-                                                    <FormFieldError name={`applications.${index}.psychological_attributes`} errors={errors} touched={touched} />
+                                                    <FormFieldError name={`applications.${index}.psychosocial_attributes`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="col-span-1 md:col-span-1 mx-1 mt-1">
+
+
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "employee") ? "" : "hidden"}`}>
                                                     <Field
                                                         id={`applications.${index}.potential`}
                                                         name={`applications.${index}.potential`}
-                                                        placeholder="Potential"
+                                                        placeholder="Potential *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.potential`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="col-span-1 md:col-span-1 mx-1 mt-1">
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
                                                     <Field
+                                                        type="number"
+                                                        id={`applications.${index}.administrative`}
+                                                        name={`applications.${index}.administrative`}
+                                                        placeholder="Administrative *"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`applications.${index}.administrative`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
+                                                    <Field
+                                                        type="number"
                                                         id={`applications.${index}.technical`}
                                                         name={`applications.${index}.technical`}
-                                                        placeholder="Technical"
+                                                        placeholder="Technical *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
@@ -486,11 +510,12 @@ function AllRequestsTabs() {
                                                 </div>
 
 
-                                                <div className="col-span-1 md:col-span-1 mx-1 mt-1">
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
                                                     <Field
+                                                        type="number"
                                                         id={`applications.${index}.leadership`}
                                                         name={`applications.${index}.leadership`}
-                                                        placeholder="Leadership"
+                                                        placeholder="Leadership *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
@@ -498,17 +523,40 @@ function AllRequestsTabs() {
                                                 </div>
 
 
-                                                <div className="col-span-1 md:col-span-41 mx-1 mt-1">
+                                                <div className="col-span-4 md:col-span-2 mx-1 mt-1">
                                                     <Field
+                                                        type="number"
                                                         id={`applications.${index}.awards`}
                                                         name={`applications.${index}.awards`}
-                                                        placeholder="awards"
+                                                        placeholder="Awards *"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.awards`} errors={errors} touched={touched} />
                                                 </div>
 
+                                                <div className="col-span-6 md:col-span-6 mx-1 mt-1">
+                                                    <Field
+                                                        id={`applications.${index}.additional_information`}
+                                                        name={`applications.${index}.additional_information`}
+                                                        placeholder="Additional Information *"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`applications.${index}.additional_information`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                {/* <div className="col-span-4 md:col-span-2 mx-1 mt-1">
+                                                    <Field
+                                                        type="number"
+                                                        id={`applications.${index}.total`}
+                                                        name={`applications.${index}.total`}
+                                                        placeholder="Total *"
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`applications.${index}.total`} errors={errors} touched={touched} />
+                                                </div> */}
                                                 <hr className='col-span-8 md:col-span-8 mx-1 mt-2' />
                                             </div>
                                         })}
@@ -516,9 +564,6 @@ function AllRequestsTabs() {
                                     </>
                                 )}
                             </FieldArray>
-
-
-
 
                             {/* submit button */}
 

@@ -4,8 +4,6 @@ import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../components/Table";
 import HttpService from '../../../lib/http.services';
-import AttachmentDrawer from '../components/AttachmentDrawer';
-import AttachmentView from '../components/AttachmentView';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { setFormikErrors } from '../../../lib/utils.service';
 import dayjs from 'dayjs';
@@ -31,7 +29,6 @@ function AllRequestsTabs() {
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
-        { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
         { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download - Notice", "process": "Download", "class": "text-slate-600" },
         { "icon": <HiFolderDownload className=' w-5 h-5' />, "title": "Download - Individual Notice", "process": "DownloadIndivicualNotice", "class": "text-blue-600" }
     ]);
@@ -202,11 +199,7 @@ function AllRequestsTabs() {
         }
         else {
 
-            if (process == "View") {
-                setShowDrawer(false);
-                setShowAttachmentDrawer(true);
-            }
-            else if (process == "Download" || process == "DownloadIndivicualNotice") {
+          if (process == "Download" || process == "DownloadIndivicualNotice") {
                 downloadLetter(id);
             }
 
@@ -405,10 +398,6 @@ function AllRequestsTabs() {
     // tsx
     return (
         <>
-            {/* drawer */}
-            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>
-                <AttachmentView id={id} link={"/view-application-attachments"} />
-            </AttachmentDrawer>
 
             <div className={`${(showDrawer || showAttachmentDrawer) ? "blur-[1px]" : ""}`}>
 
