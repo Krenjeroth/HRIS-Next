@@ -1,28 +1,41 @@
 "use client";
-import { Tabs, TabsRef } from 'flowbite-react';
-import React, { useEffect, useRef } from 'react';
+import { Button, Tabs, TabsRef } from 'flowbite-react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
-import Table from "../../components/Table";
-import HttpService from '../../../../lib/http.services';
-import Drawer from '../../components/Drawer';
-import AttachmentDrawer from '../../components/AttachmentDrawer';
-import AttachmentView from '../../components/AttachmentView';
+import Table from "../components/Table";
+import HttpService from '../../../lib/http.services';
+import Drawer from '../components/Drawer';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { setFormikErrors } from '../../../../lib/utils.service';
+import { setFormikErrors } from '../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
-import { ArrowLeftEndOnRectangleIcon, ClipboardIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftEndOnRectangleIcon, ArrowRightIcon, ClipboardIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
-import { DisqualifiedIValues, filter, alert, button, header, row } from '../../types/pds';
-import DisqualifiedContextProvider from '../../contexts/DisqualifiedContext';
-import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
-import { RevertForm } from '@/app/components/Forms/RevertForm';
-import { HiDownload, HiMail } from 'react-icons/hi';
-import { EmailForm } from '@/app/components/Forms/EmailForm';
+import { InterviewIvalues, formContextType, email, filter, alert, button, row, header, Appointment } from '../types/pds';
+import AppointmentContextProvider from '../contexts/AppointmentContext';
+import { HiArchive, HiDownload, HiMail } from 'react-icons/hi';
+import { MeetingForm } from '../components/Forms/MeetingForm';
+import type { CustomFlowbiteTheme } from "flowbite-react";
+import { AppointmentForm } from '../components/Forms/AppointmentForm';
+
+
+
+
+
+
+
 
 //main function
 
 function AllRequestsTabs() {
+
+    const customTheme: CustomFlowbiteTheme["button"] = {
+        color: {
+            primary: "bg-red-500 hover:bg-red-600",
+        },
+    };
+
+
 
     // variables
     const router = useRouter();
@@ -38,10 +51,9 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <ClipboardIcon className=' w-5 h-5' />, "title": "View Attachment", "process": "View", "class": "text-green-500" },
-        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
-        { "icon": <HiMail className=' w-5 h-5' />, "title": "Email", "process": "Email", "class": "text-purple-600", "filter": { "column": "email_date", "value": "", "isNull": true } },
-        { "icon": <ArrowLeftEndOnRectangleIcon className=' w-5 h-5' />, "title": "Revert", "process": "Revert", "class": "text-red-600" }
+        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download Notice of Meeting", "process": "Download", "class": "text-slate-600" },
+        { "icon": <HiArchive className=' w-5 h-5' />, "title": "Download Initial Comparative Assessment Form", "process": "CAF", "class": "text-green-500" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -51,45 +63,39 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
-        { "column": "first_name", "display": "first_name" },
-        { "column": "middle_name", "display": "middle_name" },
-        { "column": "last_name", "display": "last_name" },
-        { "column": "suffix", "display": "suffix" },
-        { "column": "application_type", "display": "application_type" },
-        { "column": "title", "display": "title" },
-        { "column": "item_number", "display": "item_number" },
-        { "column": "division_name", "display": "division_name" },
-        { "column": "status", "display": "status" },
-        { "column": "reason", "display": "Disqualification Reason" },
-        { "column": "email_date", "display": "Date Emailed" },
+        { "column": "meeting_date", "display": "Meeting Date" },
+        { "column": "name", "display": "Venue" }
     ]);
-
 
     const [readOnly, setReadOnly] = useState<boolean>(false);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Disqualified Application");
+    const [title, setTitle] = useState<string>("Appointment");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
-    const [showAttachmentDrawer, setShowAttachmentDrawer] = useState<boolean>(false);
-    const [defaultData, setDefaultData] = useState<DisqualifiedIValues>({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        suffix: '',
-        date_submitted: '',
-        vacancy_id: '',
-        vacancy: '',
-        vacancy_autosuggest: '',
-        reason: '',
-        remarks: '',
-        recipient: '',
-        subject: '',
-        body: ''
+    const [defaultData, setDefaultData] = useState<Appointment>({
+        division_id: "",
+        division: "",
+        division_autosuggest: "",
+        lgu_position_id: "",
+        lgu_position: "",
+        lgu_position_autosuggest: "",
+        employment_status: "",
+        employee_id: "",
+        employee: "",
+        employee_autosuggest: "",
+        application_id: "",
+        application: "",
+        application_autosuggest: "",
+        nature_of_appointment: "",
+        vice: "",
+        vacancy_reason: "",
+        date_of_signing: "",
+        page_no: "",
+        date_received: "",
     });
-    var [initialValues, setValues] = useState<DisqualifiedIValues>(
+    var [initialValues, setValues] = useState<Appointment>(
         defaultData
     );
 
@@ -106,11 +112,11 @@ function AllRequestsTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                filters: [...filters, { column: "applications.date_submitted", value: String(year) }, { column: 'status', value: 'Disqualified' }],
+                filters: [...filters],
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-applications", postData);
+            const resp = await HttpService.post("search-interviews", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -120,10 +126,10 @@ function AllRequestsTabs() {
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
 
-    const downloadLetter = async (id: number) => {
+    const downloadNoticeOfMeeting = async (id: number) => {
         try {
             if (process === "Download") {
-                const resp = await HttpService.get("download-disqualification-letter/" + id);
+                const resp = await HttpService.get("download-notice-of-meeting/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -168,6 +174,55 @@ function AllRequestsTabs() {
     };
 
 
+
+    const downloadInitialCAF = async (id: number) => {
+        try {
+            if (process === "CAF") {
+                const resp = await HttpService.get("generate-initial-caf-per-meeting/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        let base64String = resp.data.data.base64;
+                        let filename = resp.data.data.filename;
+                        var binaryString = atob(base64String);
+
+                        // Convert binary to ArrayBuffer
+                        var binaryData = new ArrayBuffer(binaryString.length);
+                        var byteArray = new Uint8Array(binaryData);
+                        for (var i = 0; i < binaryString.length; i++) {
+                            byteArray[i] = binaryString.charCodeAt(i);
+                        }
+
+                        // Create Blob object
+                        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+                        // Create object URL
+                        var url = URL.createObjectURL(blob);
+
+                        // Create a link element, set its href attribute, and trigger download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename; // Specify desired file name with .zip extension
+                        document.body.appendChild(a); // Append anchor to body
+                        a.click(); // Programmatically click the anchor element to trigger the download
+                        document.body.removeChild(a); // Clean up anchor element afterwards
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+        }
+        catch (error: any) {
+            if (error.response.status === 422) {
+
+            }
+        }
+    };
+
+
     useEffect(() => {
         setAlerts([]);
         if (id == 0) {
@@ -177,43 +232,42 @@ function AllRequestsTabs() {
 
             if (process == "View") {
                 setShowDrawer(false);
-                setShowAttachmentDrawer(true);
             }
             else if (process == "Download") {
-                downloadLetter(id);
+                downloadNoticeOfMeeting(id);
+            }
+            else if (process == "CAF") {
+                downloadInitialCAF(id);
+            }
+
+            else if (process === "Delete") {
+                setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
+                // setValues(defaultData);
+                getDataById(id);
+                setShowDrawer(true);
             }
 
             else {
                 setValues(defaultData);
                 getDataById(id);
                 setShowDrawer(true);
-                setShowAttachmentDrawer(false);
             }
         }
     }, [id, reload]);
 
 
-    useEffect(() => {
-        if (!showDrawer) {
-            if (!showAttachmentDrawer) {
-                setId(0);
-            }
-        }
-        else {
-            setShowAttachmentDrawer(false);
-        }
-    }, [showDrawer]);
 
-    useEffect(() => {
-        if (process === "Revert") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to revert this application?" }]);
-            setReadOnly(true);
-        }
-        else {
-            setAlerts([]);
-            setReadOnly(false);
-        }
-    }, [process]);
+
+    // useEffect(() => {
+    //     if (process === "Revert") {
+    //         setAlerts([{ "type": "failure", "message": "Are you sure to revert this application?" }]);
+    //         setReadOnly(true);
+    //     }
+    //     else {
+    //         setAlerts([]);
+    //         setReadOnly(false);
+    //     }
+    // }, [process]);
 
 
 
@@ -222,69 +276,18 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("application/" + id);
-
+            const resp = await HttpService.get("interview/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                var body = `<p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Dear <strong>Applicant</strong>:&nbsp;</span>
-                            </p>
-                            <p style="padding:0px">
-                                &nbsp;
-                            </p>
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">This refers to your application for the position of <strong>${data.vacancy}</strong> at the <strong>${data.vacancyOffice.office_name}</strong>, Capitol, Poblacion, La Trinidad, Benguet.</span>
-                            </p>
-                           
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">We regret to inform that based on the evaluation of your qualifications as submitted, vis - a’-vis the qualification standards(QS) of the position, ${data.disqualification.reason} .&nbsp;</span>
-                            </p>
-                           
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Nonetheless, we thank you for your interest to join the Provincial Government of Benguet.</span>
-                            </p>
-                            <p style="padding:0px">
-                                &nbsp;
-                            </p>
-                           
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Very truly yours,</span>
-                            </p>
-                            <p style="padding:0px">
-                                &nbsp;
-                            </p>
-                            <p style="padding:0px" class="MsoNormal">
-                                <span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;"><strong>PROVINCIAL HUMAN RESOURCE MANAGEMENT AND DEVELOPMENT OFFICE</strong></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><o:p></o:p></span>
-                            </p>
-                            <p style="padding:0px">
-                                <span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;font-size:14px;">PROVINCE OF BENGUET</span>
-                            </p>
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;">Poblacion, La Trinidad, Benguet 2601</span>
-                            </p>
-                            <p style="padding:0px">
-                                <span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>(074) 422-6475</i></span><span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i> | </i></span><span style="color:hsl(240,75%,60%);font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i>http://www.benguet.gov.ph&nbsp;</i></span>
-                            </p>
-                            <p style="padding:0px">
-                                <span style="font-family:Verdana, Geneva, sans-serif;font-size:14px;"><i><strong>EMAIL ADDRESS</strong>: phrmdo@benguet.gov.ph / benguethrmdo@yahoo.com</i></span>
-                            </p>`;
-
                 setValues(defaultData);
-                setValues({
-                    first_name: data.details.first_name,
-                    middle_name: (data.details.middle_name) ? data.details.middle_name : "",
-                    last_name: data.details.last_name,
-                    suffix: (data.details.suffix) ? data.details.suffix : "",
-                    date_submitted: data.application.date_submitted,
-                    vacancy_id: data.application.vacancy_id,
-                    vacancy: data.vacancy,
-                    vacancy_autosuggest: data.vacancy,
-                    reason: (data.disqualification) ? data.disqualification.reason : '',
-                    remarks: '',
-                    recipient: data.details.email_address,
-                    subject: "Notice of Disqualification",
-                    body: body
-                });
+                // setValues({
+                //     date_created: data.interview.date_created,
+                //     meeting_date: data.interview.meeting_date,
+                //     venue: data.interview.venue_id,
+                //     positions: data.positions.map((item: any) => {
+                //         return item.vacancy_id.toString();
+                //     }),
+                // });
             }
         }
         catch (error: any) {
@@ -303,18 +306,19 @@ function AllRequestsTabs() {
     // Submit form
     const onFormSubmit = async (
         values: any,
-        { setSubmitting, resetForm, setFieldError }: FormikHelpers<DisqualifiedIValues>
+        { setSubmitting, resetForm, setFieldError }: FormikHelpers<Appointment>
     ) => {
 
-        // psbPersonnels(values.attachments);
+
         alerts.forEach(element => {
             alerts.pop();
         });
 
 
+
         try {
-            if (process === "Edit") {
-                const resp = await HttpService.post("disqualify-application/" + id, values)
+            if (process === "Add") {
+                const resp = await HttpService.post("interview", values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -332,28 +336,12 @@ function AllRequestsTabs() {
                 }
             }
 
-            if (process === "Email") {
-                const resp = await HttpService.post("send-disqualification-email/" + id, values)
+            else if (process === "Edit") {
+                const resp = await HttpService.patch("interview/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": resp.data.message });
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
-            }
-
-
-            if (process === "Revert") {
-                const resp = await HttpService.post("revert-application/" + id, values)
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully reverted!" });
+                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         // setValues(defaultData);
                         setActivePage(1);
                         setFilters([]);
@@ -367,6 +355,44 @@ function AllRequestsTabs() {
                 }
             }
 
+            else if (process === "Delete") {
+                const resp = await HttpService.delete("interview/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": resp.data.message });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
+                        setId(0);
+                        setProcess("Add");
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+
+
+            else if (process === "Email") {
+                const resp = await HttpService.post("send-disqualification-email/" + id, values)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        alerts.push({ "type": "success", "message": resp.data.message });
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+            else {
+
+            }
 
         }
         catch (error: any) {
@@ -380,10 +406,6 @@ function AllRequestsTabs() {
     // tsx
     return (
         <>
-            {/* drawer */}
-            <AttachmentDrawer width='w-3/4' setShowDrawer={setShowAttachmentDrawer} showDrawer={showAttachmentDrawer} title={`Attachment/s`}>
-                <AttachmentView id={id} link={"/view-application-attachments"} />
-            </AttachmentDrawer>
 
             <Drawer width='w-3/4' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
@@ -396,11 +418,12 @@ function AllRequestsTabs() {
                             <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
-                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p ><span className="font-medium">{item.message}</span></p></span></Alert>
+                                        <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
                                     );
                                 })}
                             </div>
-                            <DisqualifiedContextProvider
+
+                            <AppointmentContextProvider
                                 formikData={formikData}
                                 isLoading={isLoading}
                                 errors={errors}
@@ -409,20 +432,20 @@ function AllRequestsTabs() {
                                 setValues={setValues}
                                 process={process}
                                 id={id}>
-
-                                {(process === "Revert") ? <RevertForm /> : ((process === "Email") ? <EmailForm /> : <DisqualifyForm />)}
-                            </DisqualifiedContextProvider>
+                                <AppointmentForm />
+                            </AppointmentContextProvider>
                         </Form>
                     )}
                 </Formik>
             </Drawer>
-            <div className={`${(showDrawer || showAttachmentDrawer) ? "blur-[1px]" : ""}`}>
+            <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
 
 
                 {/*  Tabs */}
                 <Tabs.Group
                     aria-label="Tabs with underline"
                     style="underline"
+                    theme={customTheme}
                     ref={props.tabsRef}
                 // onActiveTabChange={(tab) => {
                 //     // if (tab == 1) {
@@ -436,9 +459,14 @@ function AllRequestsTabs() {
 
                 >
 
-                    <Tabs.Item title={title + "s"} active>
-
-                        {/*Table*/}
+                    <Tabs.Item title={title + "s"} className='text-blue-500' active>
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 hover:bg-blue-400 shadow-sm text' onClick={() => {
+                            setValues(defaultData);
+                            setShowDrawer(true);
+                            setId(0);
+                            setProcess("Add");
+                        }} onDoubleClick={() => { setShowDrawer(false); }}>Add {title}
+                        </Button>
 
                         <Table
                             buttons={buttons}
@@ -460,7 +488,6 @@ function AllRequestsTabs() {
                             setReload={setReload}
                             setProcess={setProcess}
                             setYear={setYear}
-                            year={year}
                         >
                         </Table>
                     </Tabs.Item>

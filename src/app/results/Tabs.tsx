@@ -16,7 +16,7 @@ import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, EyeIcon, HandThumbUp
 import { useRouter } from "next/navigation";
 import { createContext } from 'vm';
 import { FormFieldError } from '../components/commons/FormFieldError';
-import { HiDocumentAdd, HiOutlineDocumentRemove } from 'react-icons/hi';
+import { HiDocumentAdd, HiDownload, HiOutlineDocumentRemove } from 'react-icons/hi';
 
 
 
@@ -64,7 +64,8 @@ interface application {
     technical: string,
     leadership: string,
     awards: string,
-    additional_information: string
+    additional_information: string,
+    remarks: string
 }
 
 // interfaces
@@ -74,6 +75,7 @@ interface IValues {
     division: string,
     position: string,
     item_number: string,
+    vacancy_id: string,
     applications: application[]
 }
 
@@ -95,7 +97,7 @@ function AllRequestsTabs() {
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
         { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
-        { "icon": <EyeIcon className=' w-5 h-5' />, "title": "View", "process": "View", "class": "text-green-500", "link": "/psb-result" }
+        { "icon": <HiDownload className=' w-5 h-5' />, "title": "Download", "process": "Download", "class": "text-slate-600" },
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -131,10 +133,11 @@ function AllRequestsTabs() {
             division: '',
             position: '',
             item_number: '',
+            vacancy_id: '',
             applications: []
         }
     );
-    const [code, setCode] = useState<string>("employee");
+    const [code, setCode] = useState<string>("Non-Department Head");
     const initialValueContext = createContext();
 
 
@@ -184,11 +187,19 @@ function AllRequestsTabs() {
                 division: '',
                 position: '',
                 item_number: '',
+                vacancy_id: '',
                 applications: []
             });
         }
         else {
-            getDataById(id);
+
+            if (process === "Download") {
+                downloadCAF(id);
+            }
+            else {
+
+                getDataById(id);
+            }
         }
     }, [id, reload]);
 
@@ -204,12 +215,56 @@ function AllRequestsTabs() {
     }, [initialValues.applications]);
 
 
+    const downloadCAF = async (id: number) => {
+        try {
+            if (process === "Download") {
+                const resp = await HttpService.get("download-final-caf/" + id);
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (status === "Request was Successful") {
+                        let base64String = resp.data.data.base64;
+                        let filename = resp.data.data.filename;
+                        var binaryString = atob(base64String);
+
+                        // Convert binary to ArrayBuffer
+                        var binaryData = new ArrayBuffer(binaryString.length);
+                        var byteArray = new Uint8Array(binaryData);
+                        for (var i = 0; i < binaryString.length; i++) {
+                            byteArray[i] = binaryString.charCodeAt(i);
+                        }
+
+                        // Create Blob object
+                        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+                        // Create object URL
+                        var url = URL.createObjectURL(blob);
+
+                        // Create a link element, set its href attribute, and trigger download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename + '.xlsx'; // Specify desired file name with .docx extension
+                        document.body.appendChild(a); // Append anchor to body
+                        a.click(); // Programmatically click the anchor element to trigger the download
+                        document.body.removeChild(a); // Clean up anchor element afterwards
+                    }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
+                        }
+                    }
+                }
+            }
+        }
+        catch (error: any) {
+            if (error.response.status === 422) {
+
+            }
+        }
+    };
+
     useEffect(() => {
         if (process === "Edit") {
-            // setAlerts([{ "type": "info", "message": "Edit Approved Request?" }])
-        }
-        else if (process === "Reactivate") {
-            // setAlerts([{ "type": "warning", "message": "Reactivate Request?" }])
+            setAlerts([{ "type": "info", "message": "Edit PSB Results?" }])
         }
         else {
             setAlerts([]);
@@ -226,10 +281,10 @@ function AllRequestsTabs() {
                 let data = resp.data;
 
                 if (data.position.code.includes("PGDH-")) {
-                    setCode("head");
+                    setCode("Department Head");
                 }
                 else {
-                    setCode("employee");
+                    setCode("Non-Department Head");
                 }
 
                 setValues({
@@ -237,6 +292,7 @@ function AllRequestsTabs() {
                     division: data.division.division_name,
                     position: data.position.title,
                     item_number: data.lguPosition.item_number,
+                    vacancy_id: data.vacancy.id,
                     applications: data.applications.map((item: any) => {
 
                         let name = item.first_name + " " + item.last_name;
@@ -244,7 +300,7 @@ function AllRequestsTabs() {
                             name = item.first_name + " " + item.middle_name[0] + ". " + item.last_name;
                         }
                         return {
-                            'id': item.id ? item.id : "",
+                            'id': item.application_id ? item.application_id : "",
                             'name': name,
                             'psychosocial_attributes': item.psychosocial_attributes ? item.psychosocial_attributes : "",
                             'potential': item.potential ? item.potential : "",
@@ -252,7 +308,8 @@ function AllRequestsTabs() {
                             'technical': item.technical ? item.technical : "",
                             'leadership': item.leadership ? item.leadership : "",
                             'awards': item.awards ? item.awards : "",
-                            'additional_information': item.awards ? item.additional_information : ""
+                            'additional_information': item.awards ? item.additional_information : "",
+                            'remarks': item.remarks ? item.remarks : ""
                         };
                     })
                 });
@@ -279,14 +336,37 @@ function AllRequestsTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         setLoading(true);
-        console.log(values);
+
+
+
+
+
+
+
         const postData = {
-            application: values.application,
+            applications: values.applications.map((item: any) => {
+                let data = Object.entries(item).map((value: any, index: any) => {
+                    if (code == "Non-Department Head") {
+                        if (value[0] == 'administrative' || value[0] == 'technical' || value[0] == 'leadership') {
+                            return [value[0], 0];
+                        }
+                    }
+                    else {
+                        if (value[0] == 'psychosocial_attributes' || value[0] == 'potential') {
+                            return [value[0], 0];
+                        }
+                    }
+
+                    return value;
+                });
+
+                return Object.fromEntries(data);
+            }),
             division: values.division,
             item_number: values.item_number,
             office: values.office,
-            position: values.position,
-            code: code
+            vacancy_id: values.vacancy_id,
+            position: code
         };
 
 
@@ -300,17 +380,11 @@ function AllRequestsTabs() {
                 const resp = await HttpService.patch("psb-result/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
-                    if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        setActivePage(1);
-                        setFilters([]);
-                        setRefresh(!refresh);
+
+                    if (typeof resp.data != "undefined") {
+                        alerts.push({ "type": "success", "message": resp.data.message });
                     }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
+
                 }
             }
 
@@ -439,6 +513,9 @@ function AllRequestsTabs() {
                                             return <div className='col-span-8 md:col-span-8 grid md:grid-cols-8 grid-col ' key={index}>
 
                                                 <div className="col-span-1 md:col-span-1 mx-1 mt-1 hidden">
+                                                    <label htmlFor={`applications.${index}.id`} className="text-sm font-medium">
+                                                        ID <span className=' text-red-700 text-lg'></span>
+                                                    </label>
                                                     <Field
                                                         id={`applications.${index}.id`}
                                                         name={`applications.${index}.id`}
@@ -450,6 +527,9 @@ function AllRequestsTabs() {
                                                 </div>
 
                                                 <div className="col-span-4 md:col-span-2 mx-1 mt-1">
+                                                    <label htmlFor={`applications.${index}.name`} className="text-sm font-medium">
+                                                        Name <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
                                                         id={`applications.${index}.name`}
                                                         name={`applications.${index}.name`}
@@ -461,11 +541,15 @@ function AllRequestsTabs() {
                                                     <FormFieldError name={`applications.${index}.name`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "employee") ? "" : "hidden"}`}>
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "Non-Department Head") ? "" : "hidden"}`}>
+                                                    <label htmlFor={`applications.${index}.psychosocial_attributes`} className="text-sm font-medium">
+                                                        Psychosocial Attributes (15) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
+                                                        type="number"
                                                         id={`applications.${index}.psychosocial_attributes`}
                                                         name={`applications.${index}.psychosocial_attributes`}
-                                                        placeholder="Psychosocial Attributes *"
+                                                        placeholder="Psychosocial Attributes (15)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
@@ -474,35 +558,45 @@ function AllRequestsTabs() {
 
 
 
-                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "employee") ? "" : "hidden"}`}>
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "Non-Department Head") ? "" : "hidden"}`}>
+                                                    <label htmlFor={`applications.${index}.potential`} className="text-sm font-medium">
+                                                        Potential (15) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
+                                                        type="number"
                                                         id={`applications.${index}.potential`}
                                                         name={`applications.${index}.potential`}
-                                                        placeholder="Potential *"
+                                                        placeholder="Potential (15)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.potential`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
+                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "Department Head") ? "" : "hidden"}`}>
+                                                    <label htmlFor={`applications.${index}.administrative`} className="text-sm font-medium">
+                                                        Administrative (10) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
                                                         type="number"
                                                         id={`applications.${index}.administrative`}
                                                         name={`applications.${index}.administrative`}
-                                                        placeholder="Administrative *"
+                                                        placeholder="Administrative (10)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.administrative`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
+                                                <div className={`col-span-4 md:col-span-1 mx-1 mt-1  ${(code == "Department Head") ? "" : "hidden"}`}>
+                                                    <label htmlFor={`applications.${index}.technical`} className="text-sm font-medium">
+                                                        Technical (10) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
                                                         type="number"
                                                         id={`applications.${index}.technical`}
                                                         name={`applications.${index}.technical`}
-                                                        placeholder="Technical *"
+                                                        placeholder="Technical (10)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
@@ -510,12 +604,15 @@ function AllRequestsTabs() {
                                                 </div>
 
 
-                                                <div className={`col-span-4 md:col-span-2 mx-1 mt-1  ${(code == "head") ? "" : "hidden"}`}>
+                                                <div className={`col-span-4 md:col-span-1 mx-1 mt-1  ${(code == "Department Head") ? "" : "hidden"}`}>
+                                                    <label htmlFor={`applications.${index}.leadership`} className="text-sm font-medium">
+                                                        Leadership (10) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
                                                         type="number"
                                                         id={`applications.${index}.leadership`}
                                                         name={`applications.${index}.leadership`}
-                                                        placeholder="Leadership *"
+                                                        placeholder="Leadership (10)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
@@ -524,26 +621,40 @@ function AllRequestsTabs() {
 
 
                                                 <div className="col-span-4 md:col-span-2 mx-1 mt-1">
+                                                    <label htmlFor={`applications.${index}.awards`} className="text-sm font-medium">
+                                                        Awards (5) <span className=' text-red-700 text-lg'>*</span>
+                                                    </label>
                                                     <Field
                                                         type="number"
                                                         id={`applications.${index}.awards`}
                                                         name={`applications.${index}.awards`}
-                                                        placeholder="Awards *"
+                                                        placeholder="Awards (5)*"
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.awards`} errors={errors} touched={touched} />
                                                 </div>
 
-                                                <div className="col-span-6 md:col-span-6 mx-1 mt-1">
+                                                <div className="col-span-3 md:col-span-4 mx-1 mt-1">
                                                     <Field
                                                         id={`applications.${index}.additional_information`}
                                                         name={`applications.${index}.additional_information`}
-                                                        placeholder="Additional Information *"
+                                                        placeholder="Additional Information "
                                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                                         autoComplete="on"
                                                     />
                                                     <FormFieldError name={`applications.${index}.additional_information`} errors={errors} touched={touched} />
+                                                </div>
+
+                                                <div className="col-span-3 md:col-span-4 mx-1 mt-1">
+                                                    <Field
+                                                        id={`applications.${index}.remarks`}
+                                                        name={`applications.${index}.remarks`}
+                                                        placeholder="Remarks "
+                                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                                        autoComplete="on"
+                                                    />
+                                                    <FormFieldError name={`applications.${index}.remarks`} errors={errors} touched={touched} />
                                                 </div>
 
                                                 {/* <div className="col-span-4 md:col-span-2 mx-1 mt-1">

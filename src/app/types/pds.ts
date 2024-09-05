@@ -68,6 +68,46 @@ export type interviewContextType = {
 
 };
 
+export interface Appointment {
+    // personal information
+    division_id: string,
+    division: string,
+    division_autosuggest: string,
+    lgu_position_id: string,
+    lgu_position: string,
+    lgu_position_autosuggest: string,
+    employee_id: string,
+    employee: string,
+    employee_autosuggest: string,
+    application_id: string,
+    application: string,
+    application_autosuggest: string,
+    employment_status: string,
+    nature_of_appointment: string,
+    vice: string,
+    vacancy_reason: string,
+    date_of_signing: string,
+    page_no: string,
+    date_received: string,
+}
+
+
+
+export type appointmentContextType = {
+    formikData: any,
+    readonly?: boolean,
+    errors: any,
+    touched: any,
+    initialValues: Appointment,
+    setValues: Function,
+    isLoading: boolean,
+    process: string,
+    children?: React.ReactNode,
+    id?: number,
+    submitSearchPerson?: Function
+
+};
+
 export type country = {
     value: string,
     label: string,
