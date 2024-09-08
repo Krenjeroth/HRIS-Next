@@ -73,11 +73,13 @@ function index(parameter: Props) {
                     <SidebarDropdown isMinimized={parameter.isMinimized} expandedLink={expandedLink} setExpandedLink={setExpandedLink} title="Settings" icon={<CogIcon className='w-6 h-6' />}>
                         <SidebarDropdownItem href={"/settings/governors"} label="Governors" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/offices"} label="Offices" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/settings/department_heads"} label="Department Heads" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/divisions"} label="Divisions/Sections/Units" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/psb"} label="PSB" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/positions"} label="Positions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/plantillas"} label="Permanent Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/other_positions"} label="Casual Plantillas" activeLink={activeLink} SetActiveLink={SetActiveLink} />
+                        <SidebarDropdownItem href={"/settings/venues"} label="Venues" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/user_management"} label="User Management" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/holidays"} label="Holidays/Suspensions" activeLink={activeLink} SetActiveLink={SetActiveLink} />
                         <SidebarDropdownItem href={"/settings/salary_grades"} label="Salary Grade" activeLink={activeLink} SetActiveLink={SetActiveLink} />

@@ -19,6 +19,7 @@ import { IValues, formContextType, child, school, workExperience, eligibility, v
 import PDSContextProvider from '../contexts/PDSContext';
 import ApplicationPDS from '../components/PDS/ApplicantPDS';
 import ApplicantPDS from '../components/PDS/ApplicantPDS';
+import moment from 'moment';
 // types
 
 type row = {
@@ -351,7 +352,7 @@ function AllRequestsTabs() {
                     return {
                         'number': (item.number) ? item.number : "",
                         'name': (item.name) ? item.name : "",
-                        'birthday': (item.birthday) ? item.birthday : ""
+                        'birthday': (item.birthday) ? moment(item.birthday).format("MM/DD/YYYY") : ""
                     };
                 }));
 
@@ -375,7 +376,7 @@ function AllRequestsTabs() {
                     last_name: data.applicant.last_name,
                     suffix: (data.applicant.suffix) ? data.applicant.suffix : "",
                     birth_place: data.personalInformation.birth_place,
-                    birth_date: data.personalInformation.birth_date,
+                    birth_date: moment(data.personalInformation.birth_date).format("MM/DD/YYYY"),
                     age: data.personalInformation.age,
                     sex: data.personalInformation.sex,
                     height: data.personalInformation.height,
@@ -421,7 +422,7 @@ function AllRequestsTabs() {
                         return {
                             'number': (item.number) ? item.number : "",
                             'name': (item.name) ? item.name : "",
-                            'birthday': (item.birthday) ? item.birthday : ""
+                            'birthday': (item.birthday) ? moment(item.birthday).format("MM/DD/YYYY") : ""
                         };
                     }),
                     father_first_name: (data.familyBackground.father_first_name) ? data.familyBackground.father_first_name : "",
@@ -448,16 +449,16 @@ function AllRequestsTabs() {
                         return {
                             eligibility_title: item.eligibility_title,
                             rating: item.rating,
-                            date_of_examination_conferment: item.date_of_examination_conferment,
+                            date_of_examination_conferment: moment(item.date_of_examination_conferment).format("MM/DD/YYYY"),
                             place_of_examination_conferment: item.place_of_examination_conferment,
                             license_number: (item.license_number) ? item.license_number : "",
-                            license_date_validity: (item.license_date_validity) ? item.license_date_validity : ""
+                            license_date_validity: (item.license_date_validity) ? moment(item.license_date_validity).format("MM/DD/YYYY") : ""
                         }
                     }),
                     workExperiences: data.workExperiences.map((item: workExperience) => {
                         return {
-                            date_from: item.date_from,
-                            date_to: item.date_to,
+                            date_from: moment(item.date_from).format("MM/DD/YYYY"),
+                            date_to: moment(item.date_to).format("MM/DD/YYYY"),
                             position_title: item.position_title,
                             office_company: item.office_company,
                             monthly_salary: item.monthly_salary,
@@ -470,8 +471,8 @@ function AllRequestsTabs() {
                         return {
                             organization_name: (item.organization_name) ? item.organization_name : "",
                             organization_address: (item.organization_address) ? item.organization_address : "",
-                            date_from: (item.date_from) ? item.date_from : "",
-                            date_to: (item.date_to) ? item.date_to : "",
+                            date_from: (item.date_from) ? moment(item.date_from).format("MM/DD/YYYY") : "",
+                            date_to: (item.date_to) ? moment(item.date_to).format("MM/DD/YYYY") : "",
                             number_of_hours: (item.number_of_hours) ? item.number_of_hours : "",
                             position_nature_of_work: (item.position_nature_of_work) ? item.position_nature_of_work : ""
                         }
@@ -480,8 +481,8 @@ function AllRequestsTabs() {
 
                         return {
                             training_title: item.training_title,
-                            attendance_from: item.attendance_from,
-                            attendance_to: item.attendance_to,
+                            attendance_from: moment(item.attendance_from).format("MM/DD/YYYY"),
+                            attendance_to: moment(item.attendance_to).format("MM/DD/YYYY"),
                             number_of_hours: item.number_of_hours,
                             training_type: item.training_type,
                             conducted_sponsored_by: item.conducted_sponsored_by

@@ -59,10 +59,14 @@ interface member {
 interface IValues {
     date_of_effectivity: "",
     end_of_effectivity: "",
-    presiding_officer_prefix: "",
-    presiding_officer: "",
-    presiding_officer_position: "",
-    presiding_officer_office: "",
+    chairman_prefix: "",
+    chairman: "",
+    chairman_position: "",
+    chairman_office: "",
+    vice_chairman_prefix: "",
+    vice_chairman: "",
+    vice_chairman_position: "",
+    vice_chairman_office: "",
     members: member[],
     secretariats: member[]
 }
@@ -88,8 +92,10 @@ function PSBTab() {
         { "column": "id", "display": "id" },
         { "column": "date_of_effectivity", "display": "Date of Effectivity" },
         { "column": "end_of_effectivity", "display": "End of Effectivity" },
-        { "column": "presiding_officer", "display": "Presiding Officer" },
-        { "column": "presiding_officer_position", "display": "Position" },
+        { "column": "chairman", "display": "Chairman" },
+        { "column": "chairman_position", "display": "Position" },
+        { "column": "vice_chairman", "display": "Vice Chairman" },
+        { "column": "vice_chairman_position", "display": "Position" },
     ]);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
@@ -103,11 +109,15 @@ function PSBTab() {
     const [defaultValue] = useState<IValues>(
         {
             date_of_effectivity: "",
-            presiding_officer_prefix: "",
             end_of_effectivity: "",
-            presiding_officer: "",
-            presiding_officer_position: "",
-            presiding_officer_office: "",
+            chairman_prefix: "",
+            chairman: "",
+            chairman_position: "",
+            chairman_office: "",
+            vice_chairman_prefix: "",
+            vice_chairman: "",
+            vice_chairman_position: "",
+            vice_chairman_office: "",
             members: [],
             secretariats: []
         }
@@ -212,10 +222,14 @@ function PSBTab() {
                 setValues({
                     date_of_effectivity: data.personnelSelectionBoard.date_of_effectivity,
                     end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity == null ? "" : data.personnelSelectionBoard.end_of_effectivity,
-                    presiding_officer: data.personnelSelectionBoard.presiding_officer,
-                    presiding_officer_prefix: data.personnelSelectionBoard.presiding_officer_prefix,
-                    presiding_officer_position: data.personnelSelectionBoard.presiding_officer_position,
-                    presiding_officer_office: data.personnelSelectionBoard.presiding_officer_office,
+                    chairman: data.personnelSelectionBoard.chairman,
+                    chairman_prefix: data.personnelSelectionBoard.chairman_prefix,
+                    chairman_position: data.personnelSelectionBoard.chairman_position,
+                    chairman_office: data.personnelSelectionBoard.chairman_office,
+                    vice_chairman: data.personnelSelectionBoard.vice_chairman,
+                    vice_chairman_prefix: data.personnelSelectionBoard.vice_chairman_prefix,
+                    vice_chairman_position: data.personnelSelectionBoard.vice_chairman_position,
+                    vice_chairman_office: data.personnelSelectionBoard.vice_chairman_office,
                     members: temp_members.map((item: member) => {
                         return {
                             'prefix': item.prefix ? item.prefix : "",
@@ -398,9 +412,15 @@ function PSBTab() {
                                 />
                             </FormElement>
 
+                            <hr className=' col-span-4 md:col-span-4 grid grid-cols-4 my-2' />
+
+                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-3 '>
+                                <span className='  font-medium text-lg '>Chairman</span>
+                            </div>
+
                             {/*  */}
                             <FormElement
-                                name="presiding_officer_prefix"
+                                name="chairman_prefix"
                                 label="Prefix"
                                 errors={errors}
                                 touched={touched}
@@ -409,9 +429,9 @@ function PSBTab() {
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="presiding_officer_prefix"
-                                    name="presiding_officer_prefix"
-                                    placeholder="Enter Presiding Officer Prefix"
+                                    id="chairman_prefix"
+                                    name="chairman_prefix"
+                                    placeholder="Enter Prefix"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
@@ -420,8 +440,8 @@ function PSBTab() {
 
                             {/*  */}
                             <FormElement
-                                name="presiding_officer"
-                                label="Presiding Officer"
+                                name="chairman"
+                                label="Name"
                                 errors={errors}
                                 touched={touched}
                                 required={true}
@@ -429,16 +449,16 @@ function PSBTab() {
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="presiding_officer"
-                                    name="presiding_officer"
-                                    placeholder="Enter Presiding"
+                                    id="chairman"
+                                    name="chairman"
+                                    placeholder="Enter Name"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
 
                             <FormElement
-                                name="presiding_officer_position"
+                                name="chairman_position"
                                 label="Position"
                                 errors={errors}
                                 touched={touched}
@@ -447,8 +467,8 @@ function PSBTab() {
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="presiding_officer_position"
-                                    name="presiding_officer_position"
+                                    id="chairman_position"
+                                    name="chairman_position"
                                     placeholder="Enter Position"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
@@ -457,7 +477,7 @@ function PSBTab() {
 
                             {/*  */}
                             <FormElement
-                                name="presiding_officer_office"
+                                name="chairman_office"
                                 label="Office"
                                 errors={errors}
                                 touched={touched}
@@ -466,13 +486,96 @@ function PSBTab() {
                             >
                                 <Field
                                     readOnly={(process === "Delete") ? true : false}
-                                    id="presiding_officer_office"
-                                    name="presiding_officer_office"
-                                    placeholder="Enter Presiding Officer Office"
+                                    id="chairman_office"
+                                    name="chairman_office"
+                                    placeholder="Enter Chairman Office"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
+
+                            <hr className=' col-span-4 md:col-span-4 grid grid-cols-4 my-2' />
+
+                            <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-3 '>
+                                <span className='  font-medium text-lg '>Vice Chairman</span>
+                            </div>
+
+                            {/*  */}
+                            <FormElement
+                                name="vice_chairman_prefix"
+                                label="Prefix"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-1'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="vice_chairman_prefix"
+                                    name="vice_chairman_prefix"
+                                    placeholder="Enter Prefix"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
+
+
+                            {/*  */}
+                            <FormElement
+                                name="vice_chairman"
+                                label="Name"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-3'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="vice_chairman"
+                                    name="vice_chairman"
+                                    placeholder="Enter Name"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
+
+                            <FormElement
+                                name="vice_chairman_position"
+                                label="Position"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-2'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="vice_chairman_position"
+                                    name="vice_chairman_position"
+                                    placeholder="Enter Position"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
+
+                            {/*  */}
+                            <FormElement
+                                name="vice_chairman_office"
+                                label="Office"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                                className='col-span-4 md:col-span-2'
+                            >
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="vice_chairman_office"
+                                    name="vice_chairman_office"
+                                    placeholder="Enter Office"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    onClick={() => { setAlerts([]); }}
+                                />
+                            </FormElement>
+
 
                             <hr className=' col-span-4 md:col-span-4 grid grid-cols-4 my-2' />
 

@@ -19,6 +19,7 @@ import { EmailForm } from '@/app/components/Forms/EmailForm';
 import { HiArchive, HiDownload, HiMail } from 'react-icons/hi';
 import { MeetingForm } from '../components/Forms/MeetingForm';
 import type { CustomFlowbiteTheme } from "flowbite-react";
+import moment from 'moment';
 
 
 
@@ -265,8 +266,8 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 setValues(defaultData);
                 setValues({
-                    date_created: data.interview.date_created,
-                    meeting_date: data.interview.meeting_date,
+                    date_created: moment(data.interview.date_created).format("MM/DD/YYYY"),
+                    meeting_date: moment(data.interview.meeting_date).format("MM/DD/YYYY"),
                     venue: data.interview.venue_id,
                     positions: data.positions.map((item: any) => {
                         return item.vacancy_id.toString();
@@ -435,7 +436,7 @@ function AllRequestsTabs() {
                 //     // if (tab == 1) {
                 //     //     router.push('/vacancy/approved');
                 //     // }
-                //     // else if (2) {
+                //     // else  if (tab == 2) {
                 //     //     router.push('/vacancy/queued');
                 //     // }
 

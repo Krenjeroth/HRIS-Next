@@ -15,6 +15,7 @@ type Props = {
     placeholderText: string,
     className: string,
     initialValues: any,
+    setLocalValue?: any,
     readOnly?: boolean,
 }
 
@@ -37,17 +38,21 @@ function index(parameter: Props) {
             showMonthDropdown
             showYearDropdown
             dateFormat={dateFormat}
-            // todayButton="Today in Philippines"
             yearDropdownItemNumber={50}
             scrollableYearDropdown
             onChange={val => {
                 if (val === null) {
                     setFieldValue(field.name, "");
+                    if (parameter.setLocalValue) {
+                        parameter.setLocalValue("");
+                    }
                 }
                 else {
-                    setFieldValue(field.name, moment(val).format("YYYY-MM-DD"));
+                    setFieldValue(field.name, moment(val).format("MM/DD/YYYY"));
+                    if (parameter.setLocalValue) {
+                        parameter.setLocalValue(moment(val).format("MM/DD/YYYY"));
+                    }
                 }
-
             }}
         />
 

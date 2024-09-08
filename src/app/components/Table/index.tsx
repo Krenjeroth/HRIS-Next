@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { button, filter, header, row } from "@/app/types/pds";
 import { StyledCheckboxMask } from "@nextui-org/react";
+import moment from "moment";
 
 
 
@@ -190,7 +191,7 @@ function index(parameter: Props) {
                                     </span>
                                     <input type="text" id={`${item.column}_search`} name={`${item.column}_search`} className="block px-2.5 pb-2.5 pt-0 w-full text-sm text-gray-900 bg-white rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer fon-normal" placeholder=" " onChange={debouncedSearch} />
 
-                                    <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-4 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal mt-2" >Search</label>
+                                    <label htmlFor={`${item.column}_search`} className="absolute text-xs text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-65 top-2 z-4 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-normal mt-2" >Search {(item.format) ? "(Y-m-d)" : ""}</label>
                                 </div>
 
                             </Table.HeadCell>
@@ -298,6 +299,12 @@ function index(parameter: Props) {
                                                 value = Intl.NumberFormat(undefined, options).format(parseFloat(value));
                                             }
                                         }
+
+                                        if (td.format) {
+                                            value = moment(value).format(td.format);
+                                        }
+
+
                                         return (
                                             <Table.Cell className="p-1" key={td_index}>
                                                 {value}

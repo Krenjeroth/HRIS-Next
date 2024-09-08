@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
@@ -16,6 +16,8 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import { createContext } from 'vm';
+import moment from "moment";
+import { header } from '@/app/types/pds';
 
 
 
@@ -29,11 +31,6 @@ type row = {
 type alert = {
     type: string,
     message: string
-}
-
-type header = {
-    column: string,
-    display: string
 }
 
 type datalist = {
@@ -82,6 +79,7 @@ const LazyComponent = dynamic(() => import('../../components/LazyComponent'), {
 //main function
 function AllRequestsTabs() {
 
+
     // variables
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<number>(1);
@@ -104,10 +102,12 @@ function AllRequestsTabs() {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
+    const [posting_date, setPostingDate] = useState<string>("");
+    const [closing_date, setClosingDate] = useState<string>("");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
         { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
         { "column": "number", "display": "Salary Grade" },
@@ -222,6 +222,7 @@ function AllRequestsTabs() {
     }, [division_id]);
 
 
+
     // Get LGU Positions
     useEffect(() => {
         // query
@@ -328,7 +329,7 @@ function AllRequestsTabs() {
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues({
-                    date_submitted: data.date_submitted,
+                    date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
                     position_id: data.lgu_position_id,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
@@ -506,10 +507,35 @@ function AllRequestsTabs() {
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
-                    {({ errors, touched }) => (
 
-                        // forms
-                        <Form className='p-2' id="formik">
+                    {({ setFieldValue, errors, touched, values }) => {
+
+                        // get next working day
+                        useEffect(() => {
+                            async function getClosingData() {
+
+                                const postData = {
+                                    posting_date: posting_date,
+                                };
+
+                                const resp = await HttpService.post("get-closing-date", postData);
+                                if (resp != null) {
+                                    let data = resp.data.data;
+                                    setFieldValue("closing_date", data);
+                                }
+                            }
+
+
+                            if (posting_date != "") {
+                                getClosingData();
+                            }
+                            else {
+                            }
+
+                        }, [posting_date]);
+
+
+                        return (<Form className='p-2' id="formik">
                             <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
@@ -604,6 +630,7 @@ function AllRequestsTabs() {
                                         id="posting_date"
                                         name="posting_date"
                                         placeholderText="Enter Date"
+                                        setLocalValue={setPostingDate}
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -655,7 +682,8 @@ function AllRequestsTabs() {
                                 </button>
                             </div>
                         </Form>
-                    )}
+                        );
+                    }}
                 </Formik>
             </Drawer>
             <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
@@ -668,7 +696,7 @@ function AllRequestsTabs() {
                         if (tab == 1) {
                             router.push('/vacancy/approved');
                         }
-                        else if (2) {
+                        else if (tab == 2) {
                             router.push('/vacancy/queued');
                         }
 

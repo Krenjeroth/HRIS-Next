@@ -15,6 +15,8 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import { createContext } from 'vm';
+import moment from 'moment';
+import { header } from '@/app/types/pds';
 
 
 
@@ -30,10 +32,6 @@ type alert = {
     message: string
 }
 
-type header = {
-    column: string,
-    display: string
-}
 
 type datalist = {
     id: string,
@@ -93,14 +91,14 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
         { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
         { "column": "office_name", "display": "Office" },
         { "column": "division_name", "display": "Division/Section/Unit" },
-        { "column": "date_queued", "display": "Date Queued" }
+        { "column": "date_queued", "display": "Date Queued", "format": "MM/DD/YYYY" }
     ]);
 
     const [pages, setPages] = useState<number>(0);
@@ -259,13 +257,13 @@ function AllRequestsTabs() {
                 }
                 else {
                     setValues({
-                        date_submitted: data.date_submitted,
+                        date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
                         division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
                         status: data.status,
-                        date_queued: data.date_queued,
+                        date_queued: moment(data.date_queued).format("MM/DD/YYYY"),
                     });
                 }
                 setShowDrawer(true);

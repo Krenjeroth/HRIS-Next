@@ -16,6 +16,7 @@ import { FormFieldError } from '../commons/FormFieldError';
 import { usePDSContext } from '@/app/contexts/PDSContext';
 import CharacterReference from './CharacterReference';
 import EmployeeDetail from './EmployeeDetails';
+import ApplicantPersonal from './ApplicantPersonal';
 
 type Props = {
     formActiveTab: number,
@@ -60,7 +61,7 @@ function ApplicantPDS(parameter: Props) {
                     icon={HiUser}
                     title={`Personal`}
                 >
-                    <Personal />
+                    <ApplicantPersonal />
 
                 </Tabs.Item>
                 <Tabs.Item

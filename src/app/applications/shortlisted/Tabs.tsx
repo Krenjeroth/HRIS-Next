@@ -18,6 +18,7 @@ import PDSContextProvider from '../../contexts/PDSContext';
 import { RevertForm } from '@/app/components/Forms/RevertFormShortlisted';
 import { ShortListForm } from '@/app/components/Forms/ShortListForm';
 import DatePicker from "../../components/DatePicker";
+import moment from 'moment';
 
 //main function
 
@@ -147,7 +148,7 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
         { "column": "first_name", "display": "first_name" },
         { "column": "middle_name", "display": "middle_name" },
         { "column": "last_name", "display": "last_name" },
@@ -542,7 +543,7 @@ function AllRequestsTabs() {
                             number: item.number
                         }
                     }),
-                    date_submitted: data.application.date_submitted,
+                    date_submitted: moment(data.application.date_submitted).format("MM/DD/YYYY"),
                     vacancy_id: data.application.vacancy_id,
                     vacancy: data.vacancy,
                     vacancy_autosuggest: data.vacancy,
@@ -698,7 +699,7 @@ function AllRequestsTabs() {
                 //     // if (tab == 1) {
                 //     //     router.push('/vacancy/approved');
                 //     // }
-                //     // else if (2) {
+                //     // else  if (tab == 2) {
                 //     //     router.push('/vacancy/queued');
                 //     // }
 

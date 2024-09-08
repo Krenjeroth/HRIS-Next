@@ -18,6 +18,7 @@ import CharacterReference from './CharacterReference';
 import EmployeeDetail from './EmployeeDetails';
 import SearchPerson from './SearchPerson';
 import ApplicationDetails from './ApplicationDetails';
+import ApplicantPersonal from './ApplicantPersonal';
 
 type Props = {
     formActiveTab: number,
@@ -83,7 +84,7 @@ function ApplicationPDS(parameter: Props) {
                     title={`Personal`}
                 >
                     <EmployeeDetail />
-                    <Personal />
+                    <ApplicantPersonal />
 
                 </Tabs.Item>
                 <Tabs.Item

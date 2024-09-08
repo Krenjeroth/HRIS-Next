@@ -451,7 +451,7 @@ function AllRequestsTabs() {
                 //     // if (tab == 1) {
                 //     //     router.push('/vacancy/approved');
                 //     // }
-                //     // else if (2) {
+                //     // else  if (tab == 2) {
                 //     //     router.push('/vacancy/queued');
                 //     // }
 

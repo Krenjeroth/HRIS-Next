@@ -15,6 +15,8 @@ import DataList from '@/app/components/DataList';
 import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, EyeIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
 import { createContext } from 'vm';
+import { header } from '@/app/types/pds';
+import moment from 'moment';
 
 
 
@@ -30,10 +32,6 @@ type alert = {
     message: string
 }
 
-type header = {
-    column: string,
-    display: string
-}
 
 type datalist = {
     id: string,
@@ -97,16 +95,16 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
         { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
         { "column": "office_name", "display": "Office" },
         { "column": "division_name", "display": "Division/Section/Unit" },
-        { "column": "date_approved", "display": "Date Approved" },
-        { "column": "posting_date", "display": "Posting Date" },
-        { "column": "closing_date", "display": "Closing Date" },
+        { "column": "date_approved", "display": "Date Approved", "format": "MM/DD/YYYY" },
+        { "column": "posting_date", "display": "Posting Date", "format": "MM/DD/YYYY" },
+        { "column": "closing_date", "display": "Closing Date", "format": "MM/DD/YYYY" },
         { "column": "publication_status", "display": "Publication Status" },
     ]);
 
@@ -115,6 +113,8 @@ function AllRequestsTabs() {
     const [title, setTitle] = useState<string>("Approved Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
+    const [posting_date, setPostingDate] = useState<string>("");
+    const [closing_date, setClosingDate] = useState<string>("");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -263,7 +263,7 @@ function AllRequestsTabs() {
                 let data = resp.data;
                 if (process === "Reactivate") {
                     setValues({
-                        date_submitted: data.date_submitted,
+                        date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
                         division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
@@ -277,15 +277,15 @@ function AllRequestsTabs() {
                 }
                 else {
                     setValues({
-                        date_submitted: data.date_submitted,
+                        date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
                         division: data.division_name,
                         position_id: data.lgu_position_id,
                         position: `${data.title} - ${data.item_number}`,
                         position_autosuggest: `${data.title} - ${data.item_number}`,
                         status: data.status,
-                        date_approved: data.date_approved,
-                        posting_date: data.posting_date,
-                        closing_date: data.closing_date,
+                        date_approved: moment(data.date_approved).format("MM/DD/YYYY"),
+                        posting_date: moment(data.posting_date).format("MM/DD/YYYY"),
+                        closing_date: moment(data.closing_date).format("MM/DD/YYYY"),
                         publication_status: data.publication_status,
                     });
                 }
@@ -388,10 +388,33 @@ function AllRequestsTabs() {
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
-                    {({ errors, touched }) => (
+                    {({ setFieldValue, errors, touched, values }) => {
 
-                        // forms
-                        <Form className='p-2' id="formik">
+                        // get next working day
+                        useEffect(() => {
+                            async function getClosingData() {
+
+                                const postData = {
+                                    posting_date: posting_date,
+                                };
+
+                                const resp = await HttpService.post("get-closing-date", postData);
+                                if (resp != null) {
+                                    let data = resp.data.data;
+                                    setFieldValue("closing_date", data);
+                                }
+                            }
+
+
+                            if (posting_date != "") {
+                                getClosingData();
+                            }
+                            else {
+                            }
+
+                        }, [posting_date]);
+
+                        return (< Form className='p-2' id="formik" >
                             <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
@@ -493,6 +516,7 @@ function AllRequestsTabs() {
                                         initialValues={initialValues}
                                         name="posting_date"
                                         placeholderText="Enter Date"
+                                        setLocalValue={setPostingDate}
                                         className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
@@ -550,9 +574,11 @@ function AllRequestsTabs() {
                                 </button>
                             </div>
                         </Form>
-                    )}
+                        );
+                    }
+                    }
                 </Formik>
-            </Drawer>
+            </Drawer >
             <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
 
 

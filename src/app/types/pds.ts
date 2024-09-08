@@ -376,7 +376,8 @@ export type alert = {
 
 export type header = {
     column: string,
-    display: string
+    display: string,
+    format?: string
 }
 
 export type button = {

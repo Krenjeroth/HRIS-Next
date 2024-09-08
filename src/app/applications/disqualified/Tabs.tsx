@@ -19,6 +19,7 @@ import { DisqualifyForm } from '@/app/components/Forms/DisqualifyForm';
 import { RevertForm } from '@/app/components/Forms/RevertForm';
 import { HiDownload, HiMail } from 'react-icons/hi';
 import { EmailForm } from '@/app/components/Forms/EmailForm';
+import moment from 'moment';
 
 //main function
 
@@ -51,7 +52,7 @@ function AllRequestsTabs() {
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
         { "column": "first_name", "display": "first_name" },
         { "column": "middle_name", "display": "middle_name" },
         { "column": "last_name", "display": "last_name" },
@@ -275,7 +276,7 @@ function AllRequestsTabs() {
                     middle_name: (data.details.middle_name) ? data.details.middle_name : "",
                     last_name: data.details.last_name,
                     suffix: (data.details.suffix) ? data.details.suffix : "",
-                    date_submitted: data.application.date_submitted,
+                    date_submitted: moment(data.application.date_submitted).format("MM/DD/YYYY"),
                     vacancy_id: data.application.vacancy_id,
                     vacancy: data.vacancy,
                     vacancy_autosuggest: data.vacancy,
@@ -426,7 +427,7 @@ function AllRequestsTabs() {
                 //     // if (tab == 1) {
                 //     //     router.push('/vacancy/approved');
                 //     // }
-                //     // else if (2) {
+                //     // else  if (tab == 2) {
                 //     //     router.push('/vacancy/queued');
                 //     // }
 

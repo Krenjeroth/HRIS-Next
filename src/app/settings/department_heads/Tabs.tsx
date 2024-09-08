@@ -42,10 +42,11 @@ type button = {
 // interfaces
 
 interface IValues {
-    code: string;
-    name: string;
-    office_id: string;
-    type: string;
+    office_id: string,
+    prefix: string,
+    name: string,
+    position: string,
+    status: string,
 }
 
 type office = {
@@ -85,23 +86,25 @@ function DivisionTabs() {
 
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "division_code", "display": "Code" },
-        { "column": "division_name", "display": "Name" },
-        { "column": "division_type", "display": "Type" },
-        { "column": "office_name", "display": "Office Name" }
+        { "column": "office_name", "display": "Office" },
+        { "column": "prefix", "display": "Prefix" },
+        { "column": "name", "display": "Name" },
+        { "column": "position", "display": "Position" },
+        { "column": "status", "display": "Status" },
     ]);
     const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Division/Section/Unit");
+    const [title, setTitle] = useState<string>("Department Heads");
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setInitialValues] = useState<IValues>(
         {
-            code: "",
-            name: "",
-            office_id: "",
-            type: ""
+            office_id: '',
+            prefix: '',
+            name: '',
+            position: '',
+            status: '',
         }
     );
     const [buttons, setButtons] = useState<button[]>([
@@ -120,7 +123,7 @@ function DivisionTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
-            const resp = await HttpService.post("search-division", postData);
+            const resp = await HttpService.post("search-department-heads", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -148,10 +151,11 @@ function DivisionTabs() {
         setAlerts([]);
         if (id == 0) {
             setInitialValues({
-                code: '',
-                name: '',
                 office_id: '',
-                type: ''
+                prefix: '',
+                name: '',
+                position: '',
+                status: '',
             });
         }
         else {
@@ -179,13 +183,15 @@ function DivisionTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("division/" + id);
+            const resp = await HttpService.get("department-head/" + id);
             if (resp.status === 200) {
                 setInitialValues({
-                    code: resp.data.division_code,
-                    name: resp.data.division_name,
-                    office_id: resp.data.office_id,
-                    type: resp.data.division_type,
+                    office_id: resp.data.office_id + "",
+                    prefix: resp.data.prefix,
+                    name: resp.data.name,
+                    position: resp.data.position,
+                    status: resp.data.status,
+
                 });
                 setShowDrawer(true);
 
@@ -200,10 +206,11 @@ function DivisionTabs() {
 
     function resetFormik() {
         setInitialValues({
-            code: '',
-            name: '',
             office_id: '',
-            type: ''
+            prefix: '',
+            name: '',
+            position: '',
+            status: '',
         });
     }
 
@@ -221,11 +228,11 @@ function DivisionTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
-            code: values.code,
-            name: values.name,
             office_id: values.office_id,
-            type: values.type,
-            device_name: "web",
+            prefix: values.prefix,
+            name: values.name,
+            position: values.position,
+            status: values.status
         };
 
         alerts.forEach(element => {
@@ -236,7 +243,7 @@ function DivisionTabs() {
             // add
             if (process == "Add") {
 
-                const resp = await HttpService.post("division", postData);
+                const resp = await HttpService.post("department-head", postData);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -254,7 +261,7 @@ function DivisionTabs() {
             }
             // update
             else if (process == "Edit") {
-                const resp = await HttpService.patch("division/" + id, postData)
+                const resp = await HttpService.patch("department-head/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
@@ -272,7 +279,7 @@ function DivisionTabs() {
             }
             // delete
             else {
-                const resp = await HttpService.delete("division/" + id);
+                const resp = await HttpService.delete("department-head/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -305,7 +312,7 @@ function DivisionTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/2' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
                 <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
@@ -314,8 +321,8 @@ function DivisionTabs() {
                     {({ errors, touched }) => (
 
                         // forms
-                        <Form className='p-2' id="formik">
-                            <div className='alert-container mb-2' id="alert-container">
+                        <Form className='p-2 grid grid-cols-2' id="formik">
+                            <div className='alert-container mb-2 col-span-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
@@ -324,48 +331,13 @@ function DivisionTabs() {
                             </div>
 
 
-                            {/* Code */}
-                            <FormElement
-                                name="code"
-                                label="Code *"
-                                errors={errors}
-                                touched={touched}
-                            >
-                                <Field
-                                    readOnly={(process === "Delete") ? true : false}
-                                    id="code"
-                                    name="code"
-                                    placeholder="Enter Division/Section/Unit Code"
-                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
-                            </FormElement>
-
-
-                            {/* Division/Section/Unit Name */}
-                            <FormElement
-                                name="name"
-                                label="Division/Section/Unit Name *"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    readOnly={(process === "Delete") ? true : false}
-                                    id="name"
-                                    name="name"
-                                    placeholder="Enter Division/Section/Unit Name"
-                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
-
-                            </FormElement>
-
-                            {/* Division/Section/Unit */}
+                            {/* Office */}
                             <FormElement
                                 name="office_id"
                                 label="Office *"
                                 errors={errors}
                                 touched={touched}
+                                className='col-span-2'
                             >
 
                                 <Field as="select"
@@ -382,39 +354,92 @@ function DivisionTabs() {
                                             <option key={index} value={item.id}>{item.attributes.office_name}</option>
                                         );
                                     })}
-
-
                                 </Field>
                             </FormElement>
 
-                            {/* Division/Section/Unit */}
                             <FormElement
-                                name="type"
-                                label="Type *"
+                                name="prefix"
+                                label="Prefix"
                                 errors={errors}
                                 touched={touched}
+                                required={true}
                             >
 
-                                <Field as="select"
-                                    disabled={(process === "Delete") ? true : false}
-                                    id="type"
-                                    name="type"
-                                    placeholder="Enter Division/Section/Unit Name *"
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="prefix"
+                                    name="prefix"
+                                    placeholder="Prefix"
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Division/Section/Unit"
-                                >
-                                    <option value="">Select Type</option>
-                                    <option value="Division">Division</option>
-                                    <option value="Section">Section</option>
-                                    <option value="Unit">Unit</option>
+                                />
+
+                            </FormElement>
+
+                            <FormElement
+                                name="name"
+                                label="Name"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                            >
+
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="name"
+                                    name="name"
+                                    placeholder="Name"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+
+                            <FormElement
+                                name="position"
+                                label="Position"
+                                errors={errors}
+                                touched={touched}
+
+                                required={true}
+                            >
+
+                                <Field
+                                    readOnly={(process === "Delete") ? true : false}
+                                    id="position"
+                                    name="position"
+                                    placeholder="position"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                />
+
+                            </FormElement>
+
+                            <FormElement
+                                name="status"
+                                label="Status"
+                                errors={errors}
+                                touched={touched}
+                                required={true}
+                            >
+
+                                <Field
+                                    disabled={(process === "Delete") ? true : false}
+                                    as="select"
+                                    id="status"
+                                    name="status"
+                                    placeholder=""
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    <option value="">Select Status</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
                                 </Field>
 
                             </FormElement>
+
 
 
                             {/* submit button */}
 
-                            <div className="grid grid-flow-row auto-rows-max mt-5">
+                            <div className="grid grid-flow-row auto-rows-max mt-5 col-span-2">
                                 <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
@@ -434,10 +459,11 @@ function DivisionTabs() {
 
                         <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
                             setInitialValues({
-                                code: "",
-                                name: "",
-                                office_id: "",
-                                type: ""
+                                office_id: '',
+                                prefix: '',
+                                name: '',
+                                position: '',
+                                status: '',
                             });
                             setShowDrawer(true);
                             setId(0);
