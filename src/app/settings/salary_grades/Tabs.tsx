@@ -99,8 +99,9 @@ function SalaryGradeTabs() {
         { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
 
-    // Use Effect Hook
 
+
+    // Use Effect Hook
     useEffect(() => {
         // query
         async function getData() {
@@ -116,8 +117,6 @@ function SalaryGradeTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
     }, [refresh, filters, orderBy, orderAscending, pagination, activePage]);
 

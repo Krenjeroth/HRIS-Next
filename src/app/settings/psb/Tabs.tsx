@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { FormFieldError } from '@/app/components/commons/FormFieldError';
 import { HiDocumentAdd, HiOutlineDocumentRemove } from 'react-icons/hi';
+import moment from 'moment';
 
 // types
 
@@ -57,16 +58,16 @@ interface member {
 // interfaces
 
 interface IValues {
-    date_of_effectivity: "",
-    end_of_effectivity: "",
-    chairman_prefix: "",
-    chairman: "",
-    chairman_position: "",
-    chairman_office: "",
-    vice_chairman_prefix: "",
-    vice_chairman: "",
-    vice_chairman_position: "",
-    vice_chairman_office: "",
+    date_of_effectivity: string,
+    end_of_effectivity: string,
+    chairman_prefix: string,
+    chairman: string,
+    chairman_position: string,
+    chairman_office: string,
+    vice_chairman_prefix: string,
+    vice_chairman: string,
+    vice_chairman_position: string,
+    vice_chairman_office: string,
     members: member[],
     secretariats: member[]
 }
@@ -220,8 +221,8 @@ function PSBTab() {
 
                 setValues(defaultValue);
                 setValues({
-                    date_of_effectivity: data.personnelSelectionBoard.date_of_effectivity,
-                    end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity == null ? "" : data.personnelSelectionBoard.end_of_effectivity,
+                    date_of_effectivity: moment(data.personnelSelectionBoard.date_of_effectivity).format("MM/DD/YYYY"),
+                    end_of_effectivity: data.personnelSelectionBoard.end_of_effectivity == null ? "" : moment(data.personnelSelectionBoard.end_of_effectivity).format("MM/DD/YYYY"),
                     chairman: data.personnelSelectionBoard.chairman,
                     chairman_prefix: data.personnelSelectionBoard.chairman_prefix,
                     chairman_position: data.personnelSelectionBoard.chairman_position,
@@ -582,8 +583,6 @@ function PSBTab() {
                             <div className='col-span-4 md:col-span-4 grid grid-cols-4 my-3 '>
                                 <span className='  font-medium text-lg '>Members</span>
                             </div>
-
-
 
 
                             <FieldArray name="members">
