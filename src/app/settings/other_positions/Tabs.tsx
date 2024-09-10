@@ -512,7 +512,6 @@ function SalaryGradeTabs() {
                                     placeholder=""
                                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
                                     <option value="">Select Position Status</option>
-                                    <option value='permanent'>permanent</option>
                                     <option value='casual'>casual</option>
                                     <option value='coterminous'>coterminous</option>
                                     <option value='fixed term'>fixed term</option>

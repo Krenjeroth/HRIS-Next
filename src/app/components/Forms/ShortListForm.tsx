@@ -162,7 +162,7 @@ export const ShortListForm = (param: parameters) => {
                     <option value="">Select Eligibility </option>
 
                     {context.initialValues.eligibilities.map((object, index: number) => {
-                        return <option value={`${object.eligibility_title}`}>{object.eligibility_title}</option>
+                        return <option key={index} value={`${object.eligibility_title}`}>{object.eligibility_title}</option>
                     })};
                 </Field>
             </FormElement>

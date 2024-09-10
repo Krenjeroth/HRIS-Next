@@ -186,11 +186,12 @@ function AllRequestsTabs() {
         { "column": "middle_name", "display": "Middle Name" },
         { "column": "last_name", "display": "Last Name" },
         { "column": "suffix", "display": "Suffix" },
+        { "column": "employment_status", "display": "Employment Status" },
         { "column": "title", "display": "Position" },
         { "column": "item_number", "display": "Plantilla" },
         { "column": "mobile_number", "display": "Mobile Number" },
         { "column": "email_address", "display": "Email" },
-        { "column": "employee_status", "display": "Employee Status" }
+        { "column": "employee_status", "display": "Status" }
     ]);
 
 

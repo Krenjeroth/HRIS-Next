@@ -116,7 +116,7 @@ function AllRequestsTabs() {
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
-            const resp = await HttpService.post("search-interviews", postData);
+            const resp = await HttpService.post("search-appointments", postData);
             if (resp != null) {
                 setData(resp.data.data);
                 setPages(resp.data.pages);
@@ -230,7 +230,10 @@ function AllRequestsTabs() {
         }
         else {
 
-            if (process == "View") {
+            if (process == "Add") {
+                setShowDrawer(false);
+            }
+            else if (process == "View") {
                 setShowDrawer(false);
             }
             else if (process == "Download") {
@@ -276,14 +279,14 @@ function AllRequestsTabs() {
     const getDataById = async (id: number) => {
 
         try {
-            const resp = await HttpService.get("interview/" + id);
+            const resp = await HttpService.get("appointment/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
                 setValues(defaultData);
                 // setValues({
-                //     date_created: data.interview.date_created,
-                //     meeting_date: data.interview.meeting_date,
-                //     venue: data.interview.venue_id,
+                //     date_created: data.appointment.date_created,
+                //     meeting_date: data.appointment.meeting_date,
+                //     venue: data.appointment.venue_id,
                 //     positions: data.positions.map((item: any) => {
                 //         return item.vacancy_id.toString();
                 //     }),
@@ -318,7 +321,7 @@ function AllRequestsTabs() {
 
         try {
             if (process === "Add") {
-                const resp = await HttpService.post("interview", values)
+                const resp = await HttpService.post("appointment", values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -337,7 +340,7 @@ function AllRequestsTabs() {
             }
 
             else if (process === "Edit") {
-                const resp = await HttpService.patch("interview/" + id, values)
+                const resp = await HttpService.patch("appointment/" + id, values)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {
@@ -356,7 +359,7 @@ function AllRequestsTabs() {
             }
 
             else if (process === "Delete") {
-                const resp = await HttpService.delete("interview/" + id);
+                const resp = await HttpService.delete("appointment/" + id);
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (status === "Request was Successful") {

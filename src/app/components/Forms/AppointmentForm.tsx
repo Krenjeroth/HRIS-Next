@@ -25,11 +25,12 @@ export const AppointmentForm = () => {
     const [division_id, setDivisionId] = useState<string>('');
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
+    const [lguPosition, setLGUPosition] = useState<string>("");
     const [employeeKeyword, setEmployeeKeyword] = useState<string>("");
     const [applicationKeyword, setApplicationKeyword] = useState<string>("");
     const [employeeData, setEmployeeData] = useState<datalist[]>([]);
     const [applicationsData, setApplicationsData] = useState<datalist[]>([]);
-    const [position_status, setPositionStatus] = useState<string>('');
+    const [employment_status, setEmploymentStatus] = useState<string>('');
     const [id, setId] = useState<number>(0);
     const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -83,41 +84,49 @@ export const AppointmentForm = () => {
 
     useEffect(() => {
         setPositionData([]);
-    }, [position_status]);
+    }, [employment_status]);
 
 
     // Get LGU Positions
     useEffect(() => {
         async function getPositions() {
-            var keyword = positionKeyword.split("-");
-            var filters = [];
-            if (keyword.length === 2) {
-                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+
+            if (division_id != "") {
+
+                var keyword = positionKeyword.split("-");
+                var filters = [];
+                if (keyword.length === 2) {
+                    filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+                }
+                else {
+                    filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
+                }
+
+                const postData = {
+                    vacant: 1,
+                    activePage: 1,
+                    filters: filters,
+                    orderBy: 'title',
+                    year: '',
+                    orderAscending: "asc",
+                    positionStatus: [employment_status]
+                };
+
+
+                const resp = await HttpService.post("search-lgu-position", postData);
+                if (resp != null) {
+                    setPositionData(
+                        resp.data.data.map((data: any) => {
+                            return {
+                                "id": data.id,
+                                "label": data.attributes.label
+                            }
+                        })
+                    );
+                }
             }
             else {
-                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
-            }
-
-            const postData = {
-                activePage: 1,
-                filters: filters,
-                orderBy: 'title',
-                year: '',
-                orderAscending: "asc",
-                positionStatus: [position_status]
-            };
-
-
-            const resp = await HttpService.post("search-lgu-position", postData);
-            if (resp != null) {
-                setPositionData(
-                    resp.data.data.map((data: any) => {
-                        return {
-                            "id": data.id,
-                            "label": data.attributes.label
-                        }
-                    })
-                );
+                setPositionData([]);
             }
         }
         getPositions();
@@ -126,40 +135,46 @@ export const AppointmentForm = () => {
 
 
     useEffect(() => {
-        async function getEmployees() {
-            var keyword = positionKeyword.split("-");
-            var filters = [];
-            if (keyword.length === 2) {
-                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
-            }
-            else {
-                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { 'column': 'lgu_positions.status', 'value': 'Active' }, { column: 'title', value: positionKeyword }];
-            }
-
+        async function searchEmployee() {
             const postData = {
-                activePage: 1,
-                filters: filters,
-                orderBy: 'title',
-                year: '',
-                orderAscending: "asc",
-                positionStatus: [position_status]
+                keyword: employeeKeyword
             };
-
-
-            const resp = await HttpService.post("search-employees", postData);
+            const resp = await HttpService.post("search-employee-for-appointment", postData);
             if (resp != null) {
-                setPositionData(
+                setEmployeeData(
                     resp.data.data.map((data: any) => {
                         return {
                             "id": data.id,
-                            "label": data.attributes.label
+                            "label": data.label
                         }
                     })
                 );
             }
         }
-        getEmployees();
+        searchEmployee();
     }, [employeeKeyword]);
+
+
+    useEffect(() => {
+        async function searchApplication() {
+            const postData = {
+                keyword: applicationKeyword
+            };
+
+            const resp = await HttpService.post("search-application-for-appointment", postData);
+            if (resp != null) {
+                setApplicationsData(
+                    resp.data.data.map((data: any) => {
+                        return {
+                            "id": data.id,
+                            "label": data.label
+                        }
+                    })
+                );
+            }
+        }
+        searchApplication();
+    }, [applicationKeyword]);
 
 
 
@@ -240,7 +255,7 @@ export const AppointmentForm = () => {
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                         const value = e.target.value;
                         setFieldValue('employment_status', value);
-                        setPositionStatus(value);
+                        setEmploymentStatus(value);
                     }}
                 >
                     <option value="">Select Type </option>
@@ -266,6 +281,10 @@ export const AppointmentForm = () => {
                     name="nature_of_appointment"
                     placeholder="Employee Type"
                     className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                    onChange={() => {
+                        setApplicationsData([]);
+                        setEmployeeData([]);
+                    }}
                 >
                     <option value="">Select Nature of Appointment </option>
                     <option value="Original">Original</option>
@@ -292,11 +311,13 @@ export const AppointmentForm = () => {
                     required={true}
                     initialValues={context.initialValues}
                     setValues={context.setValues}
-                    data={positionData} />
+                    data={positionData}
+                    updateId={setLGUPosition} />
+
             </div>
 
 
-            <div className={`col-span-4 md:col-span-2 ${(position_status == "permanent") ? "" : "hidden"}`}>
+            <div className={`col-span-4 md:col-span-2 ${(employment_status == "permanent") ? "hidden" : ""}`}>
                 <DataList errors={context.errors} touched={context.touched}
                     id="employee_id"
                     setKeyword={setEmployeeKeyword}
@@ -311,7 +332,7 @@ export const AppointmentForm = () => {
             </div>
 
 
-            <div className={`col-span-4 md:col-span-2 hidden${(position_status != "permanent") ? "hidden" : ""}`}>
+            <div className={`col-span-4 md:col-span-2 ${(employment_status == "permanent") ? "" : "hidden"}`}>
                 <DataList errors={context.errors} touched={context.touched}
                     id="application_id"
                     setKeyword={setApplicationKeyword}
@@ -438,6 +459,6 @@ export const AppointmentForm = () => {
 
 
 
-        </div>
+        </div >
     );
 };
