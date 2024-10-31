@@ -1,19 +1,22 @@
 "use client";
-import { Tabs, TabsRef } from 'flowbite-react';
+import { Button, Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, ArrowUturnLeftIcon, BackspaceIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
+import { createContext } from 'vm';
+import moment from 'moment';
+import { header } from '@/app/types/pds';
 
 
 
@@ -29,10 +32,6 @@ type alert = {
     message: string
 }
 
-type header = {
-    column: string,
-    display: string
-}
 
 type datalist = {
     id: string,
@@ -46,13 +45,18 @@ type button = {
     class: string
 }
 
+type filter = {
+    column: string;
+    value: string;
+}
+
 
 // interfaces
 
 interface IValues {
     date_submitted: string;
-    date_approved: string,
     date_queued: string,
+    division: string;
     position_id: string;
     position: string;
     position_autosuggest: string;
@@ -72,64 +76,60 @@ function AllRequestsTabs() {
     const props = { setActiveTab, tabsRef };
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
-        { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
-        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" }
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <BackspaceIcon className=' w-5 h-5' />, "title": "Reactivate", "process": "Reactivate", "class": "text-indigo-600" }
     ]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
-    const [process, setProcess] = useState<string>("Add");
+    const [process, setProcess] = useState<string>("Edit");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
+        { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
-        { "column": "department_name", "display": "Department" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" },
+        { "column": "date_queued", "display": "Date Queued", "format": "MM/DD/YYYY" }
     ]);
-    const [readOnly, setReadOnly] = useState<boolean>(false);
-    const [pages, setPages] = useState<number>(1);
+
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Queued Request");
     const [positionKeyword, setPositionKeyword] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
             status: '',
-            date_approved: '',
             date_queued: '',
         }
     );
-
+    const initialValueContext = createContext();
 
     function resetFormik() {
         setValues({
             date_submitted: '',
+            division: '',
             position_id: '',
             position: '',
             position_autosuggest: '',
             status: '',
-            date_approved: '',
             date_queued: '',
         });
     }
@@ -139,14 +139,25 @@ function AllRequestsTabs() {
 
     useEffect(() => {
         // query
+        let newArrayFilter = [...filters];
+
+        // add year to filter
+        newArrayFilter.push({
+            column: "date_submitted",
+            value: String(year)
+        });
+
+        newArrayFilter.push({
+            column: "vacancies.status",
+            value: 'Queued'
+        });
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: newArrayFilter,
                 orderBy: orderBy,
                 year: year,
-                orderAscending: orderAscending,
-                filter: ['vacancies.status', "Queued"]
+                orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
@@ -155,7 +166,7 @@ function AllRequestsTabs() {
             }
         }
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
 
 
     // Get LGU Positions
@@ -164,13 +175,11 @@ function AllRequestsTabs() {
         async function getLGUPositions() {
             const postData = {
                 activePage: 1,
-                searchKeyword: positionKeyword,
+                filters: [{ 'column': 'lgu_positions.status', 'value': 'Active' }],
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent'],
-                status: ['Active'],
-                viewAll: false
+                positionStatus: ['Permanent']
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -188,37 +197,42 @@ function AllRequestsTabs() {
     }, [positionKeyword]);
 
 
+
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 date_submitted: '',
+                division: '',
                 position_id: '',
                 position: '',
                 position_autosuggest: '',
                 status: '',
-                date_approved: '',
                 date_queued: '',
-
             });
         }
-    }, [id]);
+        else {
+            resetFormik();
+            getDataById(id);
+        }
+    }, [id, reload]);
+
 
     useEffect(() => {
-        if (process === "Delete") {
-            setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }]);
-            setReadOnly(true);
+        if (!showDrawer) {
+            setId(0);
         }
-        else if (process === "Approve") {
-            setAlerts([{ "type": "info", "message": "Approve Request?" }])
-            setReadOnly(true);
+    }, [showDrawer]);
+
+    useEffect(() => {
+        if (process === "Edit") {
+            setAlerts([{ "type": "info", "message": "Edit Queued Request?" }])
         }
-        else if (process === "Queue") {
-            setAlerts([{ "type": "warning", "message": "Queue Request?" }])
-            setReadOnly(true);
+        else if (process === "Reactivate") {
+            setAlerts([{ "type": "warning", "message": "Reactivate Request?" }])
         }
         else {
             setAlerts([]);
-            setReadOnly(false);
         }
     }, [process]);
 
@@ -230,16 +244,28 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                setId(id);
-                setValues({
-                    date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
-                    position_id: data.lgu_position_id,
-                    position: `${data.title} - ${data.item_number}`,
-                    position_autosuggest: `${data.title} - ${data.item_number}`,
-                    status: data.status,
-                    date_approved: data.approved,
-                    date_queued: data.queued,
-                })
+                if (process === "Reactivate") {
+                    setValues({
+                        date_submitted: data.date_submitted,
+                        division: data.division_name,
+                        position_id: data.lgu_position_id,
+                        position: `${data.title} - ${data.item_number}`,
+                        position_autosuggest: `${data.title} - ${data.item_number}`,
+                        status: data.status,
+                        date_queued: '',
+                    });
+                }
+                else {
+                    setValues({
+                        date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
+                        division: data.division_name,
+                        position_id: data.lgu_position_id,
+                        position: `${data.title} - ${data.item_number}`,
+                        position_autosuggest: `${data.title} - ${data.item_number}`,
+                        status: data.status,
+                        date_queued: moment(data.date_queued).format("MM/DD/YYYY"),
+                    });
+                }
                 setShowDrawer(true);
             }
         }
@@ -264,48 +290,29 @@ function AllRequestsTabs() {
         setLoading(true);
         const postData = {
             date_submitted: values.date_submitted,
+            date_queued: values.date_queued,
             position_id: values.position_id,
             position: values.position,
             device_name: "web",
             process: process,
-            status: "Active"
+            status: "Queued"
         };
+
 
         alerts.forEach(element => {
             alerts.pop();
         });
 
-        try {
-            // add
-            if (process === "Add") {
-                const resp = await HttpService.post("vacancy", postData);
-                if (resp.status === 200) {
-                    let status = resp.data.status;
-                    if (status === "Request was Successful") {
-                        alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
-                        resetForm({});
-                        resetFormik();
-                        setActivePage(1);
-                        setRefresh(!refresh);
-                        setId(0);
-                        setProcess("Add");
-                    }
-                    else {
-                        if (typeof resp.data != "undefined") {
-                            alerts.push({ "type": "failure", "message": resp.data.message });
-                        }
-                    }
-                }
-            }
-            // update
-            else if (process === "Edit") {
 
+        try {
+            if (process === "Edit") {
                 const resp = await HttpService.patch("vacancy/" + id, postData)
                 if (resp.status === 200) {
                     let status = resp.data.status;
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -316,61 +323,22 @@ function AllRequestsTabs() {
                 }
             }
 
-            // approve and queue
-            else if (process === "Approve" || process === "Queue") {
-                if (id != 0) {
-                    if (process === "Approve") {
-                        postData.status = "Approved";
+            if (process === "Reactivate") {
+                const resp = await HttpService.patch("vacancy/" + id, postData)
+                if (resp.status === 200) {
+                    let status = resp.data.status;
+                    if (resp.data.data != "" && typeof resp.data.data != "undefined") {
+                        resetFormik();
+                        alerts.push({ "type": "success", "message": "Data has been successfully Reactivated!" });
+                        setActivePage(1);
+                        setFilters([]);
+                        setRefresh(!refresh);
                     }
-                    if (process == "Queue") {
-                        postData.status = "Queued";
-                    }
-                    const resp = await HttpService.patch("vacancy/" + id, postData)
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (resp.data.data != "" && typeof resp.data.data != "undefined") {
-                            alerts.push({ "type": "success", "message": `Data has been  successfully ${postData.status} !` });
-                            resetForm({});
-                            resetFormik();
-                            setActivePage(1);
-                            setRefresh(!refresh);
-                            setId(0);
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
+                    else {
+                        if (typeof resp.data != "undefined") {
+                            alerts.push({ "type": "failure", "message": resp.data.message });
                         }
                     }
-                }
-                else {
-                    setProcess("Add");
-                }
-            }
-
-            // delete
-            else {
-                if (id != 0) {
-                    const resp = await HttpService.delete("vacancy/" + id);
-                    if (resp.status === 200) {
-                        let status = resp.data.status;
-                        if (status === "Request was Successful") {
-                            alerts.push({ "type": "success", "message": resp.data.message });
-                            setActivePage(1);
-                            setRefresh(!refresh);
-                            setId(0);
-
-                        }
-                        else {
-                            if (typeof resp.data != "undefined") {
-                                alerts.push({ "type": "failure", "message": resp.data.message });
-                            }
-                        }
-                    }
-                }
-                else {
-                    setProcess("Add");
-                    // setShowDrawer(false);
                 }
             }
         }
@@ -391,15 +359,14 @@ function AllRequestsTabs() {
         <>
             {/* drawer */}
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
                     {({ errors, touched }) => (
 
                         // forms
                         <Form className='p-2' id="formik">
-                            <div className='alert-container' id="alert-container">
+                            <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
@@ -410,6 +377,7 @@ function AllRequestsTabs() {
                             {/* Date Submitted */}
                             <div className="">
                                 <FormElement
+                                    required={true}
                                     name="date_submitted"
                                     label="Date Submitted *"
                                     errors={errors}
@@ -417,38 +385,61 @@ function AllRequestsTabs() {
                                 >
 
                                     <DatePicker
+                                        readOnly={true}
                                         initialValues={initialValues}
-                                        readOnly={`${process === "Add" || process === "Edit" ? false : true}`}
-                                        setValues={setValues}
+                                        id="date_submitted"
                                         name="date_submitted"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
-                            </div>
 
 
-                            {/* Date Approved */}
-                            <div className={`${process === "Approve" ? "" : "hidden"}`}>
+                                {/*Division*/}
+
                                 <FormElement
-                                    name="date_approved"
-                                    label="Date Approved *"
+                                    required={true}
+                                    name="division"
+                                    label="Division"
                                     errors={errors}
                                     touched={touched}
                                 >
-                                    <DatePicker
-                                        initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="date_approved"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    <Field
+                                        readOnly={true}
+                                        id="division"
+                                        name="division"
+                                        placeholder="Division"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
                                     />
+
+                                </FormElement>
+
+
+                                {/*Position*/}
+
+                                <FormElement
+                                    required={true}
+                                    name="position"
+                                    label="Position"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+                                        readOnly={true}
+                                        id="position"
+                                        name="position"
+                                        placeholder="Position"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    />
+
                                 </FormElement>
                             </div>
 
 
                             {/* Date Queued */}
-                            <div className={`${process === "Queue" ? "" : "hidden"}`}>
+                            <div className={process === "Reactivate" ? "hidden" : ""}>
                                 <FormElement
                                     name="date_queued"
                                     label="Date Queued *"
@@ -457,31 +448,25 @@ function AllRequestsTabs() {
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_queued"
                                         name="date_queued"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
+
+
                             </div>
 
-                            {/* positions */}
-                            <DataList errors={errors} touched={touched}
-                                readonly={readOnly}
-                                id="position_id"
-                                setKeyword={setPositionKeyword}
-                                label="Position *"
-                                title="Position"
-                                name="position"
-                                initialValues={initialValues}
-                                setValues={setValues}
-                                data={positionData} />
+
+
+
 
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type={(isLoading ? "button" : "submit")} className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
-                                    {(process == "Delete" ? "Delete" : "Submit")}
+                                <button type={(isLoading ? "button" : "submit")} className="py-2 px-4   bg-blue-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
+                                    Submit
                                 </button>
                             </div>
                         </Form>
@@ -500,7 +485,7 @@ function AllRequestsTabs() {
                         if (tab == 0) {
                             router.push('/vacancy/requests');
                         }
-                        else if (tab == 1) {
+                        else if (1) {
                             router.push('/vacancy/approved');
                         }
 
@@ -519,8 +504,8 @@ function AllRequestsTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
@@ -532,7 +517,9 @@ function AllRequestsTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}

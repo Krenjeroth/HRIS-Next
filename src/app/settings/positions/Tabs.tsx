@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -28,16 +29,12 @@ type header = {
 }
 
 
-// interfaces
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
 
-interface IValues {
-    title?: string;
-    salary_grade_id?: string;
-    education?: string;
-    training?: string;
-    experience?: string;
-    eligibility?: string;
-    competency?: string;
 }
 
 type salaryGrade = {
@@ -47,6 +44,27 @@ type salaryGrade = {
         amount: number;
     }
 }
+
+type filter = {
+    column: string;
+    value: string;
+}
+
+
+// interfaces
+
+interface IValues {
+    code: string;
+    title: string;
+    salary_grade_id: string;
+    education: string;
+    training: string;
+    experience: string;
+    eligibility: string;
+    competency: string;
+}
+
+
 
 
 
@@ -59,7 +77,7 @@ function positionTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -69,6 +87,7 @@ function positionTabs() {
     const [salaryGrades, setsalaryGrades] = useState<salaryGrade[]>([]);
 
     const [headers, setHeaders] = useState<header[]>([
+        { "column": "code", "display": "Code" },
         { "column": "title", "display": "title" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
@@ -78,13 +97,15 @@ function positionTabs() {
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Position");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
+            code: "",
             title: "",
             salary_grade_id: "",
             education: "",
@@ -95,6 +116,11 @@ function positionTabs() {
         }
     );
 
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
+
     // Use Effect Hook
 
     useEffect(() => {
@@ -102,7 +128,7 @@ function positionTabs() {
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 orderBy: orderBy,
                 orderAscending: orderAscending,
             };
@@ -115,7 +141,7 @@ function positionTabs() {
 
 
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
         // get salary grade
@@ -131,8 +157,10 @@ function positionTabs() {
     }, []);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
+                code: '',
                 title: '',
                 salary_grade_id: '',
                 education: '',
@@ -140,15 +168,21 @@ function positionTabs() {
                 experience: '',
                 eligibility: '',
                 competency: ''
-
             });
         }
+        else {
+            resetFormik();
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
             setAlerts([{ "type": "failure", "message": "Are you sure to delete this data?" }])
+        }
+        else if (process === "Edit") {
+            setAlerts([]);
         }
         else {
             // setAlerts([]);
@@ -163,8 +197,8 @@ function positionTabs() {
         try {
             const resp = await HttpService.get("position/" + id);
             if (resp.status === 200) {
-                setId(id);
                 setValues({
+                    code: resp.data.code,
                     title: resp.data.title,
                     salary_grade_id: resp.data.salary_grade_id,
                     education: resp.data.education,
@@ -182,7 +216,18 @@ function positionTabs() {
 
     };
 
-
+    function resetFormik() {
+        setValues({
+            code: '',
+            title: '',
+            salary_grade_id: '',
+            education: '',
+            training: '',
+            experience: '',
+            eligibility: '',
+            competency: ''
+        });
+    }
     // clear alert
     function clearAlert(key: number) {
         const temp_alerts = [...alerts];
@@ -197,6 +242,7 @@ function positionTabs() {
         { setSubmitting, resetForm, setFieldError }: FormikHelpers<IValues>
     ) => {
         const postData = {
+            code: values.code,
             title: values.title,
             salary_grade_id: values.salary_grade_id,
             education: values.education,
@@ -222,6 +268,7 @@ function positionTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -239,6 +286,7 @@ function positionTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -256,6 +304,7 @@ function positionTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
@@ -282,17 +331,17 @@ function positionTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
+            <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
 
                         // forms
                         <Form className='p-2' id="formik">
-                            <div className='alert-container' id="alert-container">
+                            <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
@@ -300,67 +349,95 @@ function positionTabs() {
                                 })}
                             </div>
 
+                            <div className='grid grid-cols-2'>
 
-                            {/* Code */}
+
+
+
+                                {/* Salary Grade*/}
+                                <FormElement
+                                    name="salary_grade_id"
+                                    label="Salary Grade *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+
+                                    <Field
+
+                                        disabled={(process === "Delete") ? true : false}
+                                        as="select"
+                                        id="salary_grade_id"
+                                        name="salary_grade_id"
+                                        placeholder="Enter alary"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        title="Select Salary Grade"
+                                    >
+                                        <option value=""></option>
+                                        {salaryGrades.map((item: salaryGrade, index) => {
+                                            return (
+                                                <option key={index} value={item.id}>{item.attributes.number}</option>
+                                            );
+                                        })}
+
+
+                                    </Field>
+
+                                </FormElement>
+
+                                {/* code */}
+                                <FormElement
+                                    name="code"
+                                    label="Position Code *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+                                    <Field
+
+                                        readOnly={(process === "Delete") ? true : false}
+                                        id="code"
+                                        name="code"
+                                        placeholder="Enter code"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
+                            </div>
+
+                            {/* title */}
                             <FormElement
                                 name="title"
-                                label="Position Title"
+                                label="Position Title *"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="title"
                                     name="title"
                                     placeholder="Enter Title"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
-                            </FormElement>
-
-
-                            {/* Salary Grade*/}
-                            <FormElement
-                                name="salary_grade_id"
-                                label="Salary Grade"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="select"
-                                    id="salary_grade_id"
-                                    name="salary_grade_id"
-                                    placeholder="Enter alary"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
-                                >
-                                    <option value=""></option>
-                                    {salaryGrades.map((item: salaryGrade, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.number}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
-
                             </FormElement>
 
 
                             {/* Education */}
                             <FormElement
                                 name="education"
-                                label="Education"
+                                label="Education *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="education"
                                     name="education"
                                     placeholder="Enter Education"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -369,17 +446,19 @@ function positionTabs() {
                             {/* Training */}
                             <FormElement
                                 name="training"
-                                label="Training"
+                                label="Training *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="training"
                                     name="training"
                                     placeholder="Enter Training"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -388,17 +467,19 @@ function positionTabs() {
                             {/* Experience*/}
                             <FormElement
                                 name="experience"
-                                label="Experience"
+                                label="Experience *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="experience"
                                     name="experience"
                                     placeholder="Enter Experience"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -407,17 +488,19 @@ function positionTabs() {
                             {/* Eligibility*/}
                             <FormElement
                                 name="eligibility"
-                                label="Eligibility"
+                                label="Eligibility *"
                                 errors={errors}
                                 touched={touched}
                             >
 
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="eligibility"
                                     name="eligibility"
                                     placeholder="Enter Eligibility"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -426,16 +509,18 @@ function positionTabs() {
                             {/*Competency*/}
                             <FormElement
                                 name="competency"
-                                label="Competency"
+                                label="Competency *"
                                 errors={errors}
                                 touched={touched}
                             >
                                 <Field
+
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="competency"
                                     name="competency"
                                     placeholder="Enter Competency"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -444,7 +529,7 @@ function positionTabs() {
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>
@@ -461,7 +546,17 @@ function positionTabs() {
                 >
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            setValues({
+                                code: '',
+                                title: '',
+                                salary_grade_id: '',
+                                education: '',
+                                training: '',
+                                experience: '',
+                                eligibility: '',
+                                competency: ''
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
@@ -471,8 +566,9 @@ function positionTabs() {
 
                         {/*Table*/}
                         <Table
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            buttons={buttons}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
@@ -484,7 +580,9 @@ function positionTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

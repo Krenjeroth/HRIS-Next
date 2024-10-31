@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -9,6 +9,7 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 // types
 
@@ -27,12 +28,26 @@ type header = {
     display: string
 }
 
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
+}
+
+type filter = {
+    column: string;
+    value: string;
+}
+
+
 
 // interfaces
 
 interface IValues {
-    number?: number;
-    amount?: number;
+    number: string;
+    amount: string;
 }
 
 
@@ -44,8 +59,9 @@ function SalaryGradeTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
+    const [amount, setAmount] = useState<string>('0.00');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
@@ -56,26 +72,42 @@ function SalaryGradeTabs() {
         { "column": "number", "display": "Number" },
         { "column": "amount", "display": "Amount" }
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Salary Grade");
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
+    const options = {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }
+
+    const intoptions = {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }
     var [initialValues, setValues] = useState<IValues>(
         {
-            number: 0,
-            amount: 0
+            number: '',
+            amount: ''
         }
     );
 
-    // Use Effect Hook
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
 
+
+
+    // Use Effect Hook
     useEffect(() => {
         // query
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: filters,
                 orderBy: orderBy,
                 orderAscending: orderAscending
             };
@@ -85,20 +117,24 @@ function SalaryGradeTabs() {
                 setPages(resp.data.pages);
             }
         }
-
-
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage]);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
+            setAmount('');
             setValues({
-                number: 0,
-                amount: 0
+                number: '',
+                amount: amount
             });
         }
+        else {
+            resetFormik();
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -117,10 +153,10 @@ function SalaryGradeTabs() {
         try {
             const resp = await HttpService.get("salary-grade/" + id);
             if (resp.status === 200) {
-                setId(id);
+                setAmount(Intl.NumberFormat(undefined, options).format(resp.data.amount));
                 setValues({
                     number: resp.data.number,
-                    amount: resp.data.amount
+                    amount: amount
                 })
                 setShowDrawer(true);
 
@@ -130,6 +166,14 @@ function SalaryGradeTabs() {
         }
 
     };
+
+    function resetFormik() {
+        setAmount('');
+        setValues({
+            number: '',
+            amount: amount
+        });
+    }
 
 
     // clear alert
@@ -147,7 +191,7 @@ function SalaryGradeTabs() {
     ) => {
         const postData = {
             number: values.number,
-            amount: values.amount,
+            amount: amount.replace(/[^0-9.]/g, ''),
             device_name: "web",
         };
 
@@ -165,6 +209,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -182,6 +227,7 @@ function SalaryGradeTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -199,6 +245,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
@@ -228,14 +275,14 @@ function SalaryGradeTabs() {
             <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
 
                         // forms
                         <Form className='p-2' id="formik">
-                            <div className='alert-container' id="alert-container">
+                            <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
@@ -252,10 +299,11 @@ function SalaryGradeTabs() {
                                 touched={touched}
                             >
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="number"
                                     name="number"
                                     placeholder="Enter Number"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
                             </FormElement>
@@ -270,10 +318,35 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     id="amount"
                                     name="amount"
+                                    value={amount}
+                                    onChange={(e: any) => {
+                                        if (e.target.value.length == 0) {
+                                            setAmount(e.target.value);
+                                        }
+                                        else {
+                                            let string = String(e.target.value);
+
+                                            let value = e.target.value.replace(/[^0-9.]/g, '');
+
+                                            if (value.indexOf('.') == -1) {
+                                                value = Intl.NumberFormat(undefined, intoptions).format(parseInt(value));
+                                            }
+                                            else {
+                                                if (string[string.length - 1] == "." || string[string.length - 2] == ".") {
+                                                    value = string;
+                                                }
+                                                else {
+                                                    value = Intl.NumberFormat(undefined, options).format(value);
+                                                }
+                                            }
+                                            setAmount(value);
+                                        }
+                                    }}
                                     placeholder="Enter Amount"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -282,7 +355,7 @@ function SalaryGradeTabs() {
                             {/* submit button */}
 
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>
@@ -299,7 +372,11 @@ function SalaryGradeTabs() {
                 >
                     <Tabs.Item title={title + "s"}>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            setValues({
+                                number: '',
+                                amount: amount
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
@@ -309,8 +386,9 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            buttons={buttons}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
@@ -322,7 +400,9 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                         />
                     </Tabs.Item>

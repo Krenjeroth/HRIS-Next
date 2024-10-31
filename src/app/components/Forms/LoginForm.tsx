@@ -1,3 +1,4 @@
+"use client";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import AuthService from "../../../../lib/auth.service";
 import HttpService from "../../../../lib/http.services";
@@ -78,11 +79,11 @@ export const LoginForm = () => {
                 id="email"
                 name="email"
                 placeholder="Enter the email"
-                className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
               />
             </FormElement>
 
-            <FormElement
+            <FormElement 
               name="password"
               label="Password"
               errors={errors}
@@ -92,12 +93,12 @@ export const LoginForm = () => {
                 id="password"
                 name="password"
                 placeholder="Enter the password"
-                className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
+                className="w-full p-3 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
                 type="password"
               />
             </FormElement>
             <div className="grid grid-flow-row auto-rows-max mt-5">
-              <button type="submit" className="py-2 px-4 bg-cyan-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
+              <button type="submit" className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto" >
                 Log in
               </button>
             </div>

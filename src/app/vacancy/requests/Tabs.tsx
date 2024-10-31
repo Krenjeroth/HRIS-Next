@@ -1,19 +1,23 @@
 "use client";
+import dynamic from 'next/dynamic';
 import { Button, Tabs, TabsRef } from 'flowbite-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
 import Drawer from '../../components/Drawer';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { FormElement } from '@/app/components/commons/FormElement';
 import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import dayjs from 'dayjs';
 import DatePicker from '../../components/DatePicker'
 import DataList from '@/app/components/DataList';
-import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, HandThumbUpIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRouter } from "next/navigation";
+import { createContext } from 'vm';
+import moment from "moment";
+import { header } from '@/app/types/pds';
 
 
 
@@ -29,11 +33,6 @@ type alert = {
     message: string
 }
 
-type header = {
-    column: string,
-    display: string
-}
-
 type datalist = {
     id: string,
     label: any
@@ -44,6 +43,11 @@ type button = {
     title: string,
     process: string,
     class: string
+}
+
+type filter = {
+    column: string;
+    value: string;
 }
 
 
@@ -57,13 +61,22 @@ interface IValues {
     position: string;
     position_autosuggest: string;
     status: string;
-    scheduled_opening: string,
-    scheduled_closing: string,
+    posting_date: string,
+    closing_date: string,
+    office_name?: string,
+    division_id?: string;
+    division?: string;
+    division_autosuggest?: string;
 }
+
+// Dynamically import the component
+const LazyComponent = dynamic(() => import('../../components/LazyComponent'), {
+    ssr: false, // This disables server-side rendering for this component
+    loading: () => <p>Loading...</p>, // Optional: Show a loading state while the component is being loaded
+});
 
 
 //main function
-
 function AllRequestsTabs() {
 
 
@@ -74,42 +87,45 @@ function AllRequestsTabs() {
     const props = { setActiveTab, tabsRef };
     // props.setActiveTab(1);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
         { "icon": <HandThumbUpIcon className=' w-5 h-5' />, "title": "Approve", "process": "Approve", "class": "text-green-500" },
-        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" }
+        { "icon": <ArrowRightIcon className=' w-5 h-5' />, "title": "Queue", "process": "Queue", "class": "text-slate-500" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
     ]);
+
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
+    const [posting_date, setPostingDate] = useState<string>("");
+    const [closing_date, setClosingDate] = useState<string>("");
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "date_submitted", "display": "Date Submitted" },
+        { "column": "date_submitted", "display": "Date Submitted", "format": "MM/DD/YYYY" },
+        { "column": "item_number", "display": "Item Number" },
         { "column": "title", "display": "Position" },
-        { "column": "department_name", "display": "Department" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
-        { "column": "item_number", "display": "Plantilla" },
         { "column": "number", "display": "Salary Grade" },
         { "column": "amount", "display": "Monthly Salary" },
-        { "column": "education", "display": "education" },
-        { "column": "training", "display": "training" },
-        { "column": "experience", "display": "experience" },
-        { "column": "eligibility", "display": "eligibility" },
-        { "column": "competency", "display": "competency" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" }
     ]);
     const [readOnly, setReadOnly] = useState<boolean>(false);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
-    const [title, setTitle] = useState<string>("Request");
+    const [title] = useState<string>("Request");
+    const [divisionKeyword, setDivisionKeyword] = useState<string>('');
+    const [divisions, setDivisions] = useState<datalist[]>([]);
     const [positionKeyword, setPositionKeyword] = useState<string>("");
+    const [division_id, setDivisionId] = useState<string>("");
     const [positionData, setPositionData] = useState<datalist[]>([]);
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     var [initialValues, setValues] = useState<IValues>(
         {
@@ -120,11 +136,14 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
+            posting_date: '',
+            closing_date: '',
+            division_id: '',
+            division: '',
+            division_autosuggest: '',
         }
     );
-
+    const initialValueContext = createContext();
 
     function resetFormik() {
         setValues({
@@ -135,8 +154,12 @@ function AllRequestsTabs() {
             status: '',
             date_approved: '',
             date_queued: '',
-            scheduled_opening: '',
-            scheduled_closing: '',
+            posting_date: '',
+            closing_date: '',
+            office_name: '',
+            division_id: '',
+            division: '',
+            division_autosuggest: '',
         });
     }
 
@@ -145,14 +168,25 @@ function AllRequestsTabs() {
 
     useEffect(() => {
         // query
+        let newArrayFilter = [...filters];
+
+        // add year to filter
+        newArrayFilter.push({
+            column: "date_submitted",
+            value: String(year)
+        });
+
+        newArrayFilter.push({
+            column: "vacancies.status",
+            value: 'Active'
+        });
         async function getData() {
             const postData = {
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: newArrayFilter,
                 orderBy: orderBy,
                 year: year,
-                orderAscending: orderAscending,
-                filter: ['vacancies.status', "Active"]
+                orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-vacancy", postData);
             if (resp != null) {
@@ -161,40 +195,82 @@ function AllRequestsTabs() {
             }
         }
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
+
+    // get divisions
+    useEffect(() => {
+
+        async function getDivisions() {
+            const postData = {
+                multiFilter: true,
+                activePage: 1,
+                filters: [{ column: 'division_name', value: divisionKeyword }],
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-division", postData);
+            if (resp != null) {
+                setDivisions(resp.data.data);
+            }
+        }
+        getDivisions();
+    }, [divisionKeyword]);
+
+
+    // get divisions
+    useEffect(() => {
+        setPositionData([]);
+    }, [division_id]);
+
 
 
     // Get LGU Positions
     useEffect(() => {
         // query
-        async function getLGUPositions() {
+        async function getPositions() {
+            var keyword = positionKeyword.split("-");
+            var filters = [];
+            if (keyword.length === 2) {
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { column: 'vacant', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: keyword[0] }, { column: 'item_number', value: keyword[1] }];
+            }
+            else {
+                filters = [{ column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.division_id', value: division_id }, { column: 'lgu_positions.status', value: 'Active' }, { column: 'title', value: positionKeyword }];
+            }
+
             const postData = {
+                vacant: 1,
                 activePage: 1,
-                searchKeyword: positionKeyword,
+                filters: filters,
                 orderBy: 'title',
                 year: '',
                 orderAscending: "asc",
-                positionStatus: ['Permanent'],
-                status: ['Active'],
-                viewAll: false
+                positionStatus: ['Permanent']
             };
+
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
                 setPositionData(
                     resp.data.data.map((data: any) => {
                         return {
                             "id": data.id,
-                            "label": data.attributes.label
+                            "label": data.attributes.label,
+                            "data": data.attributes
                         }
                     })
                 );
             }
         }
-        getLGUPositions();
+
+        if (division_id == "") {
+            setPositionData([]);
+        }
+        else {
+            getPositions();
+        }
     }, [positionKeyword]);
 
 
     useEffect(() => {
+        // setAlerts([]);
         if (id == 0) {
             setValues({
                 date_submitted: '',
@@ -204,12 +280,26 @@ function AllRequestsTabs() {
                 status: '',
                 date_approved: '',
                 date_queued: '',
-                scheduled_opening: '',
-                scheduled_closing: '',
-
+                posting_date: '',
+                closing_date: '',
+                office_name: '',
+                division_id: '',
+                division: '',
+                division_autosuggest: '',
             });
         }
-    }, [id]);
+        else {
+            resetFormik();
+            getDataById(id);
+        }
+    }, [id, reload]);
+
+
+    useEffect(() => {
+        if (!showDrawer) {
+            setId(0);
+        }
+    }, [showDrawer]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -238,18 +328,21 @@ function AllRequestsTabs() {
             const resp = await HttpService.get("vacancy/" + id);
             if (resp.status === 200) {
                 let data = resp.data;
-                setId(id);
                 setValues({
-                    date_submitted: (dayjs(data.date_submitted).format('MM/DD/YYYY')),
+                    date_submitted: moment(data.date_submitted).format("MM/DD/YYYY"),
                     position_id: data.lgu_position_id,
                     position: `${data.title} - ${data.item_number}`,
                     position_autosuggest: `${data.title} - ${data.item_number}`,
                     status: data.status,
-                    date_approved: data.approved,
-                    date_queued: data.queued,
-                    scheduled_opening: '',
-                    scheduled_closing: '',
-                })
+                    date_approved: '',
+                    date_queued: '',
+                    posting_date: '',
+                    closing_date: '',
+                    office_name: data.office_name,
+                    division_id: data.division_id,
+                    division: data.division_name,
+                    division_autosuggest: data.division_name,
+                });
                 setShowDrawer(true);
             }
         }
@@ -276,14 +369,15 @@ function AllRequestsTabs() {
             date_submitted: values.date_submitted,
             date_approved: values.date_approved,
             date_queued: values.date_queued,
-            scheduled_opening: values.scheduled_opening,
-            scheduled_closing: values.scheduled_closing,
+            posting_date: values.posting_date,
+            closing_date: values.closing_date,
             position_id: values.position_id,
             position: values.position,
             device_name: "web",
             process: process,
             status: "Active"
         };
+
 
         alerts.forEach(element => {
             alerts.pop();
@@ -301,6 +395,7 @@ function AllRequestsTabs() {
                         resetForm({});
                         resetFormik();
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
@@ -321,6 +416,7 @@ function AllRequestsTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -348,6 +444,7 @@ function AllRequestsTabs() {
                             resetForm({});
                             resetFormik();
                             setActivePage(1);
+                            setFilters([]);
                             setRefresh(!refresh);
                             setId(0);
                         }
@@ -372,6 +469,7 @@ function AllRequestsTabs() {
                         if (status === "Request was Successful") {
                             alerts.push({ "type": "success", "message": resp.data.message });
                             setActivePage(1);
+                            setFilters([]);
                             setRefresh(!refresh);
                             setId(0);
 
@@ -405,16 +503,40 @@ function AllRequestsTabs() {
     return (
         <>
             {/* drawer */}
-            <Drawer width='w-96' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
-
+            <Drawer width='w-1/3' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
-                    {({ errors, touched }) => (
 
-                        // forms
-                        <Form className='p-2' id="formik">
-                            <div className='alert-container' id="alert-container">
+                    {({ setFieldValue, errors, touched, values }) => {
+
+                        // get next working day
+                        useEffect(() => {
+                            async function getClosingData() {
+
+                                const postData = {
+                                    posting_date: posting_date,
+                                };
+
+                                const resp = await HttpService.post("get-closing-date", postData);
+                                if (resp != null) {
+                                    let data = resp.data.data;
+                                    setFieldValue("closing_date", data);
+                                }
+                            }
+
+
+                            if (posting_date != "") {
+                                getClosingData();
+                            }
+                            else {
+                            }
+
+                        }, [posting_date]);
+
+
+                        return (<Form className='p-2' id="formik">
+                            <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
@@ -426,67 +548,106 @@ function AllRequestsTabs() {
                             <div className="">
                                 <FormElement
                                     name="date_submitted"
-                                    label="Date Submitted *"
+                                    label="Date Submitted"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
 
                                     <DatePicker
                                         initialValues={initialValues}
-                                        readOnly={`${process === "Add" || process === "Edit" ? false : true}`}
-                                        setValues={setValues}
+                                        readOnly={process === "Add" || process === "Edit" ? false : true}
+                                        id="date_submitted"
                                         name="date_submitted"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
                             </div>
 
 
+                            {/*Division*/}
+
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="division_id"
+                                setKeyword={setDivisionKeyword}
+                                label="Division/Section/Unit"
+                                title="Division/Section/Unit"
+                                name="division"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                updateId={setDivisionId}
+                                data={divisions}
+                                required={true}
+                                className=""
+                            />
+
+
+                            {/*positions */}
+                            <DataList errors={errors} touched={touched}
+                                className=''
+                                id="position_id"
+                                setKeyword={setPositionKeyword}
+                                label="Position - Plantilla"
+                                title="Position"
+                                name="position"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                required={true}
+                                data={positionData}
+                                readonly={process === "Add" || process === "Edit" ? false : true}
+                            />
+
                             {/* Date Approved */}
                             <div className={`${process === "Approve" ? "" : "hidden"}`}>
+
                                 <FormElement
+                                    required={true}
                                     name="date_approved"
-                                    label="Date Approved *"
+                                    label="Date Approved"
                                     errors={errors}
                                     touched={touched}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_approved"
                                         name="date_approved"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_opening"
-                                    label="Scheduled Opening*"
+                                    name="posting_date"
+                                    label="Posting Date"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="scheduled_opening"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        id="posting_date"
+                                        name="posting_date"
+                                        placeholderText="Enter Date"
+                                        setLocalValue={setPostingDate}
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
 
                                 <FormElement
-                                    name="scheduled_closing"
-                                    label="Scheduled Closing*"
+                                    name="closing_date"
+                                    label="Closing Date"
                                     errors={errors}
                                     touched={touched}
+                                    required={true}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
-                                        name="scheduled_closing"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        id="closing_date"
+                                        name="closing_date"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
                             </div>
@@ -495,32 +656,23 @@ function AllRequestsTabs() {
                             {/* Date Queued */}
                             <div className={`${process === "Queue" ? "" : "hidden"}`}>
                                 <FormElement
+                                    required={true}
                                     name="date_queued"
-                                    label="Date Queued *"
+                                    label="Date Queued"
                                     errors={errors}
                                     touched={touched}
                                 >
                                     <DatePicker
                                         initialValues={initialValues}
-                                        setValues={setValues}
+                                        id="date_queued"
                                         name="date_queued"
-                                        placeholder="Enter Date"
-                                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     />
                                 </FormElement>
                             </div>
 
-                            {/* positions */}
-                            <DataList errors={errors} touched={touched}
-                                readonly={readOnly}
-                                id="position_id"
-                                setKeyword={setPositionKeyword}
-                                label="Position *"
-                                title="Position"
-                                name="position"
-                                initialValues={initialValues}
-                                setValues={setValues}
-                                data={positionData} />
+
 
                             {/* submit button */}
 
@@ -530,12 +682,11 @@ function AllRequestsTabs() {
                                 </button>
                             </div>
                         </Form>
-                    )}
+                        );
+                    }}
                 </Formik>
             </Drawer>
             <div className={`${showDrawer ? "blur-[1px]" : ""}`}>
-
-
                 {/*  Tabs */}
                 <Tabs.Group
                     aria-label="Tabs with underline"
@@ -545,7 +696,7 @@ function AllRequestsTabs() {
                         if (tab == 1) {
                             router.push('/vacancy/approved');
                         }
-                        else if (2) {
+                        else if (tab == 2) {
                             router.push('/vacancy/queued');
                         }
 
@@ -556,6 +707,21 @@ function AllRequestsTabs() {
                     <Tabs.Item title={title + "s"} active>
 
                         <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            setValues({
+                                date_submitted: '',
+                                position_id: '',
+                                position: '',
+                                position_autosuggest: '',
+                                status: '',
+                                date_approved: '',
+                                date_queued: '',
+                                posting_date: '',
+                                closing_date: '',
+                                office_name: '',
+                                division_id: '',
+                                division: '',
+                                division_autosuggest: ''
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
@@ -565,8 +731,8 @@ function AllRequestsTabs() {
                         {/*Table*/}
                         <Table
                             buttons={buttons}
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            setFilters={setFilters}
+                            filters={filters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
@@ -578,7 +744,9 @@ function AllRequestsTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
                             year={year}
                             setYear={setYear}
@@ -590,12 +758,9 @@ function AllRequestsTabs() {
                     <Tabs.Item title={"Approved Requests"}>
                     </Tabs.Item>
 
-
-
                     <Tabs.Item title={"Queued Requests"}>
                     </Tabs.Item>
                 </Tabs.Group >
-
             </div >
         </>
     );

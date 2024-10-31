@@ -1,6 +1,6 @@
 "use client";
 import { Button, Tabs } from 'flowbite-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import Table from "../../components/Table";
 import HttpService from '../../../../lib/http.services';
@@ -11,6 +11,10 @@ import { setFormikErrors } from '../../../../lib/utils.service';
 import { Alert } from 'flowbite-react';
 import YearPicker from '../../components/YearPicker';
 import dayjs from 'dayjs';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import DataList from '../../components/DataList';
+import debounce from 'lodash/debounce';
+
 
 // types
 
@@ -29,13 +33,22 @@ type header = {
     display: string
 }
 
+type filter = {
+    column: string;
+    value: string;
+}
+
 
 // interfaces
 
 interface IValues {
     item_number: string;
-    office_id: string;
+    division_id: string;
+    division: string;
+    division_autosuggest: string;
     position_id: string;
+    position: string;
+    position_autosuggest: string;
     year: number;
     description: string;
     place_of_assignment: string;
@@ -43,12 +56,12 @@ interface IValues {
     position_status: string;
 }
 
-type office = {
+type division = {
     id: number;
     attributes: {
-        office_code: string
-        office_name: string
-        department: string
+        division_code: string
+        division_name: string
+        office: string
     }
 }
 
@@ -66,6 +79,20 @@ type position = {
     }
 }
 
+type button = {
+    icon: ReactNode,
+    title: string,
+    process: string,
+    class: string,
+
+}
+
+type datalist = {
+    id: string,
+    label: any
+}
+
+
 
 
 
@@ -78,22 +105,24 @@ function SalaryGradeTabs() {
     // variables
     const [activeTab, setActiveTab] = useState<number>(0);
     const [activePage, setActivePage] = useState<number>(1);
-    var [searchKeyword, setSearchKeyword] = useState<string>('');
+    var [filters, setFilters] = useState<filter[]>([]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [alerts, setAlerts] = useState<alert[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [orderAscending, setOrderAscending] = useState<boolean>(false);
     const [pagination, setpagination] = useState<number>(1);
     const [process, setProcess] = useState<string>("Add");
-    const [offices, setOffices] = useState<office[]>([]);
-    const [positions, setPositions] = useState<position[]>([]);
+    const [divisions, setDivisions] = useState<datalist[]>([]);
+    const [positions, setPositions] = useState<datalist[]>([]);
+    const [positionKeyword, setPositionKeyword] = useState<string>('');
+    const [divisionKeyword, setDivisionKeyword] = useState<string>('');
     const [headers, setHeaders] = useState<header[]>([
         { "column": "id", "display": "id" },
-        { "column": "title", "display": "Position" },
-        { "column": "department_name", "display": "Department" },
-        { "column": "office_name", "display": "Office" },
-        { "column": "description", "display": "Description" },
         { "column": "item_number", "display": "Plantilla" },
+        { "column": "title", "display": "Position" },
+        { "column": "description", "display": "Description" },
+        { "column": "office_name", "display": "Office" },
+        { "column": "division_name", "display": "Division/Section/Unit" },
         { "column": "status", "display": "Status" },
         { "column": "year", "display": "Year" },
         { "column": "number", "display": "Salary Grade" },
@@ -104,18 +133,23 @@ function SalaryGradeTabs() {
         { "column": "eligibility", "display": "eligibility" },
         { "column": "competency", "display": "competency" },
     ]);
-    const [pages, setPages] = useState<number>(1);
+    const [pages, setPages] = useState<number>(0);
     const [data, setData] = useState<row[]>([]);
     const [title, setTitle] = useState<string>("Plantilla");
     const [positionStatus, setPositionStatus] = useState<string[]>(['Permanent']);
     const [id, setId] = useState<number>(0);
+    const [reload, setReload] = useState<boolean>(true);
     const [showDrawer, setShowDrawer] = useState<boolean>(false);
     const [year, setYear] = useState<number>(parseInt(dayjs().format('YYYY')));
     var [initialValues, setValues] = useState<IValues>(
         {
             item_number: "",
-            office_id: "",
+            division_id: "",
+            division: "",
+            division_autosuggest: "",
             position_id: "",
+            position: "",
+            position_autosuggest: "",
             year: parseInt(dayjs().format('YYYY')),
             description: "",
             place_of_assignment: "",
@@ -124,20 +158,30 @@ function SalaryGradeTabs() {
         }
     );
 
+    const [buttons, setButtons] = useState<button[]>([
+        { "icon": <PencilIcon className=' w-5 h-5' />, "title": "Edit", "process": "Edit", "class": "text-blue-600" },
+        { "icon": <TrashIcon className=' w-5 h-5' />, "title": "Delete", "process": "Delete", "class": "text-red-600" }
+    ]);
+
     // Use Effect Hook
     useEffect(() => {
         // query
+        let newArrayFilter = [...filters];
+
+        // add year to filter
+        // newArrayFilter.push({
+        //     column: "year",
+        //     value: String(year)
+        // });
 
         async function getData() {
             const postData = {
+                positionStatus: ['Permanent'],
                 activePage: activePage,
-                searchKeyword: searchKeyword,
+                filters: newArrayFilter,
                 orderBy: orderBy,
-                year: year,
-                orderAscending: orderAscending,
-                positionStatus: positionStatus,
-                status: ['Active', 'Abolished'],
-                viewAll: false
+                viewAll: true,
+                orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-lgu-position", postData);
             if (resp != null) {
@@ -146,37 +190,65 @@ function SalaryGradeTabs() {
             }
         }
         getData();
-    }, [refresh, searchKeyword, orderBy, orderAscending, pagination, activePage, year]);
 
+    }, [refresh, filters, orderBy, orderAscending, pagination, activePage, year]);
+
+    // debounce get positions
+    const debounceLoadData = useCallback(
+        debounce((keyword: string) => {
+            async function getPositions() {
+                const postData = {
+                    activePage: 1,
+                    filters: [{ column: 'title', value: keyword }],
+                    orderAscending: 'asc'
+                };
+                const resp = await HttpService.post("search-position", postData);
+                if (resp != null) {
+                    setPositions(resp.data.data);
+                }
+            }
+            getPositions();
+        }, 300), // Adjust the debounce delay as needed
+        []
+    );
+
+
+    // get positions
     useEffect(() => {
-        async function getOffices() {
-            const resp = await HttpService.get("office");
+        debounceLoadData(positionKeyword);
+    }, [positionKeyword]);
+
+
+    // get divisions
+    useEffect(() => {
+
+        async function getDivisions() {
+            const postData = {
+                multiFilter: true,
+                activePage: 1,
+                filters: [{ column: 'division_name', value: divisionKeyword }],
+                orderAscending: 'asc',
+            };
+            const resp = await HttpService.post("search-division", postData);
             if (resp != null) {
-                setOffices(resp.data);
+                setDivisions(resp.data.data);
             }
         }
 
-        getOffices();
-    }, []);
-
-
-    useEffect(() => {
-        async function getPositions() {
-            const resp = await HttpService.get("position");
-            if (resp != null) {
-                setPositions(resp.data);
-            }
-        }
-
-        getPositions();
-    }, []);
+        getDivisions();
+    }, [divisionKeyword]);
 
     useEffect(() => {
+        setAlerts([]);
         if (id == 0) {
             setValues({
                 item_number: "",
-                office_id: "",
+                division_id: "",
+                division: "",
+                division_autosuggest: "",
                 position_id: "",
+                position: "",
+                position_autosuggest: "",
                 year: parseInt(dayjs().format('YYYY')),
                 description: "",
                 place_of_assignment: "",
@@ -184,8 +256,12 @@ function SalaryGradeTabs() {
                 position_status: "Permanent",
             });
         }
+        else {
+            resetFormik();
+            getDataById(id);
+        }
 
-    }, [id]);
+    }, [id, reload]);
 
     useEffect(() => {
         if (process === "Delete") {
@@ -206,16 +282,19 @@ function SalaryGradeTabs() {
             const resp = await HttpService.get("lgu-position/" + id);
             const data = resp.data.data.attributes;
             if (resp.status === 200) {
-                setId(id);
                 setValues({
                     item_number: data.item_number,
-                    office_id: data.office_id,
+                    division_id: data.division_id,
+                    division: data.division_name,
+                    division_autosuggest: data.division_name,
                     position_id: data.position_id,
+                    position: data.position,
+                    position_autosuggest: data.position,
                     year: parseInt(data.year),
                     description: data.description,
                     place_of_assignment: data.place_of_assignment,
                     status: data.status,
-                    position_status: "Permanent",
+                    position_status: data.position_status,
                 });
                 setShowDrawer(true);
 
@@ -226,6 +305,24 @@ function SalaryGradeTabs() {
 
     };
 
+
+
+    function resetFormik() {
+        setValues({
+            item_number: "",
+            division_id: "",
+            division: "",
+            division_autosuggest: "",
+            position_id: "",
+            position: "",
+            position_autosuggest: "",
+            year: parseInt(dayjs().format('YYYY')),
+            description: "",
+            place_of_assignment: "",
+            status: "",
+            position_status: "Permanent",
+        });
+    }
 
     // clear alert
     function clearAlert(key: number) {
@@ -242,7 +339,7 @@ function SalaryGradeTabs() {
     ) => {
         const postData = {
             item_number: values.item_number,
-            office_id: values.office_id,
+            division_id: values.division_id,
             position_id: values.position_id,
             year: values.year,
             description: values.description,
@@ -265,6 +362,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -282,6 +380,7 @@ function SalaryGradeTabs() {
                     if (resp.data.data != "" && typeof resp.data.data != "undefined") {
                         alerts.push({ "type": "success", "message": "Data has been successfully saved!" });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                     }
                     else {
@@ -299,6 +398,7 @@ function SalaryGradeTabs() {
                     if (status === "Request was Successful") {
                         alerts.push({ "type": "success", "message": resp.data.message });
                         setActivePage(1);
+                        setFilters([]);
                         setRefresh(!refresh);
                         setId(0);
                         setProcess("Add");
@@ -328,117 +428,92 @@ function SalaryGradeTabs() {
             <Drawer width='w-4/12' setShowDrawer={setShowDrawer} setProcess={setProcess} showDrawer={showDrawer} setId={setId} title={`${process} ${title}`}>
 
                 {/* formik */}
-                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true}
+                <Formik initialValues={initialValues} onSubmit={onFormSubmit} enableReinitialize={true} validateOnBlur={false} validateOnChange={false}
                 >
 
                     {({ errors, touched }) => (
 
                         // forms
                         <Form className='p-2' id="formik">
-                            <div className='alert-container' id="alert-container">
+                            <div className='alert-container mb-2' id="alert-container">
                                 {alerts.map((item, index) => {
                                     return (
                                         <Alert className='my-1' color={item.type} key={index} onDismiss={() => { clearAlert(index) }} > <span> <p><span className="font-medium">{item.message}</span></p></span></Alert>
                                     );
                                 })}
                             </div>
+                            <div className=' grid grid-cols-2'>
 
-
-                            {/* Item Number */}
-                            <FormElement
-                                name="item_number"
-                                label="Item Number"
-                                errors={errors}
-                                touched={touched}
-                            >
-                                <Field
-                                    id="item_number"
+                                {/* Item Number */}
+                                <FormElement
                                     name="item_number"
-                                    placeholder="Enter Item Number"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    onClick={() => { setAlerts([]); }}
-                                />
-                            </FormElement>
-
-                            {/*Office*/}
-                            <FormElement
-                                name="office_id"
-                                label="Office *"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="select"
-                                    id="office_id"
-                                    name="office_id"
-                                    placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
+                                    label="Item Number"
+                                    errors={errors}
+                                    touched={touched}
                                 >
-                                    <option value="">Select Office</option>
-                                    {offices.map((item: office, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.department}-{item.attributes.office_name}</option>
-                                        );
-                                    })}
+                                    <Field
+                                        readOnly={(process === "Delete") ? true : false}
+                                        id="item_number"
+                                        name="item_number"
+                                        placeholder="Enter Item Number"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                        onClick={() => { setAlerts([]); }}
+                                    />
+                                </FormElement>
 
+                                {/* Year */}
 
-                                </Field>
-
-                            </FormElement>
-
-
-                            {/*Position*/}
-                            <FormElement
-                                name="position_id"
-                                label={`Position *`}
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <Field
-                                    as="select"
-                                    id="position_id"
-                                    name="position_id"
-                                    placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                    title="Select Salary Grade"
-                                >
-                                    <option value="">Select Position</option>
-                                    {positions.map((item: position, index) => {
-                                        return (
-                                            <option key={index} value={item.id}>{item.attributes.title}</option>
-                                        );
-                                    })}
-
-
-                                </Field>
-
-                            </FormElement>
-
-
-
-                            {/* Year */}
-
-                            <FormElement
-                                name="year"
-                                label="Year *"
-                                errors={errors}
-                                touched={touched}
-                            >
-
-                                <YearPicker
-                                    initialValues={initialValues}
-                                    setValues={setValues}
-                                    id="year"
+                                <FormElement
                                     name="year"
-                                    placeholder="Enter Date"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                                />
+                                    label="Year *"
+                                    errors={errors}
+                                    touched={touched}
+                                >
+
+                                    <YearPicker
+                                        readOnly={(process === "Delete") ? true : false}
+                                        initialValues={initialValues}
+                                        setValues={setValues}
+                                        id="year"
+                                        name="year"
+                                        placeholderText="Enter Date"
+                                        className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    />
 
 
-                            </FormElement>
+                                </FormElement>
+                            </div>
+
+                            {/*Division*/}
+
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="division_id"
+                                setKeyword={setDivisionKeyword}
+                                label="Division/Section/Unit *"
+                                title="Division/Section/Unit"
+                                name="division"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={divisions}
+                                className=""
+                            />
+
+                            {/* positions */}
+                            <DataList errors={errors} touched={touched}
+                                readonly={process === "Delete" ? true : false}
+                                id="position_id"
+                                setKeyword={setPositionKeyword}
+                                label="Position *"
+                                title="Position"
+                                name="position"
+                                initialValues={initialValues}
+                                setValues={setValues}
+                                data={positions}
+                                className=""
+                            />
+
+
 
                             {/* Position Description */}
                             <FormElement
@@ -449,11 +524,12 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="description"
                                     name="description"
                                     placeholder="Enter Description "
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -468,11 +544,12 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    readOnly={(process === "Delete") ? true : false}
                                     as="textarea"
                                     id="place_of_assignment"
                                     name="place_of_assignment"
                                     placeholder="Enter Place of Assignment"
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                 />
 
                             </FormElement>
@@ -487,11 +564,12 @@ function SalaryGradeTabs() {
                             >
 
                                 <Field
+                                    disabled={(process === "Delete") ? true : false}
                                     as="select"
                                     id="status"
                                     name="status"
                                     placeholder=""
-                                    className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
+                                    className="w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Abolished">Abolished</option>
@@ -502,7 +580,7 @@ function SalaryGradeTabs() {
 
                             {/* submit button */}
                             <div className="grid grid-flow-row auto-rows-max mt-5">
-                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-cyan-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
+                                <button type="submit" className={`py-2 px-4   ${(process == "Delete" ? "bg-red-500" : "bg-blue-500")}  text-white font-semibold rounded-lg focus:scale-90 shadow-sm mx-auto`} >
                                     {(process == "Delete" ? "Delete" : "Submit")}
                                 </button>
                             </div>
@@ -519,7 +597,21 @@ function SalaryGradeTabs() {
                 >
                     <Tabs.Item className=' overflow-x-auto' title={title + "s"}>
 
-                        <Button className='btn btn-sm text-white rounded-lg bg-cyan-500  hover:scale-90 shadow-sm text' onClick={() => {
+                        <Button className='btn btn-sm text-white rounded-lg bg-blue-500  hover:scale-90 shadow-sm text' onClick={() => {
+                            setValues({
+                                item_number: "",
+                                division_id: "",
+                                division: "",
+                                division_autosuggest: "",
+                                position_id: "",
+                                position: "",
+                                position_autosuggest: "",
+                                year: parseInt(dayjs().format('YYYY')),
+                                description: "",
+                                place_of_assignment: "",
+                                status: "",
+                                position_status: "Permanent",
+                            });
                             setShowDrawer(true);
                             setId(0);
                             setProcess("Add");
@@ -529,8 +621,9 @@ function SalaryGradeTabs() {
 
                         {/*Table*/}
                         <Table
-                            searchKeyword={searchKeyword}
-                            setSearchKeyword={setSearchKeyword}
+                            buttons={buttons}
+                            filters={filters}
+                            setFilters={setFilters}
                             orderBy={orderBy}
                             setOrderBy={setOrderBy}
                             orderAscending={orderAscending}
@@ -542,10 +635,12 @@ function SalaryGradeTabs() {
                             activePage={activePage}
                             setActivePage={setActivePage}
                             headers={headers}
-                            getDataById={getDataById}
+                            setId={setId}
+                            reload={reload}
+                            setReload={setReload}
                             setProcess={setProcess}
-                            year={year}
-                            setYear={setYear}
+                        // year={year}
+                        // setYear={setYear}
                         />
                     </Tabs.Item>
                 </Tabs.Group >

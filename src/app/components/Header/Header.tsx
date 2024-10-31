@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import logo from 'public/logo.png';
+import logo from '../../../../public/logo.png';
 import { Navbar } from 'flowbite-react';
 import { Dropdown } from 'flowbite-react';
 import { Avatar } from 'flowbite-react';
 import Cookies from 'js-cookie';
-import { Bars3CenterLeftIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, Bars3CenterLeftIcon, ShieldCheckIcon, UserCircleIcon, UserGroupIcon, UserIcon, UsersIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useState } from 'react';
 import { RootState } from '@/app/redux/store';
@@ -14,6 +14,8 @@ import { useSelector, useDispatch, Provider } from 'react-redux';
 import { setName, setToken, setEmail } from '@/app/redux/reducers/userReducer';
 import AuthService from '../../../../lib/auth.service';
 import { useRouter } from 'next/navigation';
+import "react-datepicker/dist/react-datepicker.css";
+import { ArrowLeftCircleIcon } from '@heroicons/react/20/solid';
 
 type Props = {
     isMinimized: boolean,
@@ -61,20 +63,19 @@ export default function Header(parameter: Props) {
                     {parameter.isAuthenticated && (
                         <button data-drawer-target="default-sidebar" onClick={() => parameter.setMinimized(!parameter.isMinimized)} type="button" className="inline-flex p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 float-left mx-3 ">
                             <span className="sr-only">Sidebar</span>
-                            {parameter.isMinimized && (<Bars3CenterLeftIcon className="w-5 h-5" />)}
-                            {!parameter.isMinimized && (<XMarkIcon className="w-5 h-5" />)}
+                            {parameter.isMinimized && (<Bars3CenterLeftIcon className="w-5 h-5 text-gray-500" />)}
+                            {!parameter.isMinimized && (<ArrowLeftCircleIcon className="w-5 h-5 text-gray-500" />)}
                         </button>
                     )}
-
                     <Navbar.Brand href="/" >
-                        <Image className="hover:scale-95"
+                        <Image className="hover:scale-95 ml-4"
                             src={logo}
                             alt="logo"
                             priority={true}
                             width="0"
                             height="0"
                             sizes="100vw"
-                            style={{ width: '150px', height: 'auto' }}
+                            style={{ width: '100px', height: 'auto' }}
                         />
                     </Navbar.Brand>
                 </div>
@@ -85,7 +86,7 @@ export default function Header(parameter: Props) {
                         <Dropdown
                             arrowIcon={false}
                             inline={true}
-                            label={<Avatar alt="User settings" img="" rounded={true} />}>
+                            label={<UserCircleIcon className=' w-7 h-7 text-gray-500' />}>
                             <Dropdown.Header>
                                 <span className="block text-sm">
                                     {name}
@@ -112,7 +113,7 @@ export default function Header(parameter: Props) {
                         <Dropdown
                             arrowIcon={false}
                             inline={true}
-                            label={<Avatar alt="User settings" img="" rounded={true} />}>
+                            label={<ShieldCheckIcon className='w-7 h-7 text-gray-500' />}>
                             <Dropdown.Header className=' w-40'>
                                 <span>Welcome to HRIS</span>
                             </Dropdown.Header>
@@ -129,6 +130,6 @@ export default function Header(parameter: Props) {
                 <Navbar.Collapse>
                 </Navbar.Collapse>
             </Navbar>
-        </header>
+        </header >
     )
 }

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+      container_name: next
+      build:
+          context: .
+          dockerfile: Dockerfile
+      restart: always
+      environment:
+        - NODE_ENV=development
+        - WATCHPACK_POLLING=true
+      volumes: 
+        - .:/next-app
+        - /next-app/node_modules
+        - /next-app/.next
+        # - /next-app/app
+      ports:
+          - 3000:3000
+ 

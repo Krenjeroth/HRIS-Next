@@ -27,13 +27,13 @@ function SidebarDropdown(parameter: Props) {
         <>
             <li className={`dropdown overflow-x-visible`}>
 
-                <button className={`group flex items-center w-full p-2 text-gray-900 transition duration-100 rounded-lg group  hover:bg-cyan-500 mb-4 hover:text-white hover:scale-95 hover:shadow-md `} onClick={() => {
+                <button className={`group flex items-center w-full p-2 text-gray-900 transition duration-100 scale-95 rounded-lg group  hover:bg-blue-500 mb-4 hover:text-white hover:scale-100 hover:shadow-md `} onClick={() => {
                     setIsOpen(!isOpen);
                     parameter.setExpandedLink(parameter.title);
                 }}>
-                    <div className={`flex-shrink-0  text-gray-500 transition duration-75  group-hover:text-white group-hover:scale-95 ${parameter.isMinimized ? 'mx-auto' : 'sm:text-cyan-500 '}`}>
+                    <div className={`flex-shrink-0 mx-auto  transition duration-75  group-hover:text-white scale-95 group-hover:scale-100 ${parameter.isMinimized ? 'text-gray-500' : 'sm:text-gray-500 '}`}>
                         <Tooltip
-                            className={`${parameter.isMinimized ? "" : "hidden"}`}
+                            className={`${parameter.isMinimized ? "text-xs" : "hidden"}`}
                             content={parameter.title}
                             trigger="hover"
                             placement="right"

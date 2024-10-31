@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import { useState, useMemo } from 'react';
 import { Field, Form, Formik, FormikHelpers, useField, useFormikContext } from 'formik';
 import debounce from 'lodash/debounce';
@@ -8,7 +8,8 @@ import { FormElement } from '@/app/components/commons/FormElement';
 import Autosuggest from 'react-autosuggest';
 type datalist = {
     id: string,
-    label: string
+    label: string,
+    data?: any
 }
 
 interface IValues {
@@ -34,33 +35,35 @@ type Props = {
     name: string,
     initialValues: any,
     setValues: Function,
-    id: string
+    id: string,
+    className: string,
+    required?: boolean,
+    fillValues?: string[],
+    updateId?: Function
 }
 
 
 function index(parameter: Props) {
     const { setFieldValue } = useFormikContext();
+
     const [field] = useField(parameter);
     const [value, setValue] = useState<string>("");
 
+
     // call once after render
     const loadSuggestions = useCallback(({ value }: any) => {
-        parameter.setKeyword(value);
+
+        if (parameter.readonly) {
+
+        }
+        else {
+            parameter.setKeyword(value);
+        }
     }, []);
 
     const debouncedLoadSuggestions = useMemo(() => {
         return debounce(loadSuggestions, 500);
     }, [loadSuggestions]);
-
-
-    useEffect(() => {
-        if (parameter.initialValues[parameter.id] != "") {
-            setValue(parameter.initialValues[`${parameter.name}_autosuggest`]);
-        }
-        else {
-            setValue('');
-        }
-    }, [parameter.initialValues])
 
     useEffect(() => {
         if (parameter.data.length === 0) {
@@ -68,89 +71,85 @@ function index(parameter: Props) {
             setValue("");
             setFieldValue(parameter.id, '');
             setFieldValue(parameter.name, '');
+            setFieldValue(`${parameter.name}_autosuggest`, '');
         }
     }, [parameter.data])
 
+    useEffect(() => {
+        setValue(parameter.initialValues[parameter.name]);
+    }, [parameter.initialValues])
+
     return (
+
         <>
-            <div className='hidden'>
-                <FormElement
-                    name={parameter.id}
-                    label={`${parameter.title} ID`}
-                    errors={parameter.errors}
-                    touched={parameter.touched}
-                >
-                    <Field
-                        id={parameter.id}
-                        name={parameter.id}
-                        placeholder={`${parameter.title} ID`}
-                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    />
-                </FormElement>
-            </div>
-            <div className={`${parameter.readonly === true ? "" : "hidden"}`}>
-                <FormElement
-                    name={parameter.name}
-                    label={parameter.title}
-                    errors={parameter.errors}
-                    touched={parameter.touched}
-                >
-                    <Field
-                        readOnly={parameter.readonly}
-                        id={parameter.name}
-                        name={parameter.name}
-                        placeholder={`${parameter.title}`}
-                        className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
-                    />
+            <FormElement
+                name={`${parameter.name}_autosuggest`}
+                label={parameter.label}
+                errors={parameter.errors}
+                touched={parameter.touched}
+                // className={`${parameter.readonly === true ? "hidden" : ""} ${parameter.className}`}
+                required={parameter.required}
+            >
+                <Autosuggest
+                    suggestions={parameter.data}
+                    onSuggestionsFetchRequested={debouncedLoadSuggestions}
+                    onSuggestionsClearRequested={() => {
+                        if (value == "") {
+                            setFieldValue(parameter.id, '');
+                            setFieldValue(parameter.name, '');
+                            setFieldValue(`${parameter.name}_autosuggest`, '');
 
-                </FormElement>
-
-            </div>
-
-            <div className={`${parameter.readonly === true ? "hidden" : ""}`}>
-                <FormElement
-                    name={`${parameter.name}_autosuggest`}
-                    label={parameter.label}
-                    errors={parameter.errors}
-                    touched={parameter.touched}
-                >
-
-                    <Autosuggest
-                        suggestions={parameter.data}
-                        onSuggestionsFetchRequested={debouncedLoadSuggestions}
-                        onSuggestionsClearRequested={() => {
-                        }}
-                        getSuggestionValue={(suggestion: datalist) =>
-                            suggestion.label
+                            if (parameter.updateId) {
+                                parameter.updateId('');
+                            }
+                            if (parameter.fillValues?.length) {
+                                parameter.fillValues.forEach((item: string, index: number) => {
+                                    setFieldValue(item, "");
+                                })
+                            }
                         }
-                        renderSuggestion={suggestion => (
-                            <option>
-                                {suggestion.label}
-                            </option>
-                        )}
-                        onSuggestionSelected={(event, { suggestion, method }) => {
-                            if (method === "enter") {
-                                event.preventDefault();
-                            }
-                            setValue(suggestion.label);
-                            setFieldValue(parameter.id, suggestion.id);
-                            setFieldValue(parameter.name, suggestion.label);
-                        }}
-                        inputProps={{
-                            placeholder: `Enter ${parameter.title}`,
-                            value: value,
-                            id: `${parameter.name}_autosuggest`,
-                            name: `${parameter.name}_autosuggest`,
-                            className: "w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
-                            type: "text",
-                            onChange: (_event, { newValue }) => {
-                                setValue(newValue);
-                            }
-                        }}
-                    />
+                    }}
+                    getSuggestionValue={(suggestion: datalist) =>
+                        suggestion.label
+                    }
+                    renderSuggestion={suggestion => (
+                        <option>
+                            {suggestion.label}
+                        </option>
+                    )}
+                    onSuggestionSelected={(event, { suggestion, method }) => {
+                        if (method === "enter") {
+                            event.preventDefault();
+                        }
+                        setValue(suggestion.label);
+                        setFieldValue(parameter.id, suggestion.id);
+                        setFieldValue(parameter.name, suggestion.label);
+                        setFieldValue(`${parameter.name}_autosuggest`, suggestion.label)
 
-                </FormElement>
-            </div>
+                        if (parameter.updateId) {
+                            parameter.updateId(suggestion.id);
+                        }
+
+                        if (parameter.fillValues?.length) {
+                            parameter.fillValues.forEach((item: string, index: number) => {
+                                setFieldValue(item, suggestion.data[item]);
+                            })
+                        }
+                    }}
+                    inputProps={{
+                        placeholder: `Enter ${parameter.title}`,
+                        value: value,
+                        id: `${parameter.name}_autosuggest`,
+                        name: `${parameter.name}_autosuggest`,
+                        className: "w-full p-3 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500",
+                        type: "text",
+                        onChange: (_event, { newValue }) => {
+                            setValue(newValue);
+                        }
+                    }}
+                />
+
+            </FormElement>
         </>
     )
 }

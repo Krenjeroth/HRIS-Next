@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import DatePicker from "react-datepicker";
@@ -10,10 +11,11 @@ import "react-datepicker/dist/react-datepicker.css";
 type Props = {
     id: string,
     name: string,
-    placeholder: string,
+    placeholderText: string,
     className: string,
     initialValues: any,
-    setValues: Function
+    setValues: Function,
+    readOnly?: boolean
 }
 
 
@@ -37,6 +39,7 @@ function index(parameter: Props) {
             onChange={val => {
                 setFieldValue(field.name, val);
             }}
+            readOnly={parameter.readOnly}
             showYearPicker
             dateFormat="yyyy"
         />

@@ -2,10 +2,11 @@
 import './globals.css';
 import Header from './components/Header/Header';
 import Sidebar from './components/Sidebar/Sidebar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { Inter } from 'next/font/google'
+import { useRouter } from 'next/navigation';
 
 
 
@@ -17,6 +18,16 @@ export default function RootLayout({
 
   const [isMinimized, setMinimized] = useState<boolean>(false);
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
+  const router = useRouter();
+  const [currentUrl, setCurrentUrl] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.href);
+    }
+  });
+
+
   return (
     <html lang="en">
       <head />
@@ -29,11 +40,17 @@ export default function RootLayout({
                 <Sidebar isMinimized={isMinimized} setMinimized={setMinimized} />
               </div>
             )}
-            <div className={`${(isAuthenticated == true && isMinimized == false) ? "sm:ml-64" : ""} ${(isAuthenticated && isMinimized == true) ? "sm:ml-24" : "sm:m-0"} ${(isAuthenticated ? 'p-4' : '')} min-h-screen mt-16 sm:mt-16 bg-gray-50`}>
-              <div className="p-2  rounded-lg  min-h-full">
-                <div className="mb-4 p-2 bg-white dark:bg-gray-800 rounded-md">
-                  {children}
-                </div>
+            <div className={`${(isAuthenticated == true && isMinimized == false) ? "sm:ml-64" : ""} ${(isAuthenticated && isMinimized == true) ? "sm:ml-24" : "sm:m-0"} ${(isAuthenticated ? 'p-4' : '')} min-h-screen mt-16 sm:mt-16 bg-gray-100`}>
+              <div className="p-2  min-h-full">
+                {isAuthenticated ? (
+                  <>
+                    {/* <div className="mb-4  rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10"> */}
+                    {children}
+                    {/* </div> */}
+                  </>
+                ) :
+                  (<>{children}</>)}
+
               </div>
             </div>
           </div>

@@ -5,7 +5,6 @@ import { MagnifyingGlassIcon, HomeIcon, UserCircleIcon, Bars3Icon } from '@heroi
 import { Avatar } from 'flowbite-react'
 import { Dropdown } from 'flowbite-react'
 import Cookies from 'js-cookie'
-import Link from 'next/link'
 
 function HeaderPopover() {
     let token = Cookies.get('token');
