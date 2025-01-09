@@ -80,7 +80,7 @@ function SalaryGradeTabs() {
         { "column": "applicant_type", "display": "capitol employee" },
         { "column": "contact_number", "display": "contact_number" },
         { "column": "email_address", "display": "email_address" },
-        
+
         // "submission_date",
         // "status",
         // "applicant_id",
@@ -113,7 +113,7 @@ function SalaryGradeTabs() {
             email_address: "",
             employee_id: "",
             position_title: "",
-            
+
 
         }
     );
@@ -155,7 +155,7 @@ function SalaryGradeTabs() {
                 email_address: '',
                 employee_id: '',
                 position_title: ''
-                
+
             });
         }
 
@@ -485,7 +485,7 @@ function SalaryGradeTabs() {
                                     className="w-full p-4 pr-12 text-sm border border-gray-100 rounded-lg shadow-sm focus:border-sky-500"
                                     onClick={() => { setAlerts([]); }}
                                 />
-                                    
+
                             </FormElement>
 
                             {/* job title */}
@@ -504,12 +504,12 @@ function SalaryGradeTabs() {
                                     onClick={() => { setAlerts([]); }}
                                 >
 
-                                <option value=""></option>
-                                {positions.map((item: position, index) => {
-                                    return (
-                                        <option key={index} value={item.id}>{item.attributes.title}</option>
-                                    );
-                                })}
+                                    <option value=""></option>
+                                    {positions.map((item: position, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>{item.attributes.title}</option>
+                                        );
+                                    })}
                                     <option value=""></option>
                                     {positions.map((item: position, index) => {
                                         return (
@@ -517,7 +517,7 @@ function SalaryGradeTabs() {
                                         );
                                     })}
 
-                            </Field>
+                                </Field>
                             </FormElement>
 
                             {/* employee ID */}
@@ -581,6 +581,36 @@ function SalaryGradeTabs() {
                             headers={headers}
                             getDataById={getDataById}
                             setProcess={setProcess}
+
+
+                        //   searchKeyword?: string,
+                        // setSearchKeyword: Function,
+                        // getDataById?: Function,
+                        // buttons?: button[],
+                        // year?: number,
+                        // setYear?: Function,
+                        // filters: filter[],
+                        // setFilters: Function,
+                        // orderBy: string,
+                        // setOrderBy: Function,
+                        // orderAscending: boolean,
+                        // setOrderAscending: Function,
+                        // pagination: number,
+                        // setpagination: Function,
+                        // data: row[],
+                        // pages: number,
+                        // activePage: number,
+                        // setActivePage: Function,
+                        // headers: header[]
+                        // setId: Function,
+                        // setReload: Function,
+                        // reload: boolean,
+                        // setProcess?: Function,
+                        // children?: ReactNode,
+                        // checkbox?: boolean,
+                        // hideTotal?: boolean,
+                        // setSelected?: Function,
+                        // selected?: string[],
                         />
                     </Tabs.Item>
                 </Tabs.Group >
