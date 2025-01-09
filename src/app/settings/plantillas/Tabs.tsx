@@ -180,7 +180,7 @@ function SalaryGradeTabs() {
                 activePage: activePage,
                 filters: newArrayFilter,
                 orderBy: orderBy,
-                viewAll: true,
+                viewAll: false,
                 orderAscending: orderAscending
             };
             const resp = await HttpService.post("search-lgu-position", postData);
