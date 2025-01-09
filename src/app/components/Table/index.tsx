@@ -16,11 +16,14 @@ import moment from "moment";
 
 
 type Props = {
+    searchKeyword?: string,
+    setSearchKeyword?: Function,
+    getDataById?: Function,
     buttons?: button[],
     year?: number,
     setYear?: Function,
-    filters: filter[],
-    setFilters: Function,
+    filters?: filter[],
+    setFilters?: Function,
     orderBy: string,
     setOrderBy: Function,
     orderAscending: boolean,
@@ -32,9 +35,9 @@ type Props = {
     activePage: number,
     setActivePage: Function,
     headers: header[]
-    setId: Function,
-    setReload: Function,
-    reload: boolean,
+    setId?: Function,
+    setReload?: Function,
+    reload?: boolean,
     setProcess?: Function,
     children?: ReactNode,
     checkbox?: boolean,
@@ -55,7 +58,7 @@ function index(parameter: Props) {
     const [startDate, setStartDate] = useState(new Date());
     // const [selected, setSelected] = useState<string[]>([]);
     const [numberFormats] = useState<string[]>(['amount']);
-    const [filters, setFilters] = useState<filter[]>(parameter.filters);
+    const [filters, setFilters] = useState<filter[]>(parameter.filters ?? []);
     const options = {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -63,7 +66,11 @@ function index(parameter: Props) {
 
     useEffect(() => {
         parameter.setActivePage(1);
-        parameter.setFilters(filters);
+
+        if (parameter.setFilters) {
+            parameter.setFilters(filters);
+        }
+
     }, [filters])
 
 
@@ -254,8 +261,12 @@ function index(parameter: Props) {
                                                                 <Tooltip content={button.title} key={i}>
                                                                     <button title=""
                                                                         className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
-                                                                            parameter.setReload(!parameter.reload);
-                                                                            parameter.setId(item.id);
+                                                                            if (parameter.setReload) {
+                                                                                parameter.setReload(!parameter.reload);
+                                                                            }
+                                                                            if (parameter.setId) {
+                                                                                parameter.setId(item.id);
+                                                                            }
                                                                             if (parameter.setProcess) {
                                                                                 parameter.setProcess(button.process);
                                                                             }
@@ -271,8 +282,12 @@ function index(parameter: Props) {
                                                             <Tooltip content={button.title} key={i}>
                                                                 <button title=""
                                                                     className={`font-medium ${button.class} hover:scale-90 p-1 border rounded-md  m-1 shadow-sm`} onClick={() => {
-                                                                        parameter.setReload(!parameter.reload);
-                                                                        parameter.setId(item.id);
+                                                                        if (parameter.setReload) {
+                                                                            parameter.setReload(!parameter.reload);
+                                                                        }
+                                                                        if (parameter.setId) {
+                                                                            parameter.setId(item.id);
+                                                                        }
                                                                         if (parameter.setProcess) {
                                                                             parameter.setProcess(button.process);
                                                                         }
