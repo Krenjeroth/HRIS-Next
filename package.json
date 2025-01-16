@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev  --port 3000",
     "build": "next build",
-    "start": "next start -p 80 -H 192.168.7.200",
+    "start": "next start -p 80 -H 192.168.6.77",
     "lint": "next lint"
   },
   "dependencies": {
